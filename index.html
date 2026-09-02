@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кришталева Вода | Доставка артезіанської води</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #0077b6;
+            --primary-dark: #023e8a;
+            --secondary: #00b4d8;
+            --accent: #48cae4;
+            --light: #caf0f8;
+            --lighter: #e8f8fd;
+            --dark: #0a1628;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --shadow: 0 4px 24px rgba(0,119,182,0.08);
+            --shadow-lg: 0 12px 40px rgba(0,119,182,0.12);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, sans-serif; color: var(--text); background: var(--bg); line-height: 1.6; overflow-x: hidden; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        .btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.85rem 2rem; border-radius: 50px; font-weight: 600;
+            border: none; cursor: pointer; transition: all 0.3s; font-size: 1rem;
+        }
+        .btn-primary { background: var(--primary); color: var(--white); }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: var(--primary); color: var(--white); }
+        .btn-white { background: var(--white); color: var(--primary); }
+        .btn-white:hover { background: var(--light); }
+        .btn-success { background: var(--success); color: var(--white); }
+        .btn-success:hover { background: #059669; }
+        .btn-danger { background: var(--danger); color: var(--white); }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-sm { padding: 0.5rem 1rem; font-size: 0.85rem; }
+        .btn-lg { padding: 1rem 2.5rem; font-size: 1.1rem; }
+
+        /* ── Top Bar ── */
+        .top-bar { background: var(--dark); color: var(--white); padding: 0.5rem 0; font-size: 0.85rem; text-align: center; }
+        .top-bar .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        .top-bar a { color: var(--accent); font-weight: 600; }
+
+        /* ── Header ── */
+        header { background: var(--white); box-shadow: 0 2px 20px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 100; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+        .logo { display: flex; align-items: center; gap: 0.6rem; font-size: 1.6rem; font-weight: 800; color: var(--primary); cursor: pointer; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { font-weight: 500; color: var(--text); transition: color 0.3s; font-size: 0.95rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .header-right { display: flex; align-items: center; gap: 1.5rem; }
+        .header-phone .number { font-size: 1.1rem; font-weight: 700; color: var(--primary); display: block; text-align: right; }
+        .header-phone .sub { font-size: 0.75rem; color: var(--text-light); text-align: right; display: block; }
+
+        /* Cart Button */
+        .cart-btn {
+            position: relative; background: var(--lighter); border: none; cursor: pointer;
+            width: 48px; height: 48px; border-radius: 50%; font-size: 1.4rem;
+            display: flex; align-items: center; justify-content: center; transition: 0.3s;
+        }
+        .cart-btn:hover { background: var(--light); }
+        .cart-badge {
+            position: absolute; top: -4px; right: -4px; background: var(--danger);
+            color: white; width: 22px; height: 22px; border-radius: 50%;
+            font-size: 0.7rem; font-weight: 700; display: flex; align-items: center;
+            justify-content: center; transition: transform 0.3s;
+        }
+        .cart-badge.bounce { animation: badgeBounce 0.4s; }
+        @keyframes badgeBounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
+        .burger { display: none; font-size: 1.8rem; cursor: pointer; color: var(--text); background: none; border: none; }
+
+        /* ── Overlay ── */
+        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 200; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .overlay.active { opacity: 1; visibility: visible; }
+
+        /* ── Cart Sidebar ── */
+        .cart-sidebar {
+            position: fixed; top: 0; right: -460px; width: 440px; max-width: 90vw;
+            height: 100vh; background: var(--white); z-index: 300;
+            box-shadow: -10px 0 40px rgba(0,0,0,0.15); transition: right 0.4s cubic-bezier(0.16,1,0.3,1);
+            display: flex; flex-direction: column;
+        }
+        .cart-sidebar.open { right: 0; }
+        .cart-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem; border-bottom: 1px solid #e2e8f0;
+        }
+        .cart-header h2 { font-size: 1.3rem; }
+        .cart-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; padding: 0.5rem; border-radius: 50%; transition: 0.3s; }
+        .cart-close:hover { background: #f1f5f9; }
+
+        .cart-items { flex: 1; overflow-y: auto; padding: 1rem 1.5rem; }
+        .cart-empty { text-align: center; padding: 3rem 1rem; color: var(--text-light); }
+        .cart-empty .icon { font-size: 4rem; margin-bottom: 1rem; }
+
+        .cart-item {
+            display: flex; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid #f1f5f9;
+            align-items: center;
+        }
+        .cart-item-img { font-size: 2.5rem; flex-shrink: 0; width: 60px; text-align: center; }
+        .cart-item-info { flex: 1; }
+        .cart-item-info h4 { font-size: 0.95rem; margin-bottom: 0.3rem; }
+        .cart-item-info .price { color: var(--primary); font-weight: 700; font-size: 0.95rem; }
+        .cart-item-controls { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
+        .cart-item-controls button {
+            width: 28px; height: 28px; border-radius: 50%; border: 1px solid #d1d5db;
+            background: var(--white); cursor: pointer; font-size: 1rem; display: flex;
+            align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .cart-item-controls button:hover { border-color: var(--primary); color: var(--primary); }
+        .cart-item-controls .qty { font-weight: 700; min-width: 24px; text-align: center; font-size: 0.95rem; }
+        .cart-item-remove {
+            background: none; border: none; color: var(--danger); cursor: pointer;
+            font-size: 1.1rem; padding: 0.3rem; transition: 0.2s; flex-shrink: 0;
+        }
+        .cart-item-remove:hover { transform: scale(1.2); }
+
+        .cart-footer {
+            border-top: 2px solid #e2e8f0; padding: 1.5rem;
+        }
+        .cart-summary { margin-bottom: 1rem; }
+        .cart-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem; }
+        .cart-row.total { font-size: 1.2rem; font-weight: 800; color: var(--primary); border-top: 1px solid #e2e8f0; padding-top: 0.8rem; margin-top: 0.5rem; }
+        .cart-row.save { color: var(--success); font-weight: 600; }
+        .cart-footer .btn { width: 100%; justify-content: center; }
+
+        /* ── Hero ── */
+        .hero { background: linear-gradient(135deg, var(--lighter) 0%, var(--light) 50%, var(--white) 100%); padding: 5rem 0 6rem; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; right: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(0,180,216,0.15) 0%, transparent 70%); border-radius: 50%; }
+        .hero .container { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; position: relative; z-index: 1; }
+        .hero-content h1 { font-size: 3.2rem; line-height: 1.15; margin-bottom: 1.5rem; color: var(--primary-dark); }
+        .hero-content h1 span { color: var(--secondary); }
+        .hero-content p { font-size: 1.15rem; color: var(--text-light); margin-bottom: 2rem; max-width: 500px; }
+        .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .promo-badge { background: linear-gradient(135deg, #ef4444, #f97316); color: white; padding: 0.6rem 1.4rem; border-radius: 30px; font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .hero-visual { display: flex; justify-content: center; align-items: center; }
+        .hero-img-wrapper { position: relative; width: 100%; max-width: 450px; }
+        .hero-bottle { font-size: 14rem; text-align: center; line-height: 1; filter: drop-shadow(0 20px 40px rgba(0,119,182,0.2)); animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .hero-float-card { position: absolute; background: var(--white); border-radius: var(--radius-sm); padding: 0.8rem 1.2rem; box-shadow: var(--shadow-lg); font-size: 0.85rem; font-weight: 600; }
+        .hero-float-card.c1 { top: 10%; right: -5%; }
+        .hero-float-card.c2 { bottom: 20%; left: -5%; }
+
+        /* ── Trust Bar ── */
+        .trust-bar { background: var(--white); padding: 2rem 0; border-bottom: 1px solid #e2e8f0; }
+        .trust-items { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 2rem; text-align: center; }
+        .trust-item .num { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+        .trust-item .label { font-size: 0.85rem; color: var(--text-light); }
+
+        /* ── Steps ── */
+        .how-it-works { padding: 5rem 0; }
+        .section-title { text-align: center; margin-bottom: 3rem; }
+        .section-title h2 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .section-title p { color: var(--text-light); font-size: 1.05rem; }
+        .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; }
+        .step-card { text-align: center; padding: 2.5rem 1.5rem; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); position: relative; transition: transform 0.3s; }
+        .step-card:hover { transform: translateY(-5px); }
+        .step-card .step-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .step-card .step-num { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; }
+        .step-card h3 { margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .step-card p { font-size: 0.9rem; }
+
+        /* ── Catalog ── */
+        .catalog { padding: 5rem 0; background: var(--lighter); }
+        .tabs { display: flex; justify-content: center; gap: 0.7rem; margin-bottom: 3rem; flex-wrap: wrap; }
+        .tab { padding: 0.7rem 1.8rem; border: 2px solid var(--primary); background: transparent; color: var(--primary); border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s; font-size: 0.95rem; }
+        .tab.active, .tab:hover { background: var(--primary); color: var(--white); }
+
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1.5rem; }
+        .product-card { background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: transform 0.3s; position: relative; }
+        .product-card:hover { transform: translateY(-5px); }
+        .product-badge { position: absolute; top: 1rem; left: 1rem; background: var(--danger); color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; z-index: 2; }
+        .product-badge.new { background: var(--success); }
+        .product-img { height: 200px; display: flex; align-items: center; justify-content: center; background: var(--lighter); font-size: 5rem; padding: 1rem; }
+        .product-info { padding: 1.5rem; }
+        .product-info h3 { font-size: 1.05rem; margin-bottom: 0.5rem; }
+        .product-info p { font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem; min-height: 2.5rem; }
+        .product-bottom { display: flex; justify-content: space-between; align-items: center; }
+        .product-price { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+        .product-price small { font-size: 0.75rem; font-weight: 500; color: var(--text-light); display: block; }
+
+        .added-feedback {
+            position: absolute; inset: 0; background: rgba(16,185,129,0.95);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; font-size: 1.5rem; font-weight: 700; z-index: 3;
+            animation: fadeInOut 1.5s forwards; pointer-events: none;
+        }
+        @keyframes fadeInOut { 0%{opacity:0;transform:scale(0.8)} 15%{opacity:1;transform:scale(1)} 75%{opacity:1} 100%{opacity:0} }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: grid; }
+
+        /* ── Calculator ── */
+        .calculator-section { padding: 5rem 0; background: linear-gradient(135deg, var(--primary-dark), var(--primary)); }
+        .calculator-section h2, .calculator-section p { color: var(--white); }
+        .calc-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+        .calc-info h3 { color: var(--white); font-size: 1.3rem; margin-bottom: 1rem; }
+        .price-tiers { display: flex; flex-direction: column; gap: 0.8rem; }
+        .tier { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1.2rem; background: rgba(255,255,255,0.1); border-radius: var(--radius-sm); color: var(--white); font-weight: 500; }
+        .tier.active { background: rgba(255,255,255,0.25); border: 2px solid var(--accent); }
+        .tier .price { color: var(--accent); font-weight: 700; }
+        .calc-box { background: var(--white); border-radius: var(--radius); padding: 2.5rem; box-shadow: var(--shadow-lg); text-align: center; }
+        .calc-box h3 { color: var(--text); margin-bottom: 0.5rem; }
+        .calc-controls { display: flex; justify-content: center; align-items: center; gap: 1.5rem; margin: 2rem 0; }
+        .calc-controls button { width: 50px; height: 50px; border-radius: 50%; border: none; background: var(--light); font-size: 1.4rem; cursor: pointer; font-weight: bold; transition: 0.3s; color: var(--primary); }
+        .calc-controls button:hover { background: var(--secondary); color: white; }
+        .calc-controls .count { font-size: 2.5rem; font-weight: 800; color: var(--primary); }
+        .calc-result { border-top: 2px solid #f1f5f9; padding-top: 1.5rem; margin-top: 1rem; }
+        .calc-result .total { font-size: 2.5rem; font-weight: 900; color: var(--primary); }
+        .calc-result .save { color: var(--success); font-weight: 600; margin-top: 0.5rem; }
+        .delivery-zones { display: inline-flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.5rem; }
+        .zone-badge { padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: rgba(255,255,255,0.15); }
+
+        /* ── Composition ── */
+        .composition { padding: 5rem 0; }
+        .comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+
+        /* ── Features ── */
+        .features { padding: 5rem 0; background: var(--lighter); }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+        .feature-card { display: flex; align-items: flex-start; gap: 1rem; padding: 1.5rem; background: var(--white); border-radius: var(--radius-sm); box-shadow: var(--shadow); }
+        .feature-card .icon { font-size: 2rem; flex-shrink: 0; }
+        .feature-card h4 { margin-bottom: 0.3rem; }
+        .feature-card p { font-size: 0.85rem; margin: 0; }
+
+        /* ── Reviews ── */
+        .reviews { padding: 5rem 0; }
+        .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .review-card { background: var(--white); padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow); }
+        .review-stars { color: var(--warning); font-size: 1.1rem; margin-bottom: 0.8rem; }
+        .review-text { font-style: italic; color: var(--text-light); margin-bottom: 1rem; }
+        .review-author { font-weight: 700; font-size: 0.9rem; }
+        .review-author span { font-weight: 400; color: var(--text-light); font-size: 0.8rem; display: block; }
+
+        /* ── CTA ── */
+        .cta-section { padding: 5rem 0; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); text-align: center; color: var(--white); }
+        .cta-section h2 { color: var(--white); font-size: 2.2rem; margin-bottom: 1rem; }
+        .cta-section p { color: rgba(255,255,255,0.9); margin-bottom: 2rem; font-size: 1.1rem; }
+        .cta-actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+
+        /* ── Footer ── */
+        footer { background: var(--dark); color: var(--white); padding: 4rem 0 2rem; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 3rem; margin-bottom: 3rem; }
+        .footer-col h4 { margin-bottom: 1rem; font-size: 1.1rem; }
+        .footer-col p, .footer-col a { color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; transition: 0.3s; }
+        .footer-col a:hover { color: var(--accent); }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; text-align: center; color: #64748b; font-size: 0.85rem; }
+        .social-links { display: flex; gap: 1rem; margin-top: 1rem; }
+        .social-links a { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.3s; }
+        .social-links a:hover { background: var(--primary); }
+
+        /* ═══════════════════════════════════════
+           CHECKOUT MODAL
+           ═══════════════════════════════════════ */
+        .checkout-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 400;
+            display: none; align-items: center; justify-content: center; padding: 1rem;
+        }
+        .checkout-overlay.active { display: flex; }
+        .checkout-modal {
+            background: var(--white); border-radius: var(--radius); width: 100%;
+            max-width: 700px; max-height: 90vh; overflow-y: auto; position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .checkout-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 2rem; border-bottom: 1px solid #e2e8f0; position: sticky;
+            top: 0; background: var(--white); z-index: 1; border-radius: var(--radius) var(--radius) 0 0;
+        }
+        .checkout-header h2 { font-size: 1.4rem; }
+        .checkout-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; padding: 0.5rem; border-radius: 50%; }
+        .checkout-close:hover { background: #f1f5f9; }
+
+        .checkout-body { padding: 2rem; }
+        .checkout-steps { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2rem; }
+        .checkout-step {
+            display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem;
+            border-radius: 30px; font-size: 0.85rem; font-weight: 600;
+            background: #f1f5f9; color: var(--text-light);
+        }
+        .checkout-step.active { background: var(--primary); color: var(--white); }
+        .checkout-step.done { background: #d1fae5; color: #065f46; }
+        .checkout-step .step-circle {
+            width: 26px; height: 26px; border-radius: 50%; background: #d1d5db;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700;
+        }
+        .checkout-step.active .step-circle { background: var(--white); color: var(--primary); }
+        .checkout-step.done .step-circle { background: #065f46; color: var(--white); }
+
+        .checkout-form-step { display: none; }
+        .checkout-form-step.active { display: block; }
+
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.4rem; font-size: 0.9rem; }
+        .form-group label .required { color: var(--danger); }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 0.8rem 1rem; border: 2px solid #e2e8f0; border-radius: var(--radius-sm);
+            font-size: 1rem; font-family: inherit; transition: 0.3s; background: var(--white);
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,119,182,0.1);
+        }
+        .form-group input.error, .form-group select.error { border-color: var(--danger); }
+        .form-group .error-msg { color: var(--danger); font-size: 0.8rem; margin-top: 0.3rem; display: none; }
+        .form-group input.error ~ .error-msg, .form-group select.error ~ .error-msg { display: block; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+        .delivery-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1rem; }
+        .delivery-option {
+            padding: 1rem; border: 2px solid #e2e8f0; border-radius: var(--radius-sm);
+            cursor: pointer; text-align: center; transition: 0.3s;
+        }
+        .delivery-option:hover { border-color: var(--secondary); }
+        .delivery-option.selected { border-color: var(--primary); background: var(--lighter); }
+        .delivery-option .icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+        .delivery-option .label { font-weight: 600; font-size: 0.9rem; }
+        .delivery-option .desc { font-size: 0.75rem; color: var(--text-light); }
+
+        .time-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-bottom: 1rem; }
+        .time-slot {
+            padding: 0.8rem; border: 2px solid #e2e8f0; border-radius: var(--radius-sm);
+            cursor: pointer; text-align: center; transition: 0.3s;
+        }
+        .time-slot:hover { border-color: var(--secondary); }
+        .time-slot.selected { border-color: var(--primary); background: var(--lighter); }
+        .time-slot .time { font-weight: 700; font-size: 0.95rem; }
+        .time-slot .label { font-size: 0.75rem; color: var(--text-light); }
+
+        .payment-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1rem; }
+        .payment-option {
+            padding: 1rem; border: 2px solid #e2e8f0; border-radius: var(--radius-sm);
+            cursor: pointer; display: flex; align-items: center; gap: 0.8rem; transition: 0.3s;
+        }
+        .payment-option:hover { border-color: var(--secondary); }
+        .payment-option.selected { border-color: var(--primary); background: var(--lighter); }
+        .payment-option .icon { font-size: 1.5rem; }
+        .payment-option .label { font-weight: 600; font-size: 0.9rem; }
+
+        .order-summary-box {
+            background: var(--lighter); border-radius: var(--radius-sm); padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .order-summary-box h4 { margin-bottom: 1rem; }
+        .order-summary-item { display: flex; justify-content: space-between; padding: 0.4rem 0; font-size: 0.9rem; }
+        .order-summary-total { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.2rem; color: var(--primary); border-top: 2px solid #cbd5e1; padding-top: 0.8rem; margin-top: 0.8rem; }
+
+        .checkout-nav { display: flex; justify-content: space-between; margin-top: 2rem; gap: 1rem; }
+        .checkout-nav .btn { flex: 1; justify-content: center; }
+
+        /* Order Success */
+        .order-success { text-align: center; padding: 3rem 2rem; }
+        .order-success .icon { font-size: 5rem; margin-bottom: 1rem; }
+        .order-success h2 { color: var(--success); margin-bottom: 0.5rem; }
+        .order-success .order-id { font-size: 1.3rem; font-weight: 800; color: var(--primary); background: var(--lighter); display: inline-block; padding: 0.5rem 1.5rem; border-radius: var(--radius-sm); margin: 1rem 0; }
+        .order-success p { color: var(--text-light); max-width: 400px; margin: 0.5rem auto; }
+
+        /* ── Floating WhatsApp ── */
+        .floating-wa { position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: transform 0.3s; z-index: 99; cursor: pointer; }
+        .floating-wa:hover { transform: scale(1.1); }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--dark); color: var(--white); padding: 1rem 2rem;
+            border-radius: var(--radius-sm); font-weight: 600; z-index: 999;
+            transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); display: flex; align-items: center; gap: 0.8rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast .icon { font-size: 1.3rem; }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .hero .container { grid-template-columns: 1fr; text-align: center; }
+            .hero-content p { margin: 0 auto 2rem; }
+            .hero-actions { justify-content: center; }
+            .hero-visual { display: none; }
+            .hero-content h1 { font-size: 2.4rem; }
+            .calc-wrapper, .comp-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .nav-links { display: none; }
+            .burger { display: block; }
+            .nav-links.active {
+                display: flex; flex-direction: column; position: absolute;
+                top: 100%; left: 0; right: 0; background: var(--white); padding: 1.5rem;
+                box-shadow: var(--shadow-lg); gap: 1rem; z-index: 101;
+            }
+            .form-row, .delivery-options, .time-slots, .payment-options { grid-template-columns: 1fr; }
+            .checkout-steps { flex-wrap: wrap; }
+        }
+        @media (max-width: 500px) { .footer-grid { grid-template-columns: 1fr; } .hero-content h1 { font-size: 2rem; } }
+    </style>
+</head>
+<body>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+
+<!-- Cart Sidebar -->
+<div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+        <h2>🛒 Ваш кошик</h2>
+        <button class="cart-close" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+        <div class="cart-empty" id="cartEmpty">
+            <div class="icon">🛒</div>
+            <h3>Кошик порожній</h3>
+            <p>Додайте товари з каталогу</p>
+        </div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none;">
+        <div class="cart-summary">
+            <div class="cart-row"><span>Підсумок:</span><span id="cartSubtotal">0 ₴</span></div>
+            <div class="cart-row"><span>Доставка:</span><span id="cartDelivery">Безкоштовно</span></div>
+            <div class="cart-row save" id="cartSavingRow" style="display:none"><span>Знижка:</span><span id="cartSaving">0 ₴</span></div>
+            <div class="cart-row total"><span>До сплати:</span><span id="cartTotal">0 ₴</span></div>
+        </div>
+        <button class="btn btn-success btn-lg" onclick="openCheckout()">Оформити замовлення</button>
+    </div>
+</div>
+
+<!-- Checkout Modal -->
+<div class="checkout-overlay" id="checkoutOverlay">
+    <div class="checkout-modal">
+        <div class="checkout-header">
+            <h2>📝 Оформлення замовлення</h2>
+            <button class="checkout-close" onclick="closeCheckout()">✕</button>
+        </div>
+        <div class="checkout-body">
+            <!-- Steps indicator -->
+            <div class="checkout-steps">
+                <div class="checkout-step active" id="stepInd1"><span class="step-circle">1</span> Контакти</div>
+                <div class="checkout-step" id="stepInd2"><span class="step-circle">2</span> Доставка</div>
+                <div class="checkout-step" id="stepInd3"><span class="step-circle">3</span> Оплата</div>
+            </div>
+
+            <!-- Step 1: Contacts -->
+            <div class="checkout-form-step active" id="checkoutStep1">
+                <h3 style="margin-bottom:1.5rem">Контактні дані</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ім'я <span class="required">*</span></label>
+                        <input type="text" id="coName" placeholder="Олена" required>
+                        <div class="error-msg">Введіть ім'я</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Прізвище <span class="required">*</span></label>
+                        <input type="text" id="coSurname" placeholder="Петренко" required>
+                        <div class="error-msg">Введіть прізвище</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Телефон <span class="required">*</span></label>
+                        <input type="tel" id="coPhone" placeholder="+380 (__) ___-__-__" required>
+                        <div class="error-msg">Введіть номер телефону</div>
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <input type="email" id="coEmail" placeholder="olena@example.com">
+                        <div class="error-msg">Невірний формат email</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Коментар до замовлення</label>
+                    <textarea id="coComment" rows="3" placeholder="Побажання щодо часу, місця доставки тощо" style="width:100%;padding:0.8rem 1rem;border:2px solid #e2e8f0;border-radius:var(--radius-sm);font-size:1rem;font-family:inherit;resize:vertical;"></textarea>
+                </div>
+                <div class="checkout-nav">
+                    <button class="btn btn-outline" onclick="closeCheckout()">Скасувати</button>
+                    <button class="btn btn-primary" onclick="goToStep(2)">Далі →</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Delivery -->
+            <div class="checkout-form-step" id="checkoutStep2">
+                <h3 style="margin-bottom:1.5rem">Доставка</h3>
+                <div class="form-group">
+                    <label>Тип доставки <span class="required">*</span></label>
+                    <div class="delivery-options">
+                        <div class="delivery-option selected" onclick="selectDelivery(this, 'address')" data-type="address">
+                            <div class="icon">🏠</div>
+                            <div class="label">Додому / в офіс</div>
+                            <div class="desc">Кур'єр занесе на поверх</div>
+                        </div>
+                        <div class="delivery-option" onclick="selectDelivery(this, 'pickup')" data-type="pickup">
+                            <div class="icon">🏪</div>
+                            <div class="label">Самовивіз</div>
+                            <div class="desc">вул. Джерельна, 12</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="addressFields">
+                    <div class="form-group">
+                        <label>Адреса доставки <span class="required">*</span></label>
+                        <input type="text" id="coAddress" placeholder="вул. Хрещатик, 1, кв. 10" required>
+                        <div class="error-msg">Введіть адресу доставки</div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Під'їзд</label>
+                            <input type="text" id="coEntrance" placeholder="№">
+                        </div>
+                        <div class="form-group">
+                            <label>Поверх</label>
+                            <input type="text" id="coFloor" placeholder="5">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Код домофону</label>
+                            <input type="text" id="coIntercom" placeholder="1234">
+                        </div>
+                        <div class="form-group">
+                            <label>Ліфт</label>
+                            <select id="coElevator">
+                                <option value="yes">Є ліфт</option>
+                                <option value="no">Немає ліфта</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Бажаний час доставки <span class="required">*</span></label>
+                    <div class="time-slots">
+                        <div class="time-slot" onclick="selectTime(this)" data-time="morning">
+                            <div class="time">08:00–12:00</div>
+                            <div class="label">🌅 Ранок</div>
+                        </div>
+                        <div class="time-slot selected" onclick="selectTime(this)" data-time="afternoon">
+                            <div class="time">12:00–17:00</div>
+                            <div class="label">☀️ День</div>
+                        </div>
+                        <div class="time-slot" onclick="selectTime(this)" data-time="evening">
+                            <div class="time">17:00–20:00</div>
+                            <div class="label">🌙 Вечір</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="checkout-nav">
+                    <button class="btn btn-outline" onclick="goToStep(1)">← Назад</button>
+                    <button class="btn btn-primary" onclick="goToStep(3)">Далі →</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Payment & Confirm -->
+            <div class="checkout-form-step" id="checkoutStep3">
+                <h3 style="margin-bottom:1.5rem">Оплата та підтвердження</h3>
+                <div class="form-group">
+                    <label>Спосіб оплати <span class="required">*</span></label>
+                    <div class="payment-options">
+                        <div class="payment-option selected" onclick="selectPayment(this, 'cash')" data-method="cash">
+                            <div class="icon">💵</div>
+                            <div class="label">Готівкою кур'єру</div>
+                        </div>
+                        <div class="payment-option" onclick="selectPayment(this, 'card')" data-method="card">
+                            <div class="icon">💳</div>
+                            <div class="label">Карткою кур'єру</div>
+                        </div>
+                        <div class="payment-option" onclick="selectPayment(this, 'online')" data-method="online">
+                            <div class="icon">📱</div>
+                            <div class="label">Online (LiqPay)</div>
+                        </div>
+                        <div class="payment-option" onclick="selectPayment(this, 'invoice')" data-method="invoice">
+                            <div class="icon">📄</div>
+                            <div class="label">Рахунок-фактура</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" id="invoiceFields" style="display:none">
+                    <label>Назва компанії / ЄДРПОУ</label>
+                    <input type="text" id="coCompany" placeholder="ТОВ «Назва»">
+                </div>
+
+                <div class="order-summary-box">
+                    <h4>📋 Ваше замовлення</h4>
+                    <div id="orderSummaryItems"></div>
+                    <div class="order-summary-total">
+                        <span>Разом:</span><span id="orderSummaryTotal">0 ₴</span>
+                    </div>
+                </div>
+
+                <div style="font-size:0.85rem; color:var(--text-light); margin-bottom:1.5rem;">
+                    Натискаючи «Підтвердити», ви погоджуєтеся з <a href="#" style="color:var(--primary)">публічною офертою</a> та <a href="#" style="color:var(--primary)">політикою конфіденційності</a>.
+                </div>
+                <div class="checkout-nav">
+                    <button class="btn btn-outline" onclick="goToStep(2)">← Назад</button>
+                    <button class="btn btn-success btn-lg" onclick="placeOrder()">✅ Підтвердити замовлення</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Success -->
+            <div class="checkout-form-step" id="checkoutStep4">
+                <div class="order-success">
+                    <div class="icon">🎉</div>
+                    <h2>Замовлення оформлено!</h2>
+                    <div class="order-id" id="orderId">#KV-00000</div>
+                    <p>Дякуємо за замовлення! Наш менеджер зв'яжеться з вами найближчим часом для підтвердження.</p>
+                    <p style="margin-top:1rem;">📧 Підтвердження надіслано на вказану пошту.</p>
+                    <button class="btn btn-primary btn-lg" style="margin-top:2rem;" onclick="closeCheckout(); clearCart();">На головну</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span class="icon">✅</span><span id="toastMsg"></span></div>
+
+<!-- Top Bar -->
+<div class="top-bar">
+    <div class="container">
+        <span>🚚 Безкоштовна доставка при замовленні від 3-х бутлів</span>
+        <span>📞 <a href="tel:+380441234567">(044) 123-45-67</a> | Пн-Нд 08:00–20:00</span>
+    </div>
+</div>
+
+<!-- Header -->
+<header>
+    <div class="container navbar">
+        <a href="#" class="logo" onclick="location.reload()"><span>💧</span> Кришталева</a>
+        <div class="burger" onclick="document.querySelector('.nav-links').classList.toggle('active')">☰</div>
+        <ul class="nav-links">
+            <li><a href="#catalog">Каталог</a></li>
+            <li><a href="#calculator">Ціни</a></li>
+            <li><a href="#composition">Про воду</a></li>
+            <li><a href="#features">Переваги</a></li>
+            <li><a href="#reviews">Відгуки</a></li>
+        </ul>
+        <div class="header-right">
+            <div class="header-phone">
+                <a href="tel:+380441234567" class="number">(044) 123-45-67</a>
+                <span class="sub">Зателефонувати</span>
+            </div>
+            <button class="cart-btn" onclick="openCart()">
+                🛒
+                <span class="cart-badge" id="cartBadge">0</span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="promo-badge">🎁 Перші 2 бутлі — БЕЗКОШТОВНО</div>
+            <h1>Чиста артезіанська вода <span>до ваших дверей</span></h1>
+            <p>Доставка за 60 хвилин по Києву та області. Вода з глибини 335 м, 6-етапне очищення. Безкоштовна проба при першому замовленні!</p>
+            <div class="hero-actions">
+                <a href="#catalog" class="btn btn-primary btn-lg">💧 Замовити воду</a>
+                <a href="#calculator" class="btn btn-outline btn-lg">📊 Розрахувати вартість</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-img-wrapper">
+                <div class="hero-bottle">🫗</div>
+                <div class="hero-float-card c1">🚚 Доставка за 60 хв</div>
+                <div class="hero-float-card c2">✅ Сертифікат FSSC 22000</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trust Bar -->
+<section class="trust-bar">
+    <div class="container">
+        <div class="trust-items">
+            <div class="trust-item"><div class="num">12+</div><div class="label">років на ринку</div></div>
+            <div class="trust-item"><div class="num">50 000+</div><div class="label">задоволених клієнтів</div></div>
+            <div class="trust-item"><div class="num">80+</div><div class="label">автомобілів у парку</div></div>
+            <div class="trust-item"><div class="num">335 м</div><div class="label">глибина свердловини</div></div>
+            <div class="trust-item"><div class="num">60 хв</div><div class="label">середній час доставки</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works">
+    <div class="container">
+        <div class="section-title"><h2>Як це працює?</h2><p>Три прості кроки до чистої води</p></div>
+        <div class="steps-grid">
+            <div class="step-card"><div class="step-num">1</div><div class="step-icon">📱</div><h3>Залиште заявку</h3><p>На сайті, телефоном або через Telegram/Viber-бот.</p></div>
+            <div class="step-card"><div class="step-num">2</div><div class="step-icon">📦</div><h3>Ми привеземо</h3><p>Зручний час: ранок, день або вечір. Кур'єр занесе у квартиру.</p></div>
+            <div class="step-card"><div class="step-num">3</div><div class="step-icon">💳</div><h3>Сплатіть зручно</h3><p>Готівкою, картою, Apple Pay, Google Pay або за реквізитами.</p></div>
+            <div class="step-card"><div class="step-num">4</div><div class="step-icon">🔄</div><h3>Повторіть</h3><p>Налаштуйте регулярну доставку та отримуйте знижки!</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- Catalog -->
+<section id="catalog" class="catalog">
+    <div class="container">
+        <div class="section-title"><h2>Наш каталог</h2><p>Оберіть те, що вам потрібно</p></div>
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('water', this)">💧 Вода</button>
+            <button class="tab" onclick="switchTab('coolers', this)">🚰 Обладнання</button>
+            <button class="tab" onclick="switchTab('accessories', this)">🛠 Аксесуари</button>
+        </div>
+
+        <div class="product-grid tab-content active" id="tab-water"></div>
+        <div class="product-grid tab-content" id="tab-coolers"></div>
+        <div class="product-grid tab-content" id="tab-accessories"></div>
+    </div>
+</section>
+
+<!-- Calculator -->
+<section id="calculator" class="calculator-section">
+    <div class="container">
+        <div class="section-title"><h2>📊 Калькулятор вартості</h2><p>Більше бутлів — нижча ціна за кожен!</p></div>
+        <div class="calc-wrapper">
+            <div class="calc-info">
+                <h3>Тарифна сітка — Вода «Класична» 18.9 л</h3>
+                <div class="price-tiers" id="priceTiers">
+                    <div class="tier"><span>1 бутель</span><span class="price">160 ₴/шт</span></div>
+                    <div class="tier active"><span>2–4 бутлі</span><span class="price">145 ₴/шт</span></div>
+                    <div class="tier"><span>5–9 бутлів</span><span class="price">135 ₴/шт</span></div>
+                    <div class="tier"><span>10+ бутлів</span><span class="price">125 ₴/шт</span></div>
+                </div>
+                <div class="delivery-zones">
+                    <span class="zone-badge">📍 Київ</span><span class="zone-badge">📍 Бровари</span>
+                    <span class="zone-badge">📍 Борщагівка</span><span class="zone-badge">📍 Вишневе</span>
+                    <span class="zone-badge">📍 Ірпінь</span><span class="zone-badge">📍 Бучa</span>
+                </div>
+            </div>
+            <div class="calc-box">
+                <h3>Скільки бутлів потрібно?</h3>
+                <div class="calc-controls">
+                    <button onclick="updateCalc(-1)">−</button>
+                    <span class="count" id="calcCount">2</span>
+                    <button onclick="updateCalc(1)">+</button>
+                </div>
+                <p style="color: var(--text-light);">Ціна за штуку: <strong id="calcUnit">145</strong> ₴</p>
+                <div class="calc-result">
+                    <div style="color: var(--text-light); font-size: 0.9rem;">До оплати:</div>
+                    <div class="total" id="calcTotal">290 ₴</div>
+                    <div class="save" id="calcSave"></div>
+                </div>
+                <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="addCalcToCart()">🛒 Додати в кошик</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Composition -->
+<section id="composition" class="composition">
+    <div class="container">
+        <div class="comp-grid">
+            <div>
+                <div class="section-title" style="text-align: left;"><h2>Про нашу воду</h2><p>Артезіанська вода з глибини 335 м — Юроський горизонт. 6-етапне очищення на італійському обладнанні R. Bardi.</p></div>
+                <ul style="margin-top: 2rem;">
+                    <li style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;"><span style="font-size:1.5rem">1️⃣</span><span><strong>Початкове озонування</strong> — знищення бактерій</span></li>
+                    <li style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;"><span style="font-size:1.5rem">2️⃣</span><span><strong>Механічна фільтрація</strong> — видалення домішків</span></li>
+                    <li style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;"><span style="font-size:1.5rem">3️⃣</span><span><strong>Активоване вугілля</strong> — очищення від хлору</span></li>
+                    <li style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;"><span style="font-size:1.5rem">4️⃣</span><span><strong>Пом'якшення</strong> — оптимізація жорсткості</span></li>
+                    <li style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;"><span style="font-size:1.5rem">5️⃣</span><span><strong>Блендінг</strong> — змішування з водою зворотного осмосу</span></li>
+                    <li style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;"><span style="font-size:1.5rem">6️⃣</span><span><strong>Фінальне озонування</strong> — гарантія безпеки</span></li>
+                </ul>
+            </div>
+            <div>
+                <h3 style="margin-bottom:1rem;">Мінеральний склад (мг/л)</h3>
+                <canvas id="mineralChart" height="300"></canvas>
+                <div style="margin-top:2rem;padding:1.5rem;background:var(--lighter);border-radius:var(--radius-sm);">
+                    <strong>✅ Сертифікати:</strong>
+                    <p style="margin-top:0.5rem;font-size:0.9rem;">ISO 22000, FSSC 22000, ДСТУ 878:2018</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section id="features" class="features">
+    <div class="container">
+        <div class="section-title"><h2>Наші переваги</h2><p>Чому обирають саме нас</p></div>
+        <div class="features-grid">
+            <div class="feature-card"><div class="icon">🚚</div><div><h4>Доставка за 60 хвилин</h4><p>Або знижка 10% за кожні 10 хв затримки!</p></div></div>
+            <div class="feature-card"><div class="icon">💰</div><div><h4>Безкоштовна проба</h4><p>Перші 2 бутлі безкоштовно при замовленні від 3-х.</p></div></div>
+            <div class="feature-card"><div class="icon">🔄</div><div><h4>Обмін бутлів</h4><p>Приймаємо порожні бутлі будь-яких брендів.</p></div></div>
+            <div class="feature-card"><div class="icon">📱</div><div><h4>Telegram та Viber боти</h4><p>Швидке замовлення в кілька кліків.</p></div></div>
+            <div class="feature-card"><div class="icon">🏢</div><div><h4>Для офісів</h4><p>Корпоративні тарифи, оренда обладнання.</p></div></div>
+            <div class="feature-card"><div class="icon">🏆</div><div><h4>Програма лояльності</h4><p>Знижки до 15% на постійній основі.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- Reviews -->
+<section id="reviews" class="reviews">
+    <div class="container">
+        <div class="section-title"><h2>Що кажуть наші клієнти</h2><p>Понад 50 000 задоволених замовників</p></div>
+        <div class="reviews-grid">
+            <div class="review-card"><div class="review-stars">⭐⭐⭐⭐⭐</div><div class="review-text">«Замовляю вже 3 роки. Вода дійсно чиста, кур'єри пунктуальні. Рекомендую!»</div><div class="review-author">Олена М.<span>Київ, Позняки</span></div></div>
+            <div class="review-card"><div class="review-stars">⭐⭐⭐⭐⭐</div><div class="review-text">«Перейшли з іншого постачальника — різниця відчутна. Вода м'яка, без присмаку.»</div><div class="review-author">Андрій К.<span>Офіс, Оболонь</span></div></div>
+            <div class="review-card"><div class="review-stars">⭐⭐⭐⭐⭐</div><div class="review-text">«Орендували кулер для дому — зручно та недорого. Діти полюбили цю воду! 😄»</div><div class="review-author">Марія Д.<span>Бровари</span></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="container">
+        <h2>Готові спробувати?</h2>
+        <p>Залиште заявку і отримайте першу доставку безкоштовно!</p>
+        <div class="cta-actions">
+            <a href="tel:+380441234567" class="btn btn-white btn-lg">📞 (044) 123-45-67</a>
+            <a href="#catalog" class="btn btn-outline btn-lg" style="border-color:white;color:white;">💧 Обрати воду</a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>💧 Кришталева Вода</h4>
+                <p>Повний цикл виробництва та доставки питної артезіанської води.</p>
+                <p style="margin-top:1rem;">📍 вул. Джерельна, 12, м. Київ</p>
+                <p>ЄДРПОУ: 30059069</p>
+                <div class="social-links"><a href="#">📘</a><a href="#">📸</a><a href="#">💬</a></div>
+            </div>
+            <div class="footer-col"><h4>Каталог</h4><a href="#catalog">Вода 18.9 л</a><a href="#catalog">Вода 6 л та 10 л</a><a href="#catalog">Кулери</a><a href="#catalog">Помпи</a><a href="#catalog">Аксесуари</a></div>
+            <div class="footer-col"><h4>Компанія</h4><a href="#">Про нас</a><a href="#">Виробництво</a><a href="#">Для офісів</a><a href="#">Програма лояльності</a><a href="#">Вакансії</a></div>
+            <div class="footer-col">
+                <h4>Контакти</h4>
+                <p>📞 <a href="tel:+380441234567">(044) 123-45-67</a></p>
+                <p>📧 <a href="mailto:info@krystal.com.ua">info@krystal.com.ua</a></p>
+                <p>🕐 Пн-Нд: 08:00 – 20:00</p>
+                <p style="margin-top:1rem;">Безкоштовна лінія:<br><strong>0-800-123-456</strong></p>
+            </div>
+        </div>
+        <div class="footer-bottom"><p>© 2025 ТОВ «Кришталева Вода». Всі права захищені.</p></div>
+    </div>
+</footer>
+
+<div class="floating-wa" title="Написати в WhatsApp">💬</div>
+
+<script>
+// ═══════════════════════════════════════
+//  PRODUCT DATA
+// ═══════════════════════════════════════
+const products = [
+    // Water
+    { id: 1, cat: 'water', name: 'Вода «Класична» 18.9 л', desc: 'Артезіанська вода з м\'яким збалансованим мінеральним складом.', price: 130, unit: 'бутель', icon: '💧', badge: '🔥 Хіт', badgeClass: '' },
+    { id: 2, cat: 'water', name: 'Вода «Крижана» 18.9 л', desc: 'Глибоке очищення зворотним осмосом. Без запаху та присмаку.', price: 145, unit: 'бутель', icon: '🧊', badge: 'NEW', badgeClass: 'new' },
+    { id: 3, cat: 'water', name: 'Вода «Йодована» 18.9 л', desc: 'Збагачена йодом для підтримки щитовидної залози та імунітету.', price: 150, unit: 'бутель', icon: '🧪', badge: '', badgeClass: '' },
+    { id: 4, cat: 'water', name: 'Вода «Дитяча» 18.9 л', desc: 'М\'яка вода з оптимальним складом мінералів для дитячого харчування.', price: 155, unit: 'бутель', icon: '👶', badge: '', badgeClass: '' },
+    { id: 5, cat: 'water', name: 'Вода «Класична» 6 л', desc: 'Пляшка середнього об\'єму для дому або роботи.', price: 55, unit: 'пляшка', icon: '🫗', badge: '', badgeClass: '' },
+    { id: 6, cat: 'water', name: 'Вода «Скіфська» 10 л', desc: 'Натуральна артезіанська вода в зручній пляшці.', price: 75, unit: 'пляшка', icon: '🍶', badge: '', badgeClass: '' },
+    // Coolers
+    { id: 7, cat: 'coolers', name: 'Кулер підлоговий «Комфорт»', desc: 'Охолодження + нагрів. Тиха робота, підходить для 19л бутлів.', price: 3200, unit: '', icon: '🧊', badge: 'HIT', badgeClass: '' },
+    { id: 8, cat: 'coolers', name: 'Кулер настільний «Міні»', desc: 'Компактний, бак нижнього завантаження.', price: 2400, unit: '', icon: '🏠', badge: '', badgeClass: '' },
+    { id: 9, cat: 'coolers', name: 'Диспенсер керамічний «Весна»', desc: 'Ручна подача. Керамічний дизайн, 8 л.', price: 1800, unit: '', icon: '🫙', badge: '', badgeClass: '' },
+    { id: 10, cat: 'coolers', name: 'Помпа електрична USB', desc: 'Зарядка від USB. Тиха та швидка.', price: 450, unit: '', icon: '⚡', badge: '', badgeClass: '' },
+    { id: 11, cat: 'coolers', name: 'Помпа ручна «Лілу»', desc: 'Механічна, без батарейок.', price: 180, unit: '', icon: '🤲', badge: '', badgeClass: '' },
+    { id: 12, cat: 'coolers', name: 'Стійка дерев\'яна «Бук»', desc: 'Дерев\'яна підставка для 19л бутля.', price: 850, unit: '', icon: '🪑', badge: '', badgeClass: '' },
+    // Accessories
+    { id: 13, cat: 'accessories', name: 'Стаканчики паперові (100)', desc: '200 мл, одноразові, еко-папір.', price: 95, unit: '', icon: '☕', badge: '', badgeClass: '' },
+    { id: 14, cat: 'accessories', name: 'Стаканчики пластикові (100)', desc: '250 мл, прозорі.', price: 110, unit: '', icon: '🥤', badge: '', badgeClass: '' },
+    { id: 15, cat: 'accessories', name: 'Кришка-розетка для бутля', desc: 'Універсальна, для всіх 19л бутлів.', price: 45, unit: '', icon: '🔧', badge: '', badgeClass: '' },
+    { id: 16, cat: 'accessories', name: 'Сироп Monin (1 л)', desc: 'Вибір смаків: ваніль, ягоди, манго.', price: 320, unit: '', icon: '🧃', badge: '', badgeClass: '' },
+    { id: 17, cat: 'accessories', name: 'Набір для санітації кулера', desc: 'Таблетки + шланг.', price: 120, unit: '', icon: '🧼', badge: '', badgeClass: '' },
+    { id: 18, cat: 'accessories', name: 'Спортивна пляшка 600 мл', desc: 'BPA-free, з тримачем.', price: 250, unit: '', icon: '🎒', badge: '', badgeClass: '' },
+];
+
+// ═══════════════════════════════════════
+//  CART STATE (localStorage)
+// ═══════════════════════════════════════
+let cart = JSON.parse(localStorage.getItem('kv_cart') || '[]');
+
+function saveCart() {
+    localStorage.setItem('kv_cart', JSON.stringify(cart));
+    renderCart();
+}
+
+function addToCart(productId, qty = 1) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+    const existing = cart.find(c => c.id === productId);
+    if (existing) {
+        existing.qty += qty;
+    } else {
+        cart.push({ id: productId, qty });
+    }
+    saveCart();
+    showToast(`${product.icon} ${product.name} додано в кошик`);
+    // Badge animation
+    const badge = document.getElementById('cartBadge');
+    badge.classList.remove('bounce');
+    void badge.offsetWidth;
+    badge.classList.add('bounce');
+}
+
+function removeFromCart(productId) {
+    cart = cart.filter(c => c.id !== productId);
+    saveCart();
+}
+
+function updateCartQty(productId, delta) {
+    const item = cart.find(c => c.id === productId);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) { removeFromCart(productId); return; }
+    saveCart();
+}
+
+function getCartCount() { return cart.reduce((s, c) => s + c.qty, 0); }
+
+function getCartSubtotal() {
+    return cart.reduce((sum, c) => {
+        const p = products.find(pr => pr.id === c.id);
+        return sum + (p ? p.price * c.qty : 0);
+    }, 0);
+}
+
+function getCartDelivery() {
+    // Free delivery if 3+ bottles of water
+    const waterBottles = cart.filter(c => {
+        const p = products.find(pr => pr.id === c.id);
+        return p && p.cat === 'water' && p.unit === 'бутель';
+    }).reduce((s, c) => s + c.qty, 0);
+    return waterBottles >= 3 ? 0 : 150;
+}
+
+function getCartSaving() {
+    // Simulate savings from volume pricing (classic water)
+    const classic = cart.find(c => c.id === 1);
+    if (!classic || classic.qty < 2) return 0;
+    let discountPerUnit = 0;
+    if (classic.qty >= 10) discountPerUnit = 30;
+    else if (classic.qty >= 5) discountPerUnit = 25;
+    else discountPerUnit = 15;
+    return classic.qty * discountPerUnit;
+}
+
+function getCartTotal() { return getCartSubtotal() + getCartDelivery(); }
+
+function clearCart() {
+    cart = [];
+    saveCart();
+}
+
+// ═══════════════════════════════════════
+//  RENDER CATALOG
+// ═══════════════════════════════════════
+function renderCatalog() {
+    ['water', 'coolers', 'accessories'].forEach(cat => {
+        const grid = document.getElementById('tab-' + cat);
+        grid.innerHTML = products.filter(p => p.cat === cat).map(p => `
+            <div class="product-card" id="product-${p.id}">
+                ${p.badge ? `<div class="product-badge ${p.badgeClass}">${p.badge}</div>` : ''}
+                <div class="product-img">${p.icon}</div>
+                <div class="product-info">
+                    <h3>${p.name}</h3>
+                    <p>${p.desc}</p>
+                    <div class="product-bottom">
+                        <div class="product-price">${p.price} ₴<small>${p.unit ? '/ ' + p.unit : ''}</small></div>
+                        <button class="btn btn-primary btn-sm" onclick="addToCart(${p.id})">🛒 В кошик</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    });
+}
+
+// ═══════════════════════════════════════
+//  RENDER CART
+// ═══════════════════════════════════════
+function renderCart() {
+    const badge = document.getElementById('cartBadge');
+    const count = getCartCount();
+    badge.textContent = count;
+    badge.style.display = count > 0 ? 'flex' : 'none';
+
+    const container = document.getElementById('cartItems');
+    const footer = document.getElementById('cartFooter');
+    const empty = document.getElementById('cartEmpty');
+
+    if (cart.length === 0) {
+        container.innerHTML = '<div class="cart-empty"><div class="icon">🛒</div><h3>Кошик порожній</h3><p>Додайте товари з каталогу</p></div>';
+        footer.style.display = 'none';
+        return;
+    }
+
+    footer.style.display = 'block';
+    container.innerHTML = cart.map(c => {
+        const p = products.find(pr => pr.id === c.id);
+        if (!p) return '';
+        return `
+        <div class="cart-item">
+            <div class="cart-item-img">${p.icon}</div>
+            <div class="cart-item-info">
+                <h4>${p.name}</h4>
+                <div class="price">${p.price * c.qty} ₴</div>
+                <div class="cart-item-controls">
+                    <button onclick="updateCartQty(${c.id}, -1)">−</button>
+                    <span class="qty">${c.qty}</span>
+                    <button onclick="updateCartQty(${c.id}, 1)">+</button>
+                </div>
+            </div>
+            <button class="cart-item-remove" onclick="removeFromCart(${c.id})">🗑</button>
+        </div>`;
+    }).join('');
+
+    const delivery = getCartDelivery();
+    const saving = getCartSaving();
+    const total = getCartTotal();
+
+    document.getElementById('cartSubtotal').textContent = getCartSubtotal() + ' ₴';
+    document.getElementById('cartDelivery').textContent = delivery === 0 ? 'Безкоштовно ✨' : delivery + ' ₴';
+    document.getElementById('cartTotal').textContent = total + ' ₴';
+
+    const saveRow = document.getElementById('cartSavingRow');
+    if (saving > 0) {
+        saveRow.style.display = 'flex';
+        document.getElementById('cartSaving').textContent = '-' + saving + ' ₴';
+    } else {
+        saveRow.style.display = 'none';
+    }
+}
+
+// ═══════════════════════════════════════
+//  CART SIDEBAR
+// ═══════════════════════════════════════
+function openCart() {
+    document.getElementById('cartSidebar').classList.add('open');
+    document.getElementById('overlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeCart() {
+    document.getElementById('cartSidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// ═══════════════════════════════════════
+//  CHECKOUT
+// ═══════════════════════════════════════
+let currentStep = 1;
+let deliveryType = 'address';
+let selectedTime = 'afternoon';
+let paymentMethod = 'cash';
+
+function openCheckout() {
+    if (cart.length === 0) return;
+    closeCart();
+    document.getElementById('checkoutOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    currentStep = 1;
+    renderCheckoutStep();
+    renderOrderSummary();
+}
+function closeCheckout() {
+    document.getElementById('checkoutOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function goToStep(step) {
+    // Validation
+    if (step > currentStep) {
+        if (currentStep === 1 && !validateStep1()) return;
+        if (currentStep === 2 && !validateStep2()) return;
+    }
+    currentStep = step;
+    renderCheckoutStep();
+}
+
+function renderCheckoutStep() {
+    for (let i = 1; i <= 4; i++) {
+        document.getElementById('checkoutStep' + i).classList.toggle('active', i === currentStep);
+        const ind = document.getElementById('stepInd' + i);
+        if (ind) {
+            ind.classList.remove('active', 'done');
+            if (i === currentStep) ind.classList.add('active');
+            else if (i < currentStep) ind.classList.add('done');
+        }
+    }
+    document.querySelector('.checkout-steps').style.display = currentStep <= 3 ? 'flex' : 'none';
+}
+
+function validateStep1() {
+    let valid = true;
+    const fields = [
+        { id: 'coName', check: v => v.trim().length > 0 },
+        { id: 'coSurname', check: v => v.trim().length > 0 },
+        { id: 'coPhone', check: v => v.replace(/\D/g, '').length >= 10 },
+    ];
+    fields.forEach(f => {
+        const el = document.getElementById(f.id);
+        if (!f.check(el.value)) { el.classList.add('error'); valid = false; }
+        else el.classList.remove('error');
+    });
+    const email = document.getElementById('coEmail');
+    if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) { email.classList.add('error'); valid = false; }
+    else email.classList.remove('error');
+    return valid;
+}
+
+function validateStep2() {
+    let valid = true;
+    if (deliveryType === 'address') {
+        const addr = document.getElementById('coAddress');
+        if (!addr.value.trim()) { addr.classList.add('error'); valid = false; }
+        else addr.classList.remove('error');
+    }
+    return valid;
+}
+
+function selectDelivery(el, type) {
+    document.querySelectorAll('.delivery-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    deliveryType = type;
+    document.getElementById('addressFields').style.display = type === 'address' ? 'block' : 'none';
+}
+
+function selectTime(el) {
+    document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedTime = el.dataset.time;
+}
+
+function selectPayment(el, method) {
+    document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    paymentMethod = method;
+    document.getElementById('invoiceFields').style.display = method === 'invoice' ? 'block' : 'none';
+}
+
+function renderOrderSummary() {
+    const container = document.getElementById('orderSummaryItems');
+    container.innerHTML = cart.map(c => {
+        const p = products.find(pr => pr.id === c.id);
+        return `<div class="order-summary-item"><span>${p.icon} ${p.name} × ${c.qty}</span><span>${p.price * c.qty} ₴</span></div>`;
+    }).join('');
+    const delivery = getCartDelivery();
+    container.innerHTML += `<div class="order-summary-item"><span>Доставка</span><span>${delivery === 0 ? 'Безкоштовно' : delivery + ' ₴'}</span></div>`;
+    document.getElementById('orderSummaryTotal').textContent = getCartTotal() + ' ₴';
+}
+
+function placeOrder() {
+    // Generate order ID
+    const orderId = 'KV-' + String(Math.floor(10000 + Math.random() * 90000));
+    document.getElementById('orderId').textContent = '#' + orderId;
+    document.getElementById('checkoutStep3').classList.remove('active');
+    document.getElementById('checkoutStep4').classList.add('active');
+    document.querySelector('.checkout-steps').style.display = 'none';
+
+    // Here you would normally POST to a server
+    console.log('Order placed:', {
+        orderId,
+        items: cart.map(c => { const p = products.find(pr => pr.id === c.id); return { ...p, qty: c.qty }; }),
+        customer: {
+            name: document.getElementById('coName').value,
+            surname: document.getElementById('coSurname').value,
+            phone: document.getElementById('coPhone').value,
+            email: document.getElementById('coEmail').value,
+        },
+        delivery: {
+            type: deliveryType,
+            address: document.getElementById('coAddress')?.value,
+            entrance: document.getElementById('coEntrance')?.value,
+            floor: document.getElementById('coFloor')?.value,
+            intercom: document.getElementById('coIntercom')?.value,
+            elevator: document.getElementById('coElevator')?.value,
+            timeSlot: selectedTime,
+        },
+        payment: paymentMethod,
+        total: getCartTotal(),
+    });
+}
+
+// ═══════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════
+function switchTab(tab, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+}
+
+// ═══════════════════════════════════════
+//  CALCULATOR
+// ═══════════════════════════════════════
+let calcCount = 2;
+function updateCalc(delta) {
+    calcCount = Math.max(1, Math.min(30, calcCount + delta));
+    let price = 160;
+    if (calcCount >= 2) price = 145;
+    if (calcCount >= 5) price = 135;
+    if (calcCount >= 10) price = 125;
+    document.getElementById('calcCount').textContent = calcCount;
+    document.getElementById('calcUnit').textContent = price;
+    document.getElementById('calcTotal').textContent = (calcCount * price) + ' ₴';
+    const saving = calcCount * (160 - price);
+    document.getElementById('calcSave').textContent = saving > 0 ? `Ви економите: ${saving} ₴` : '';
+    const tiers = document.querySelectorAll('.tier');
+    tiers.forEach(t => t.classList.remove('active'));
+    if (calcCount === 1) tiers[0].classList.add('active');
+    else if (calcCount < 5) tiers[1].classList.add('active');
+    else if (calcCount < 10) tiers[2].classList.add('active');
+    else tiers[3].classList.add('active');
+}
+
+function addCalcToCart() {
+    addToCart(1, calcCount);
+}
+
+// ═══════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════
+//  PHONE MASK
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+    const phoneInput = document.getElementById('coPhone');
+    phoneInput.addEventListener('input', function(e) {
+        let val = e.target.value.replace(/\D/g, '');
+        if (val.length > 0) {
+            if (val[0] === '0') val = '380' + val;
+            if (val[0] === '3') val = '3' + val.substring(1);
+            let formatted = '+380';
+            if (val.length > 3) formatted += ' (' + val.substring(3, 5);
+            if (val.length >= 5) formatted += ') ';
+            if (val.length > 5) formatted += val.substring(5, 8);
+            if (val.length > 8) formatted += '-' + val.substring(8, 10);
+            if (val.length > 10) formatted += '-' + val.substring(10, 12);
+            e.target.value = formatted;
+        }
+    });
+
+    // Render catalog & chart
+    renderCatalog();
+    renderCart();
+
+    const ctx = document.getElementById('mineralChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Кальцій', 'Магній', 'Натрій', 'Калій', 'Сульфати', 'Гідрокарбонати'],
+            datasets: [{ data: [48.2, 12.5, 8.3, 1.8, 6.5, 165], backgroundColor: ['#0077b6','#00b4d8','#48cae4','#90e0ef','#0077b6','#023e8a'], borderRadius: 8 }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#e2e8f0' } }, x: { grid: { display: false } } } }
+    });
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', function(e) {
+            e.preventDefault();
+            const t = document.querySelector(this.getAttribute('href'));
+            if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.querySelector('.nav-links').classList.remove('active');
+        });
+    });
+});
+
+// Reset errors on input
+document.querySelectorAll('.checkout-modal input, .checkout-modal select').forEach(el => {
+    el.addEventListener('input', () => el.classList.remove('error'));
+});
+</script>
+
+</body>
+</html>
