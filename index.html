@@ -1970,27 +1970,27 @@
         </div>
         <div class="footer-col">
           <h4>Контакти</h4>
-          <ul>
-            <li><a href="tel:+380939362577">(093) 936-25-77</a></li>
-            <li><a href="tel:+380667584825">(066) 758-48-25</a></li>
-            <li><a href="https://t.me/vhs_dvd_ua" target="_blank">Telegram</a></li>
-            <li><a href="https://www.youtube.com/@ocyfrovka" target="_blank">YouTube</a></li>
+          <ul id="footer-contacts">
+            <li class="fphone"><a href="tel:+380939362577">(093) 936-25-77</a></li>
+            <li class="fphone"><a href="tel:+380667584825">(066) 758-48-25</a></li>
+            <li><a href="https://t.me/vhs_dvd_ua" target="_blank" data-config="social-telegram">Telegram</a></li>
+            <li><a href="https://www.youtube.com/@ocyfrovka" target="_blank" data-config="social-youtube">YouTube</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
         <span>© 2009–<span id="currentYear"></span> vhs-dvd.org.ua — Оцифровка відеокасет</span>
         <div class="footer-social">
-          <a href="https://t.me/vhs_dvd_ua" target="_blank" aria-label="Telegram">
+          <a href="https://t.me/vhs_dvd_ua" target="_blank" aria-label="Telegram" data-config="social-telegram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
           </a>
-          <a href="https://www.youtube.com/@ocyfrovka" target="_blank" aria-label="YouTube">
+          <a href="https://www.youtube.com/@ocyfrovka" target="_blank" aria-label="YouTube" data-config="social-youtube">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
           </a>
-          <a href="https://www.facebook.com/vhs.dvd.ua" target="_blank" aria-label="Facebook">
+          <a href="https://www.facebook.com/vhs.dvd.ua" target="_blank" aria-label="Facebook" data-config="social-facebook">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
           </a>
-          <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram">
+          <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram" data-config="social-instagram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
         </div>
@@ -2068,7 +2068,10 @@ document.getElementById('yearsExp').textContent = new Date().getFullYear() - 200
 
 // --- Завантаження конфігурації з config.json ---
 (function() {
-  fetch('config.json').then(r => r.json()).then(cfg => {
+  fetch('config.json?t=' + Date.now(), {cache: 'no-store'}).then(r => {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(cfg => {
 
     // ===== ТЕЛЕФОНИ =====
     // Hero-phones
@@ -2100,6 +2103,34 @@ document.getElementById('yearsExp').textContent = new Date().getFullYear() - 200
     if (ct && cfg.telegram) {
       ct.href = cfg.telegram.url;
       ct.textContent = 'Написати в Telegram';
+    }
+
+    // Footer-phones
+    var fc = document.getElementById('footer-contacts');
+    if (fc && cfg.phones) {
+      fc.querySelectorAll('li.fphone').forEach(function(li) { li.remove(); });
+      var tgA = fc.querySelector('[data-config="social-telegram"]');
+      var tgLi = tgA ? tgA.closest('li') : null;
+      cfg.phones.forEach(function(p) {
+        var li = document.createElement('li');
+        li.className = 'fphone';
+        li.innerHTML = '<a href="tel:' + p.tel + '">' + p.number + '</a>';
+        fc.insertBefore(li, tgLi);
+      });
+    }
+
+    // ===== СОЦМЕРЕЖІ =====
+    if (cfg.social) {
+      [['social-telegram', cfg.social.telegram],
+       ['social-youtube', cfg.social.youtube],
+       ['social-facebook', cfg.social.facebook],
+       ['social-instagram', cfg.social.instagram]].forEach(function(pair) {
+        var key = pair[0], url = pair[1];
+        if (!url) return;
+        document.querySelectorAll('[data-config="' + key + '"]').forEach(function(a) {
+          a.href = url;
+        });
+      });
     }
 
     // ===== ГРАФІК =====
@@ -2143,7 +2174,7 @@ document.getElementById('yearsExp').textContent = new Date().getFullYear() - 200
     }
 
   }).catch(function(err) {
-    console.warn('config.json не знайдено:', err);
+    console.error('Помилка завантаження config.json — дані на сторінці не оновлено. Перевірте синтаксис JSON:', err);
   });
 })();
 </script>
