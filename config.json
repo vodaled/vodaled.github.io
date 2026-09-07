@@ -1,15 +1,15 @@
 {
   "phones": [
-    { "number": "(093) 936-25-00", "tel": "+380939362500" },
-    { "number": "(066) 758-48-00", "tel": "+380667584800" },
-    { "number": "(068) 470-16-00", "tel": "+380684701600" }
+    { "number": "(093) 936-25-77", "tel": "+380939362577" },
+    { "number": "(066) 758-48-25", "tel": "+380667584825" },
+    { "number": "(068) 470-16-25", "tel": "+380684701625" }
   ],
   "telegram": {
     "url": "https://t.me/vhsdvd",
     "label": "Telegram чат"
   },
   "schedule": {
-    "weekdays": "Пн–Пт: 12:00 – 30:00",
+    "weekdays": "Пн–Пт: 12:00 – 18:00",
     "weekends": "Сб–Нд: за домовленістю"
   },
   "address": {
@@ -17,8 +17,8 @@
     "short": "Київ, ст. м. Виставковий Центр, вул. Васильківська 55"
   },
   "pricing": [
-    { "format": "VHS, VHS-C, Hi8, Video8", "price": "111", "unit": "/год", "tag": "Топ" },
-    { "format": "MiniDV, Digital8", "price": "222", "unit": "/год", "tag": "" },
+    { "format": "VHS, VHS-C, Hi8, Video8", "price": "555", "unit": "/год", "tag": "Топ" },
+    { "format": "MiniDV, Digital8", "price": "777", "unit": "/год", "tag": "" },
     { "format": "Магнітні бобіни", "price": "240", "unit": "/год", "tag": "" },
     { "format": "Аудіо касети / Mini", "price": "240", "unit": "/год", "tag": "" },
     { "format": "Betacam SP", "price": "400", "unit": "/год", "tag": "Студійний" },
