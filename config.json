@@ -6,7 +6,9 @@
   ],
   "telegram": {
     "url": "https://t.me/vhsdvd",
-    "label": "Telegram чат"
+    "label": "Telegram чат",
+    "channelUrl": "https://t.me/ocyfrovka",
+    "channelLabel": "Telegram канал"
   },
   "schedule": {
     "weekdays": "Пн–Пт: 12:00 – 18:00",

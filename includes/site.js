@@ -133,11 +133,18 @@
       }).join('');
     }
 
-    // ===== TELEGRAM =====
+    // ===== TELEGRAM (чат — hero та контакти) =====
     var ct = document.querySelector('[data-config="contact-telegram"]');
     if (ct && cfg.telegram) { ct.href = cfg.telegram.url; ct.textContent = 'Написати в Telegram'; }
     var pt = document.querySelector('[data-config="page-telegram"]');
     if (pt && cfg.telegram) { pt.href = cfg.telegram.url; }
+    // Telegram канал — лише футер
+    document.querySelectorAll('[data-config="telegram-channel"]').forEach(function(a) {
+      if (cfg.telegram) {
+        a.href = cfg.telegram.channelUrl || cfg.telegram.url;
+        if (cfg.telegram.channelLabel) a.textContent = cfg.telegram.channelLabel;
+      }
+    });
 
     // ===== ФУТЕР: ТЕЛЕФОНИ =====
     var fc = document.getElementById('footer-contacts');

@@ -169,7 +169,11 @@ footer { border-top: 1px solid var(--border); padding: 40px 24px 24px; }
   .burger { display: flex; }
 }
 @media (max-width: 480px) {
-  .footer-inner { flex-direction: column; }
+  .footer-inner {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 24px 20px;
+  }
+  .footer-col p { max-width: none; }
   .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
   .logo-img { height: 28px !important; }
   .logo-text { font-size: 0.95rem !important; color: #1A1517 !important; }
