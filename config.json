@@ -1,8 +1,8 @@
 {
   "phones": [
-    { "number": "(093) 936-25-77", "tel": "+380939362577" },
-    { "number": "(066) 758-48-25", "tel": "+380667584825" },
-    { "number": "(068) 470-16-25", "tel": "+380684701625" }
+    { "number": "(093) 936-25-00", "tel": "+380939362500" },
+    { "number": "(066) 758-48-00", "tel": "+380667584800" },
+    { "number": "(068) 470-16-00", "tel": "+380684701600" }
   ],
   "telegram": {
     "url": "https://t.me/vhsdvd",
@@ -17,8 +17,8 @@
     "short": "Київ, ст. м. Виставковий Центр, вул. Васильківська 55"
   },
   "pricing": [
-    { "format": "VHS, VHS-C, Hi8, Video8", "price": "444", "unit": "/год", "tag": "Топ" },
-    { "format": "MiniDV, Digital8", "price": "999", "unit": "/год", "tag": "" },
+    { "format": "VHS, VHS-C, Hi8, Video8", "price": "111", "unit": "/год", "tag": "Топ" },
+    { "format": "MiniDV, Digital8", "price": "222", "unit": "/год", "tag": "" },
     { "format": "Магнітні бобіни", "price": "240", "unit": "/год", "tag": "" },
     { "format": "Аудіо касети / Mini", "price": "240", "unit": "/год", "tag": "" },
     { "format": "Betacam SP", "price": "400", "unit": "/год", "tag": "Студійний" },
@@ -31,9 +31,9 @@
     { "title": "Зберігання ваших даних 14 днів", "description": "Зберігаємо файли на захищеному сервері", "price": "включено" }
   ],
   "social": {
-    "telegram": "https://t.me/vhs_dvd_ua",
+    "telegram": "https://t.me/ocyfrovka",
     "youtube": "https://www.youtube.com/@ocyfrovka",
-    "facebook": "https://www.facebook.com/profile.php?id=61584888045123",
+    "facebook": "https://www.facebook.com/groups/ocyfrovka",
     "instagram": "https://www.instagram.com/"
   },
   "stats": {
