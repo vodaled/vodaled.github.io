@@ -17,8 +17,8 @@
     "short": "Київ, ст. м. Виставковий Центр, вул. Васильківська 55"
   },
   "pricing": [
-    { "format": "VHS, VHS-C, Hi8, Video8", "price": "111", "unit": "/год", "tag": "Топ" },
-    { "format": "MiniDV, Digital8", "price": "222", "unit": "/год", "tag": "" },
+    { "format": "VHS, VHS-C, Hi8, Video8", "price": "250", "unit": "/год", "tag": "Топ" },
+    { "format": "MiniDV, Digital8", "price": "250", "unit": "/год", "tag": "" },
     { "format": "Магнітні бобіни", "price": "240", "unit": "/год", "tag": "" },
     { "format": "Аудіо касети / Mini", "price": "240", "unit": "/год", "tag": "" },
     { "format": "Betacam SP", "price": "400", "unit": "/год", "tag": "Студійний" },
