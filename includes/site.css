@@ -134,7 +134,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 24px 24px; }
 .footer-col p { font-size: 0.8rem; color: var(--text-muted); max-width: 260px; margin-top: 8px; }
 /* Логотип у футері — чорно-білий, напівпрозорий */
 .footer-logo { opacity: 0.55; filter: grayscale(1); transition: opacity 0.25s, filter 0.25s; }
-.footer-logo:hover { opacity: 0.85; filter: grayscale(1); }
+.footer-logo:hover { opacity: 1; filter: none; }
 .footer-logo .logo-text { color: var(--text) !important; }
 /* Додаткові посилання під описом у першій колонці футера */
 .footer-extra-links { list-style: none; margin-top: 14px; }

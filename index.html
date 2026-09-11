@@ -1256,7 +1256,7 @@
     @media (max-width: 480px) {
       .hero { padding: 88px 16px 48px; min-height: auto; }
       .hero h1 { font-size: 2.2rem; }
-      .hero-trust { gap: 14px; justify-content: center; flex-wrap: nowrap; }
+      .hero-trust { gap: 12px 14px; justify-content: center; flex-wrap: wrap; max-width: 320px; margin-left: auto; margin-right: auto; }
       .trust-item { font-size: 0.72rem; gap: 4px; white-space: nowrap; }
       .hero-trust .check { margin-right: 2px; }
       .services-grid { grid-template-columns: 1fr; }
@@ -1270,8 +1270,8 @@
       .hero-image-wrapper { max-width: 300px; }
       .reviews-grid { grid-template-columns: 1fr; }
       .hero-phones { justify-content: center; }
-      .phone-btn { font-size: 0.75rem; padding: 6px 12px; }
-      .btn-telegram { font-size: 0.75rem; padding: 6px 12px; }
+      .hero-phones .phone-btn,
+      .hero-phones .btn-telegram { font-size: 0.72rem; padding: 6px 10px; min-width: 148px; }
     }
   
     /* Floating VHS cassette animation */
