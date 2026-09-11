@@ -9,7 +9,7 @@
   <meta name="author" content="VHS-DVD.ORG.UA">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
   <meta name="googlebot" content="index, follow">
-  <meta name="theme-color" content="#c62626">
+  <meta name="theme-color" content="#7EC8E3">
   <link rel="canonical" href="https://vhs-dvd.org.ua/">
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -265,7 +265,7 @@
       background: var(--bg-card); border: 1.5px solid var(--border-card);
       padding: 10px 20px; border-radius: 50px;
       text-decoration: none; color: #229ED9;
-      font-size: 0.9rem; font-weight: 600;
+      font-size: 0.95rem; font-weight: 600;
       cursor: pointer; transition: all 0.2s;
     }
     .btn-telegram:hover { border-color: #229ED9; background: #f0fbfe; }
@@ -487,6 +487,10 @@
     .why-card h3 { grid-column: 2; }
     .why-card p { grid-column: 2; }
     .why-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+    @media (min-width: 481px) {
+      .why-grid { align-items: stretch; }
+      .why-grid .why-card { height: 100%; }
+    }
     .why-card-red { background: linear-gradient(135deg, #D32F2F, #B71C1C) !important; border-color: #B71C1C !important; color: #fff !important; }
     .why-card-red h3 { color: #fff !important; }
     .why-card-red p { color: rgba(255,255,255,0.85) !important; }
@@ -582,6 +586,24 @@
     }
     .btn-white:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
 
+    /* ===== YOUTUBE + VHS RECORD (combined) ===== */
+    .yt-record-grid {
+      display: grid; grid-template-columns: 1.1fr 1fr;
+      gap: 32px; align-items: stretch;
+    }
+    .yt-col { display: flex; flex-direction: column; }
+    .yt-col .youtube-wrapper {
+      border-radius: 16px; overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+      flex: 1;
+    }
+    .yt-col .youtube-wrapper > div { position: relative; height: 100%; min-height: 0; }
+    .yt-col .youtube-wrapper iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    @media (max-width: 900px) {
+      .yt-record-grid { grid-template-columns: 1fr; }
+      .yt-col .youtube-wrapper { min-height: 220px; }
+    }
+
     /* ===== RETRO BANNER ===== */
     .retro-section { padding: 0 24px; }
     .retro-banner {
@@ -595,6 +617,12 @@
       box-shadow: 0 8px 40px rgba(0,0,0,0.15);
       flex-direction: row-reverse;
     }
+    .yt-record-grid .retro-banner {
+      flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; gap: 18px; height: 100%; box-sizing: border-box;
+    }
+    .yt-record-grid .retro-banner p { max-width: 460px; }
+    .yt-record-grid .retro-banner .btn-primary { margin-top: 4px; }
     .retro-banner::before {
       content: '';
       position: absolute; top: -40%; right: -10%;
@@ -975,12 +1003,14 @@
       padding-top: 20px;
       border-top: 1px solid rgba(0,0,0,0.08);
     }
+    .hero-phones .phone-btn,
+    .hero-phones .btn-telegram { min-width: 182px; box-sizing: border-box; }
     .phone-btn {
       display: inline-flex; align-items: center; gap: 6px; justify-content: center;
       background: var(--bg-card); border: 1.5px solid var(--border-card);
       padding: 10px 20px; border-radius: 50px;
       text-decoration: none; color: var(--text-secondary);
-      font-size: 0.9rem; font-weight: 600;
+      font-size: 0.95rem; font-weight: 600;
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     .phone-btn:hover {
@@ -1226,10 +1256,12 @@
     @media (max-width: 480px) {
       .hero { padding: 88px 16px 48px; min-height: auto; }
       .hero h1 { font-size: 2.2rem; }
-      .hero-trust { flex-direction: column; align-items: center; gap: 8px; }
+      .hero-trust { gap: 14px; justify-content: center; flex-wrap: nowrap; }
+      .trust-item { font-size: 0.72rem; gap: 4px; white-space: nowrap; }
+      .hero-trust .check { margin-right: 2px; }
       .services-grid { grid-template-columns: 1fr; }
       .process-grid { grid-template-columns: 1fr; }
-      .why-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr; grid-auto-rows: 1fr; }
       .pricing-row { padding: 16px 20px; }
       .pricing-extras { grid-template-columns: 1fr; }
       .retro-banner { padding: 28px 20px; text-align: center; justify-content: center; flex-direction: column; }
@@ -1539,16 +1571,13 @@
     </div>
   </section>
 
-  <!-- YOUTUBE VIDEO -->
+  <!-- YOUTUBE + VHS RECORD (combined) -->
   <section style="padding: 62px 24px 80px;">
-    <div class="container">
-      <div class="section-header center reveal" style="text-align:center;">
-        <div class="section-eyebrow">YouTube</div>
-        <h2 class="section-title" style="margin-bottom:24px;">Презентація нашого каналу</h2>
-      </div>
-      <div class="youtube-wrapper reveal" style="max-width:800px; margin:0 auto; border-radius:16px; overflow:hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.12);">
-        <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden;">
-          <iframe 
+    <div class="yt-record-grid">
+      <div class="yt-col">
+        <div class="youtube-wrapper reveal">
+          <div style="position:relative; height:100%; min-height:300px; overflow:hidden;">
+            <iframe 
       src="https://www.youtube.com/embed/YYp1DaLeHSU?controls=0" 
       title="YouTube video player" 
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -1557,7 +1586,16 @@
       allowfullscreen
       style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;">
     </iframe>
+          </div>
         </div>
+      </div>
+      <div class="retro-banner reveal">
+        <div>
+          <h2>Запис на касети VHS</h2>
+          <p>Хочете оригінальний подарунок або поринути в атмосферу 90-х? Записуємо будь-який контент на нові касети BASF та Sony. Просто надішліть нам файл чи посилання на відео і ми перенесемо записи на фізичну плівку</p>
+        </div>
+        <img src="images/vhs-main.png" alt="VHS" class="retro-vhs-img" loading="lazy" decoding="async">
+        <a href="#contact" class="btn-primary" style="white-space:nowrap">Замовити запис →</a>
       </div>
     </div>
   </section>
@@ -1585,17 +1623,7 @@
     </div>
   </section>
 
-  <!-- RETRO -->
-  <div class="retro-section">
-    <div class="retro-banner reveal">
-      <div>
-        <h2>Запис на касети VHS</h2>
-        <p>Хочете оригінальний подарунок або поринути в атмосферу 90-х? Записуємо будь-який контент на нові касети BASF та Sony. Просто надішліть нам файл чи посилання на відео і ми перенесемо записи на фізичну плівку</p>
-      </div>
-      <img src="images/vhs-main.png" alt="VHS" class="retro-vhs-img" loading="lazy" decoding="async">
-      <a href="#contact" class="btn-primary" style="white-space:nowrap">Замовити запис →</a>
-    </div>
-  </div>
+  <!-- RETRO banner тепер у спільному блоці з YouTube (yt-record-grid) -->
 
 <!-- FAQ -->
   <section id="faq">
@@ -1606,8 +1634,8 @@
       </div>
       <div class="faq-list" style="margin:0 auto;">
         <div class="faq-item reveal">
-          <button class="faq-q">Що ми оцифровуємо на касетах? <span class="arr">▾</span></button>
-          <div class="faq-a"><div class="faq-a-inner">Працюємо лише з корисним авторським контентом: сімейні архіви, свята, подорожі, відеозйомки та записи урочистих подій. Художні фільми та мультфільми, скопійовані на касети, не оцифровуємо.</div></div>
+          <button class="faq-q">Що ми оцифровуємо з касет? <span class="arr">▾</span></button>
+          <div class="faq-a"><div class="faq-a-inner">Працюємо лише з корисним авторським контентом: сімейні архіви, свята, весілля, подорожі, відеозйомки та записи урочистих подій. Художні фільми та мультфільми, записані на касетах, не оцифровуємо.</div></div>
         </div>
         <div class="faq-item reveal">
           <button class="faq-q">Як надіслати касети поштою? <span class="arr">▾</span></button>

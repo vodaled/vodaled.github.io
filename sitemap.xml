@@ -51,6 +51,70 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- Сторінка цін: Оцифровка відео Київ -->
+  <url>
+    <loc>https://vhs-dvd.org.ua/ocyfrovka-video-kyiv.html</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Послуга: Оцифровка VHS -->
+  <url>
+    <loc>https://vhs-dvd.org.ua/ocyfrovka-vhs.html</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Послуга: Оцифровка MiniDV -->
+  <url>
+    <loc>https://vhs-dvd.org.ua/ocyfrovka-minidv.html</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Послуга: Оцифровка Hi8 -->
+  <url>
+    <loc>https://vhs-dvd.org.ua/ocyfrovka-hi8.html</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Послуга: Оцифровка Betacam SP -->
+  <url>
+    <loc>https://vhs-dvd.org.ua/ocyfrovka-betacam.html</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Послуга: Оцифровка аудіо касет -->
+  <url>
+    <loc>https://vhs-dvd.org.ua/ocyfrovka-audio.html</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Послуга: Сканування фото та слайдів -->
+  <url>
+    <loc>https://vhs-dvd.org.ua/skanuvannia-foto-ta-slaidiv.html</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Послуга: Оцифровка MiniDisc -->
+  <url>
+    <loc>https://vhs-dvd.org.ua/ocyfrovka-minidisc.html</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Часті питання (FAQ) -->
   <url>
     <loc>https://vhs-dvd.org.ua/#faq</loc>

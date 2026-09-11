@@ -132,6 +132,15 @@ footer { border-top: 1px solid var(--border); padding: 40px 24px 24px; }
   flex-wrap: wrap; gap: 32px;
 }
 .footer-col p { font-size: 0.8rem; color: var(--text-muted); max-width: 260px; margin-top: 8px; }
+/* Логотип у футері — чорно-білий, напівпрозорий */
+.footer-logo { opacity: 0.55; filter: grayscale(1); transition: opacity 0.25s, filter 0.25s; }
+.footer-logo:hover { opacity: 0.85; filter: grayscale(1); }
+.footer-logo .logo-text { color: var(--text) !important; }
+/* Додаткові посилання під описом у першій колонці футера */
+.footer-extra-links { list-style: none; margin-top: 14px; }
+.footer-extra-links li { margin-bottom: 8px; }
+.footer-extra-links a { font-size: 0.82rem; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+.footer-extra-links a:hover { color: var(--accent); }
 .footer-col h4 {
   font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
   letter-spacing: 0.08em; color: var(--text); margin-bottom: 12px;
@@ -150,6 +159,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 24px 24px; }
 .footer-bottom-wrap {
   background: rgba(26, 21, 23, 0.025);
   margin-top: 20px; padding: 14px 24px;
+  border-radius: var(--radius-md, 14px);
 }
 .footer-bottom-wrap .footer-bottom { max-width: var(--max-w); margin: 0 auto; padding-top: 0; border-top: none; }
 .footer-social { display: flex; gap: 14px; }
