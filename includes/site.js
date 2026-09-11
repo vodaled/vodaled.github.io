@@ -69,8 +69,8 @@
     var ye = document.getElementById('yearsExp');
     if (ye) ye.textContent = new Date().getFullYear() - 2009;
 
-    // Плавна поява блоків
-    var reveals = document.querySelectorAll('.reveal');
+    // Плавна поява блоків (в т.ч. кроки "Порядок роботи")
+    var reveals = document.querySelectorAll('.reveal, .steps-grid .step');
     if (reveals.length && 'IntersectionObserver' in window) {
       var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
@@ -95,6 +95,40 @@
           window.scrollTo({ top: top, behavior: 'smooth' });
         }
       });
+    });
+  }
+
+  /* ---------- 2b. ЗВУК: короткий клік при наведенні на рядок ціни ---------- */
+  var audioCtx = null;
+  function ensureAudio() {
+    if (!audioCtx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      try { audioCtx = new AC(); } catch (e) { return null; }
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume().catch(function(){});
+    return audioCtx;
+  }
+  function playHoverTick() {
+    var ctx = ensureAudio();
+    if (!ctx || ctx.state !== 'running') return; // браузер ще не дозволив звук — мовчки пропускаємо
+    var t = ctx.currentTime;
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(2100, t);
+    osc.frequency.exponentialRampToValueAtTime(900, t + 0.06);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.05, t + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(t); osc.stop(t + 0.09);
+  }
+  function attachRowSound(container) {
+    // не граємо користувачам з вимкненою анімацією
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    Array.prototype.forEach.call(container.querySelectorAll('.pricing-row'), function(row) {
+      row.addEventListener('mouseenter', playHoverTick);
     });
   }
 
@@ -207,26 +241,65 @@
     // ===== ЦІНИ =====
     var pc = document.querySelector('[data-config="pricing"]');
     if (pc && cfg.pricing) {
+      // Підсвітка рядка з ціною для типу касети цієї сторінки (data-format="vhs" тощо)
+      // Кожен рядок таблиці належить до "родини" форматів
+      var pageFormat = document.body.getAttribute('data-format');
+      var rowFamily = function(f) {
+        if (/vhs/.test(f)) return 'vhs';
+        if (/hi8|video8|digital8/.test(f)) return 'hi8';
+        if (/minidv/.test(f)) return 'minidv';
+        if (/betacam/.test(f)) return 'betacam';
+        if (/аудіо|бобін/.test(f)) return 'audio';
+        if (/minidisc/.test(f)) return 'minidisc';
+        if (/сканування|фото/.test(f)) return 'photo';
+        return '';
+      };
+      var matchFormat = function(fmt) {
+        return !!pageFormat && rowFamily(fmt.toLowerCase()) === pageFormat;
+      };
+      // Сторінка послуги для кожного рядка таблиці цін
+      var rowLink = {
+        'vhs': 'ocyfrovka-vhs.html',
+        'hi8': 'ocyfrovka-hi8.html',
+        'minidv': 'ocyfrovka-minidv.html',
+        'betacam': 'ocyfrovka-betacam.html',
+        'audio': 'ocyfrovka-audio.html',
+        'minidisc': 'ocyfrovka-minidisc.html',
+        'photo': 'skanuvannia-foto-ta-slaidiv.html'
+      };
       var tapeSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/></svg>';
-      var dvSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>';
       var reelSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/></svg>';
       var audioSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
       var betaSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/></svg>';
+      var mdSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>';
+      var dvSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>';
       var scanSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
-      var svgs = [tapeSvg, dvSvg, reelSvg, audioSvg, betaSvg, scanSvg];
+      var hi8Svg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="12" rx="3"/><circle cx="8.5" cy="13" r="2.2"/><circle cx="15.5" cy="13" r="2.2"/><path d="M10.7 13h2.6"/><path d="M5 7V5h4v2"/><path d="M15 7V5h4v2"/></svg>';
+      var svgs = [tapeSvg, hi8Svg, dvSvg, audioSvg, reelSvg, betaSvg, mdSvg, scanSvg];
       pc.innerHTML = cfg.pricing.map(function(row, i) {
         var tag = row.tag ? ' <span class="tag">' + row.tag + '</span>' : '';
         var svg = svgs[i] || svgs[0];
-        return '<div class="pricing-row">' +
+        var family = rowFamily(row.format.toLowerCase());
+        var hl = matchFormat(row.format) ? ' highlighted' : '';
+        var href = rowLink[family];
+        var open = href ? '<a class="pricing-row' + hl + '" href="' + href + '" aria-label="' + row.format + ' — ціна та деталі">' : '<div class="pricing-row' + hl + '">';
+        var close = href ? '</a>' : '</div>';
+        return open +
           '<div class="fmt">' + svg + ' ' + row.format + tag + '</div>' +
           '<div class="pr">' + row.price + ' ₴ <small>' + row.unit + '</small></div>' +
-        '</div>';
+        close;
       }).join('');
+      attachRowSound(pc);
     }
   }
 
   /* ---------- ЗАПУСК ---------- */
   function boot() {
+    // Розблокування звуку першою взаємодією (політика автоплею браузерів)
+    ['pointerdown', 'keydown', 'touchstart'].forEach(function(ev) {
+      document.addEventListener(ev, ensureAudio, { once: true, passive: true });
+    });
+
     Promise.all([injectInclude('header'), injectInclude('footer')]).then(initBehaviour);
 
     fetch('config.json?t=' + Date.now(), { cache: 'no-store' })

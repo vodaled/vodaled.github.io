@@ -134,7 +134,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 24px 24px; }
 .footer-col p { font-size: 0.8rem; color: var(--text-muted); max-width: 260px; margin-top: 8px; }
 .footer-col h4 {
   font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 12px;
+  letter-spacing: 0.08em; color: var(--text); margin-bottom: 12px;
 }
 .footer-col ul { list-style: none; }
 .footer-col ul li { margin-bottom: 8px; }
@@ -146,6 +146,12 @@ footer { border-top: 1px solid var(--border); padding: 40px 24px 24px; }
   display: flex; justify-content: space-between; align-items: center;
   font-size: 0.75rem; color: var(--text-muted);
 }
+/* Нижня смуга футера — ледь темніший фон за роздільною лінією */
+.footer-bottom-wrap {
+  background: rgba(26, 21, 23, 0.025);
+  margin-top: 20px; padding: 14px 24px;
+}
+.footer-bottom-wrap .footer-bottom { max-width: var(--max-w); margin: 0 auto; padding-top: 0; border-top: none; }
 .footer-social { display: flex; gap: 14px; }
 .footer-social a {
   color: var(--text-muted); text-decoration: none;
@@ -156,7 +162,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 24px 24px; }
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .footer-social a:hover {
-  color: var(--accent);
+  color: var(--text-secondary);
   background: transparent; transform: translateY(-2px);
   box-shadow: none;
 }
