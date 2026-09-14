@@ -10,13 +10,18 @@
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
   <meta name="googlebot" content="index, follow">
   <meta name="theme-color" content="#FAF8F5">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="canonical" href="https://vhs-dvd.org.ua/">
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://vhs-dvd.org.ua/">
   <meta property="og:title" content="Оцифровка VHS касет — vhs-dvd.org.ua | Збережіть ваші спогади">
   <meta property="og:description" content="Професійна оцифровка відеокасет VHS, VHS-C, Hi8, MiniDV, Betacam SP у Києві. Працюємо з усією Україною. 240 грн/год.">
-  <meta property="og:image" content="https://vhs-dvd.org.ua/images/top-bg.png">
+  <meta property="og:image" content="https://vhs-dvd.org.ua/images/og-image.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:locale" content="uk_UA">
@@ -25,7 +30,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Оцифровка VHS касет — vhs-dvd.org.ua">
   <meta name="twitter:description" content="Професійна оцифровка відеокасет VHS, VHS-C, Hi8, MiniDV, Betacam SP у Києві.">
-  <meta name="twitter:image" content="https://vhs-dvd.org.ua/images/top-bg.png">
+  <meta name="twitter:image" content="https://vhs-dvd.org.ua/images/og-image.jpg">
   <!-- Structured Data: LocalBusiness -->
   <script type="application/ld+json">
   {
@@ -34,8 +39,8 @@
     "name": "VHS-DVD.ORG.UA — Оцифровка відеокасет",
     "description": "Професійна оцифровка відеокасет VHS, VHS-C, Hi8, MiniDV, Betacam SP у Києві",
     "url": "https://vhs-dvd.org.ua",
-    "logo": "https://vhs-dvd.org.ua/images/ocyfrovka.png",
-    "image": "https://vhs-dvd.org.ua/images/top-bg.png",
+    "logo": "https://vhs-dvd.org.ua/images/logo.png",
+    "image": "https://vhs-dvd.org.ua/images/og-image.jpg",
     "telephone": "+380939362577",
     "address": {
       "@type": "PostalAddress",
@@ -52,9 +57,9 @@
       "name": "Україна"
     },
     "priceRange": "240-1400 грн",
-    "openingHours": "Mo-Sa 09:00-19:00",
+    "openingHours": "Mo-Fr 12:00-18:00",
     "sameAs": [
-      "https://t.me/vhsdvd",
+      "https://t.me/ocyfrovka",
       "https://www.youtube.com/@ocyfrovka"
     ],
     "hasOfferCatalog": {
@@ -1292,9 +1297,9 @@
     .hero-floating-vhs {
       position: absolute;
       right: 130px;
-      bottom: 180px;
+      bottom: 220px;
       transform: none;
-      width: 190px;
+      width: 210px;
       animation: floatVhs 3s ease-in-out infinite;
       filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
       z-index: 2;
@@ -1304,10 +1309,10 @@
       50% { transform: translateY(-50%) translateY(-15px) scale(1.07); }
     }
     @media (max-width: 768px) {
-      .hero-floating-vhs { width: 133px; right: 20px; }
+      .hero-floating-vhs { width: 200px; right: 30px; }
     }
     @media (max-width: 480px) {
-      .hero-floating-vhs { width: 110px; right: 0; top: auto; bottom: -20px; transform: none; }
+      .hero-floating-vhs { width: 150px; right: 0; top: auto; bottom: -20px; transform: none; }
       @keyframes floatVhs {
         0%, 100% { transform: translateY(0px) scale(1); }
         50% { transform: translateY(-12px) scale(1.06); }
@@ -1362,7 +1367,7 @@
         <div class="hero-image-wrapper">
           <img src="images/top-bg.png" alt="hero" class="hero-bg-img">
           <div class="hero-gradient-overlay"></div>
-<img src="images/vhs-main.png" alt="VHS" class="hero-floating-vhs">
+<img src="images/vhs-main.png" alt="Відеокасета VHS — оцифровка домашнього відеоархіву" class="hero-floating-vhs" width="200" height="137" fetchpriority="high" decoding="async" style="width:210px;height:auto;">
         </div>
       </div>
 

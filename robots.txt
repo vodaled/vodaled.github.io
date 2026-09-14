@@ -3,7 +3,7 @@
 
 User-agent: *
 Allow: /
-Disallow: /images/
+# /images/ залишається відкритим — Google має бачити og-image.jpg для превью в соцмережах
 
 # Sitemaps
 Sitemap: https://vhs-dvd.org.ua/sitemap.xml
