@@ -434,7 +434,7 @@
       color: var(--accent); border: 1px solid var(--pink-soft);
     }
     .pricing-row .pr {
-      font-weight: 800; font-size: 1.2rem; color: #542503;
+      font-weight: 800; font-size: 1.2rem; color: #2B5B84;
       white-space: nowrap;
     }
     .pricing-row .pr small {
@@ -546,9 +546,9 @@
     .review-author span { font-size: 0.78rem; color: var(--text-muted); }
 
     /* ===== CLOUD ===== */
-    .cloud-section { background: linear-gradient(135deg, #3AAFA9 0%, #2B9A8F 40%, #1F8A80 100%); color: #fff; border-radius: var(--radius-xl); }
+    .cloud-section { background: linear-gradient(135deg, #3AAFA9 0%, #2B9A8F 40%, #1F8A80 100%); color: #fff; border-radius: var(--radius-xl); max-width: var(--max-w); margin: 0 auto; }
     .cloud-inner {
-      max-width: var(--max-w); margin: 0 auto; padding: 52px 48px;
+      padding: 52px 48px;
       display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: center;
     }
     .cloud-section .section-eyebrow { color: rgba(255,255,255,0.5); }
@@ -1628,6 +1628,9 @@
   <section style="padding: 78px 24px 96px;">
     <div class="cloud-section">
       <div class="cloud-inner">
+        <div class="cloud-price-card reveal" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
+          <img src="images/cloud.png" alt="Хмарне зберігання" loading="lazy" decoding="async" style="width:100%;max-width:280px;height:auto;border-radius:12px;object-fit:contain;">
+        </div>
         <div class="reveal">
           <div class="section-eyebrow">Хмарне зберігання</div>
           <h2 class="section-title" style="margin-bottom:12px;">Ваш відеоархів завжди під рукою</h2>
@@ -1638,10 +1641,7 @@
             <li>Сервери в США</li>
             <li>Доступ по всьому світу</li>
           </ul>
-        </div>
-        <div class="cloud-price-card reveal" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
-          <img src="images/cloud.png" alt="Хмарне зберігання" loading="lazy" decoding="async" style="width:100%;max-width:280px;height:auto;border-radius:12px;object-fit:contain;">
-          <a href="#contact" class="btn-white">Дізнатися більше</a>
+          <a href="#contact" class="btn-white" style="margin-top:24px;display:inline-block;">Дізнатися більше</a>
         </div>
       </div>
     </div>

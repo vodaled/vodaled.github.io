@@ -96,6 +96,9 @@
         }
       });
     });
+
+    // Звук при наведенні на зображення касет (розділ "Послуги") — статичний контент сторінки
+    attachSound(document, '.cassette-img');
   }
 
   /* ---------- 2b. ЗВУК: короткий клік при наведенні на рядок ціни ---------- */
@@ -124,10 +127,10 @@
     osc.connect(gain); gain.connect(ctx.destination);
     osc.start(t); osc.stop(t + 0.09);
   }
-  function attachRowSound(container) {
+  function attachSound(root, selector) {
     // не граємо користувачам з вимкненою анімацією
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    Array.prototype.forEach.call(container.querySelectorAll('.pricing-row, .cassette-img'), function(row) {
+    Array.prototype.forEach.call(root.querySelectorAll(selector), function(row) {
       row.addEventListener('mouseenter', playHoverTick);
     });
   }
@@ -292,7 +295,7 @@
           '<div class="pr">' + row.price + ' ₴ <small>' + row.unit + '</small></div>' +
         close;
       }).join('');
-      attachRowSound(pc);
+      attachSound(pc, '.pricing-row');
     }
   }
 
