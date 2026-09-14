@@ -115,6 +115,14 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Послуга: Оцифровка магнітних бобін -->
+  <url>
+    <loc>https://vhs-dvd.org.ua/ocyfrovka-bobina.html</loc>
+    <lastmod>2026-09-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Часті питання (FAQ) -->
   <url>
     <loc>https://vhs-dvd.org.ua/#faq</loc>

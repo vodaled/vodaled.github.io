@@ -6,7 +6,7 @@
   <title>Оцифровка Hi8, Video8, Digital8 касет у Києві — ціна | vhs-dvd.org.ua</title>
   <meta name="description" content="Оцифровка касет Hi8, Video8 та Digital8 від відеокамер у Києві. Перенесення на флешку, хмару або DVD без втрати якості. Ціна 240 ₴/год, доставка по Україні.">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-  <meta name="theme-color" content="#7EC8E3">
+  <meta name="theme-color" content="#FAF8F5">
   <link rel="canonical" href="https://vhs-dvd.org.ua/ocyfrovka-hi8.html">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://vhs-dvd.org.ua/ocyfrovka-hi8.html">
@@ -88,7 +88,9 @@
     }
     .hero h1 .accent { color: var(--accent); }
     .hero p { max-width: 640px; margin: 0 auto; font-size: 1rem; color: var(--text-secondary); }
-    .hero-img { max-width: 340px; margin: 28px auto 0; display: block; filter: drop-shadow(0 12px 28px rgba(0,0,0,0.12)); border-radius: 12px; }
+    .hero-img { max-width: 420px; width: 100%; margin: 28px auto 0; display: block; filter: drop-shadow(0 18px 34px rgba(0,0,0,0.18)); border-radius: 18px; animation: heroBreath 5.5s ease-in-out infinite; }
+    @keyframes heroBreath { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    @media (prefers-reduced-motion: reduce) { .hero-img { animation: none; } }
 
     /* ===== SECTIONS ===== */
     .section { padding: 56px 24px; }

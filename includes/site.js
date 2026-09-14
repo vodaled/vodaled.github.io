@@ -249,7 +249,8 @@
         if (/hi8|video8|digital8/.test(f)) return 'hi8';
         if (/minidv/.test(f)) return 'minidv';
         if (/betacam/.test(f)) return 'betacam';
-        if (/аудіо|бобін/.test(f)) return 'audio';
+        if (/бобін/.test(f)) return 'bobina';
+        if (/аудіо/.test(f)) return 'audio';
         if (/minidisc/.test(f)) return 'minidisc';
         if (/сканування|фото/.test(f)) return 'photo';
         return '';
@@ -264,6 +265,7 @@
         'minidv': 'ocyfrovka-minidv.html',
         'betacam': 'ocyfrovka-betacam.html',
         'audio': 'ocyfrovka-audio.html',
+        'bobina': 'ocyfrovka-bobina.html',
         'minidisc': 'ocyfrovka-minidisc.html',
         'photo': 'skanuvannia-foto-ta-slaidiv.html'
       };
@@ -276,6 +278,7 @@
       var scanSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
       var hi8Svg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="12" rx="3"/><circle cx="8.5" cy="13" r="2.2"/><circle cx="15.5" cy="13" r="2.2"/><path d="M10.7 13h2.6"/><path d="M5 7V5h4v2"/><path d="M15 7V5h4v2"/></svg>';
       var svgs = [tapeSvg, hi8Svg, dvSvg, audioSvg, reelSvg, betaSvg, mdSvg, scanSvg];
+      svgs[4] = reelSvg; // Магнітні аудіо бобіни — котушка
       pc.innerHTML = cfg.pricing.map(function(row, i) {
         var tag = row.tag ? ' <span class="tag">' + row.tag + '</span>' : '';
         var svg = svgs[i] || svgs[0];
