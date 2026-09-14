@@ -127,7 +127,7 @@
   function attachRowSound(container) {
     // не граємо користувачам з вимкненою анімацією
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    Array.prototype.forEach.call(container.querySelectorAll('.pricing-row'), function(row) {
+    Array.prototype.forEach.call(container.querySelectorAll('.pricing-row, .cassette-img'), function(row) {
       row.addEventListener('mouseenter', playHoverTick);
     });
   }
@@ -303,14 +303,19 @@
       document.addEventListener(ev, ensureAudio, { once: true, passive: true });
     });
 
-    Promise.all([injectInclude('header'), injectInclude('footer')]).then(initBehaviour);
+    // ВАЖЛИВО: спершу вставляються шапка/підвал, потім config
+    // (інакше телефони футера не знаходять свій DOM і не підвантажуються)
+    var includesReady = Promise.all([injectInclude('header'), injectInclude('footer')])
+      .then(initBehaviour);
 
-    fetch('config.json?t=' + Date.now(), { cache: 'no-store' })
+    var configReady = fetch('config.json?t=' + Date.now(), { cache: 'no-store' })
       .then(function(r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
-      })
-      .then(applyConfig)
+      });
+
+    Promise.all([includesReady, configReady])
+      .then(function(results) { applyConfig(results[1]); })
       .catch(function(err) {
         console.error('Помилка завантаження config.json — дані на сторінці не оновлено. Перевірте синтаксис JSON:', err);
       });
