@@ -592,6 +592,12 @@
     .btn-white:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
 
     /* ===== YOUTUBE + VHS RECORD (combined) ===== */
+    /* "Кінотеатр у сутінках": холодний сіро-блакитний верх (відтіняє темне відео) → теплий низ, що зливається з базовим фоном */
+    .yt-record-section {
+      background:
+        radial-gradient(ellipse at 82% 12%, rgba(126,200,227,0.20), transparent 52%),
+        linear-gradient(180deg, #F0F4F7 0%, #E3ECF2 55%, var(--bg) 100%);
+    }
     .yt-record-grid {
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 32px; align-items: stretch;
@@ -661,6 +667,10 @@
     /* ===== FAQ ===== */
     .faq-list { max-width: 680px; }
     .faq-item { border-bottom: 1px solid var(--border); }
+    /* Світло-сірий → білий: нейтральний спокійний фон для списку питань */
+    .faq-grad {
+      background: linear-gradient(180deg, #F0F0F1 0%, #FAFAFA 50%, #FFFFFF 100%);
+    }
     .faq-q {
       width: 100%; padding: 20px 0; background: none; border: none;
       color: var(--text); font-size: 0.95rem; font-weight: 600;
@@ -676,7 +686,7 @@
 
     /* ===== KEYWORDS ===== */
     .keywords-section { padding: 48px 24px 64px; background: var(--bg); border-top: 1px solid var(--border); }
-    .keywords-section .faq-q { color: var(--text-muted); }
+    .keywords-section .faq-q { color: var(--text); }
     .keywords-wrap {
       display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
       max-width: 900px; margin: 0 auto;
@@ -1594,7 +1604,7 @@
   </section>
 
   <!-- YOUTUBE + VHS RECORD (combined) -->
-  <section style="padding: 62px 24px 80px;">
+  <section class="yt-record-section" style="padding: 62px 24px 80px;">
     <div class="container">
       <div class="yt-record-grid">
       <div class="yt-col">
@@ -1647,10 +1657,8 @@
     </div>
   </section>
 
-  <!-- RETRO banner тепер у спільному блоці з YouTube (yt-record-grid) -->
-
-<!-- FAQ -->
-  <section id="faq">
+  <!-- RETRO banner тепер у спільному блоці з YouTube (yt-record-grid) -->  <!-- FAQ -->
+  <section id="faq" class="faq-grad">
     <div class="container">
       <div class="section-header centered reveal">
         <div class="section-eyebrow">Часті питання</div>
