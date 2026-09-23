@@ -269,9 +269,29 @@ a:hover { color: var(--c-cyan-d); }
 
 .hero-actions { display: flex; flex-wrap: wrap; gap: .9rem; margin-top: 1.4rem; }
 
-.hero-stats { display: flex; gap: 2rem; margin-top: 2rem; flex-wrap: wrap; }
-.stat b { display: block; font-family: var(--font-head); font-size: 1.15rem; color: var(--c-deep); }
-.stat span { font-size: .82rem; color: var(--c-grey); }
+.hero-stats { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; max-width: 36em; }
+.stat {
+  flex: 1 1 150px;
+  background: linear-gradient(180deg, #F3F7FA, #EBF2F8);
+  border: 1px solid var(--c-line);
+  border-radius: 14px;
+  padding: .95rem 1.2rem .85rem;
+  text-align: center;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.stat:hover {
+  transform: translateY(-3px);
+  border-color: var(--c-sky);
+  box-shadow: var(--shadow-sm);
+}
+.stat b {
+  display: block;
+  font-family: var(--font-head);
+  font-size: 1.3rem;
+  color: var(--c-deep);
+  margin-bottom: .15rem;
+}
+.stat span { font-size: .84rem; color: var(--c-grey); line-height: 1.35; display: block; }
 
 .hero-visual { display: flex; justify-content: center; }
 
@@ -418,14 +438,110 @@ a:hover { color: var(--c-cyan-d); }
   font-size: .92rem;
 }
 
+/* ------------------------- Анімована крапля (Ціни) ---------------------- */
+
+.prices { position: relative; overflow: hidden; }
+
+.drop-fx {
+  position: absolute;
+  top: 0;
+  right: 5%;
+  width: 150px;
+  height: 330px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* водна поверхня — статична підкладка під колами */
+.drop-fx::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 240px;
+  width: 130px;
+  height: 22px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(25, 184, 216, .22), rgba(25, 184, 216, 0) 70%);
+  border-radius: 50%;
+}
+
+.drop-dot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 14px;
+  height: 20px;
+  margin-left: -7px;
+  background: linear-gradient(180deg, var(--c-sky), var(--c-blue));
+  border-radius: 50% 50% 60% 60% / 40% 40% 60% 60%;
+  opacity: 0;
+  transform: translateY(-40px);
+}
+
+.ripple {
+  position: absolute;
+  left: 50%;
+  top: 240px;
+  width: 110px;
+  height: 20px;
+  margin: -10px 0 0 -55px;
+  border: 2px solid rgba(25, 184, 216, .55);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(.2);
+}
+
+.splash {
+  position: absolute;
+  left: 50%;
+  top: 236px;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border-radius: 50%;
+  background: var(--c-cyan);
+  opacity: 0;
+}
+
+.drop-fx.run .drop-dot { animation: dropFall .5s cubic-bezier(.5, 0, 1, .6) forwards; }
+.drop-fx.run .ripple   { animation: rippleOut .9s ease-out .45s forwards; }
+.drop-fx.run .splash   { animation: splashUp .55s ease-out .46s forwards; }
+
+.drop-fx.run .ripple.r2 { animation-delay: .6s; }
+.drop-fx.run .ripple.r3 { animation-delay: .75s; }
+
+.drop-fx.run .splash.s1 { --sx: -16px; }
+.drop-fx.run .splash.s2 { --sx: 0; }
+.drop-fx.run .splash.s3 { --sx: 16px; }
+
+@keyframes dropFall {
+  0%   { transform: translateY(-40px) scale(1, 1); opacity: 0; }
+  12%  { opacity: 1; }
+  85%  { transform: translateY(200px) scale(.92, 1.12); opacity: 1; }
+  100% { transform: translateY(238px) scale(.6, 1.3); opacity: 0; }
+}
+
+@keyframes rippleOut {
+  0%   { opacity: 0; transform: scale(.25); }
+  25%  { opacity: .75; }
+  100% { opacity: 0; transform: scale(1.25); }
+}
+
+@keyframes splashUp {
+  0%   { opacity: 0; transform: translate(0, 0) scale(.6); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--sx, 0), -52px) scale(1); }
+}
+
 /* ------------------------------- Partners ------------------------------- */
 
 .carousel-wrap {
   overflow: hidden;
   position: relative;
   padding-block: .5rem;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  border-radius: var(--radius);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
 
 .carousel {
@@ -691,6 +807,7 @@ a:hover { color: var(--c-cyan-d); }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   .bubble { animation: none; }
+  .drop-fx { display: none; }
   html { scroll-behavior: auto; }
 }
 

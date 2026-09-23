@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VodaLed — Адмінка</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --c-deep: #0B3C7A; --c-blue: #1668B3; --c-cyan: #19B8D8; --c-cyan-d: #0E93B4;
+      --c-ice: #EAF6FC; --c-ink: #10293E; --c-grey: #5A7184; --c-line: #DCEBF5;
+      --c-bg: #F4FAFD; --ok: #1B9E63; --err: #D64545;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--c-bg); color: var(--c-ink); line-height: 1.55; }
+    h1, h2, h3 { font-family: 'Manrope', sans-serif; color: var(--c-deep); }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 1.5rem 4% 4rem; }
+
+    .topbar { background: #fff; border-bottom: 1px solid var(--c-line); padding: .8rem 0; margin-bottom: 1.6rem; }
+    .topbar .wrap { display: flex; align-items: center; gap: 1rem; padding-block: 0; }
+    .brand { display: flex; align-items: center; gap: .5rem; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 1.15rem; color: var(--c-deep); text-decoration: none; }
+    .brand img { width: 34px; height: 34px; object-fit: contain; }
+    .brand b { color: var(--c-cyan-d); }
+    .top-note { color: var(--c-grey); font-size: .88rem; margin-left: auto; }
+
+    .card { background: #fff; border: 1px solid var(--c-line); border-radius: 16px; padding: 1.4rem; margin-bottom: 1.4rem; box-shadow: 0 2px 10px rgba(11,60,122,.06); }
+    .card h2 { font-size: 1.15rem; margin-bottom: 1rem; }
+
+    label { display: block; font-size: .82rem; font-weight: 600; color: var(--c-grey); margin: .8rem 0 .25rem; }
+    input[type=text], input[type=number], textarea {
+      width: 100%; padding: .55em .8em; border: 1.5px solid var(--c-line); border-radius: 10px;
+      font: inherit; font-size: .95rem; background: #fff; color: var(--c-ink);
+    }
+    input:focus, textarea:focus { outline: none; border-color: var(--c-cyan); }
+    textarea { resize: vertical; min-height: 60px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+    .row3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: .9rem; align-items: end; }
+
+    .item { border: 1px solid var(--c-line); border-radius: 12px; padding: 1rem; margin-bottom: .9rem; background: #FCFEFF; }
+    .item-head { display: flex; align-items: center; gap: .6rem; margin-bottom: .3rem; }
+    .item-head b { color: var(--c-deep); }
+    .item .del { margin-left: auto; }
+    .img-preview { width: 92px; height: 69px; object-fit: cover; border-radius: 8px; border: 1px solid var(--c-line); background: var(--c-ice); }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .4em;
+      border: 0; border-radius: 999px; padding: .6em 1.3em; font: inherit; font-weight: 600;
+      font-size: .9rem; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: linear-gradient(135deg, var(--c-cyan), var(--c-blue)); color: #fff; box-shadow: 0 6px 16px rgba(22,104,179,.3); }
+    .btn-ghost { background: #fff; color: var(--c-blue); box-shadow: inset 0 0 0 2px var(--c-line); }
+    .btn-danger { background: #FDECEC; color: var(--err); }
+    .btn-sm { padding: .35em .9em; font-size: .82rem; }
+    .btn-save { position: sticky; bottom: 14px; float: right; font-size: 1rem; padding: .8em 2em; z-index: 5; }
+
+    .status { padding: .6em 1.1em; border-radius: 999px; font-size: .88rem; font-weight: 600; display: none; }
+    .status.ok { display: inline-block; background: #E5F6EE; color: var(--ok); }
+    .status.err { display: inline-block; background: #FDECEC; color: var(--err); }
+
+    .banner-preview { max-width: 320px; border-radius: 10px; border: 1px solid var(--c-line); display: block; margin-top: .5rem; }
+    .hint { font-size: .8rem; color: var(--c-grey); margin-top: .3rem; }
+    .popular-row { display: flex; align-items: center; gap: .5em; font-size: .88rem; color: var(--c-grey); margin-top: .5rem; }
+
+    @media (max-width: 720px) {
+      .row, .row3 { grid-template-columns: 1fr; }
+      .topbar .wrap { flex-direction: column; gap: .4rem; }
+      .top-note { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <img src="assets/logo.png" alt=""> Voda<b>Led</b> — Адмінка
+      </a>
+      <span class="top-note">зміни застосовуються після «Зберегти» + F5 на сайті</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="card">
+      <h2>Контакти та графік</h2>
+      <div class="row">
+        <div>
+          <label>Телефон (для дзвінків, tel:-посилання)</label>
+          <input type="text" id="phone" placeholder="+380933602424">
+        </div>
+        <div>
+          <label>Телефон для показу на сайті</label>
+          <input type="text" id="phone_display" placeholder="093 360 24 24">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Telegram (посилання на чат)</label>
+          <input type="text" id="telegram" placeholder="https://t.me/...">
+        </div>
+        <div>
+          <label>Viber (посилання на чат)</label>
+          <input type="text" id="viber" placeholder="viber://chat?number=...">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Графік роботи</label>
+          <input type="text" id="schedule" placeholder="Пн–Нд: 08:00 – 20:00">
+        </div>
+        <div>
+          <label>Ціна бутля 18,9 л (грн)</label>
+          <input type="number" id="bottle_price" min="0">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Банер акції (біля води)</h2>
+      <div class="row">
+        <div>
+          <label>Показувати банер</label>
+          <div class="popular-row">
+            <input type="checkbox" id="banner_enabled" style="width:auto"> <span>так, показувати на сайті</span>
+          </div>
+          <label>Текст alt (для доступності)</label>
+          <input type="text" id="banner_alt">
+        </div>
+        <div style="text-align:center">
+          <label>Поточний банер (assets/promo-banner.png)</label>
+          <img id="bannerPreview" class="banner-preview" src="assets/promo-banner.png" alt="банер">
+          <input type="file" id="bannerFile" accept="image/png,image/jpeg" style="margin-top:.5rem">
+          <p class="hint">Рекомендований розмір ~780×480 (PNG/JPG). Завантаження перезапише файл, стара версія збережеться як .bak</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Вода</h2>
+      <div id="waterList"></div>
+      <button class="btn btn-ghost btn-sm" type="button" onclick="addWater()">+ Додати позицію води</button>
+    </div>
+
+    <div class="card">
+      <h2>Лід (фото можна замінити своїм)</h2>
+      <div id="iceList"></div>
+      <button class="btn btn-ghost btn-sm" type="button" onclick="addIce()">+ Додати позицію льоду</button>
+    </div>
+
+    <div class="card">
+      <h2>Аксесуари та оренда</h2>
+      <div id="accList"></div>
+      <button class="btn btn-ghost btn-sm" type="button" onclick="addAcc()">+ Додати аксесуар</button>
+    </div>
+
+    <button class="btn btn-primary btn-save" type="button" onclick="saveAll()">Зберегти зміни</button>
+    <span id="status" class="status"></span>
+  </div>
+
+  <script>
+    let cfg = null;
+
+    const $ = id => document.getElementById(id);
+
+    async function load() {
+      const res = await fetch('config.json?t=' + Date.now());
+      cfg = await res.json();
+      fillForm();
+    }
+
+    function fillForm() {
+      $('phone').value = cfg.phone || '';
+      $('phone_display').value = cfg.phone_display || '';
+      $('telegram').value = cfg.telegram || '';
+      $('viber').value = cfg.viber || '';
+      $('schedule').value = cfg.schedule || '';
+      $('bottle_price').value = cfg.bottle_price ?? '';
+
+      const b = cfg.prices.water_banner;
+      $('banner_enabled').checked = !!(b && b.image);
+      $('banner_alt').value = (b && b.alt) || '';
+
+      renderList('waterList', cfg.prices.water, 'water', false);
+      renderList('iceList', cfg.prices.ice, 'ice', true);
+      renderList('accList', cfg.prices.accessories, 'acc', false);
+    }
+
+    function itemHTML(item, prefix, withImage) {
+      return `
+        <div class="item" data-prefix="${prefix}">
+          <div class="row3">
+            <div>
+              <label>Назва</label>
+              <input type="text" data-f="name" value="${escAttr(item.name || '')}">
+            </div>
+            <div>
+              <label>Ціна, грн</label>
+              <input type="number" data-f="price" value="${item.price ?? 0}" min="0">
+            </div>
+            <div>
+              <label>Одиниця</label>
+              <input type="text" data-f="unit" value="${escAttr(item.unit || '')}">
+            </div>
+          </div>
+          <label>Опис</label>
+          <textarea data-f="description">${escHtml(item.description || '')}</textarea>
+          ${withImage ? `
+            <div class="row" style="margin-top:.6rem;align-items:center">
+              <div>
+                <label>Фото (замінити)</label>
+                <input type="file" class="imgFile" accept="image/png,image/jpeg">
+                <input type="hidden" data-f="image" value="${escAttr(item.image || '')}">
+              </div>
+              <div style="text-align:center">
+                <label>Поточне фото</label>
+                <img class="img-preview" src="${escAttr(item.image || '')}" onerror="this.style.opacity=.25" alt="">
+              </div>
+            </div>` : ''}
+          <div class="popular-row">
+            <input type="checkbox" class="pop" ${item.popular ? 'checked' : ''} style="width:auto">
+            <span>позначити як «Хіт»</span>
+          </div>
+          <button class="btn btn-danger btn-sm del" type="button" onclick="this.closest('.item').remove()">Видалити</button>
+        </div>`;
+    }
+
+    function renderList(containerId, arr, prefix, withImage) {
+      $(containerId).innerHTML = arr.map(it => itemHTML(it, prefix, withImage)).join('');
+    }
+
+    window.addWater = () => cfg.prices.water.push({ name: 'Нова вода', description: '', unit: 'бутель 18,9 л', price: 0 });
+    window.addIce  = () => cfg.prices.ice.push({ name: 'Новий лід', description: '', unit: '10 кг', price: 0, image: '' });
+    window.addAcc  = () => cfg.prices.accessories.push({ name: 'Новий аксесуар', description: '', unit: '1 шт', price: 0, icon: 'bottle' });
+
+    /* Перехоплюємо "+"-кнопки: після push одразу перемальовуємо список */
+    document.addEventListener('click', e => {
+      if (!e.target.matches('button.btn-ghost')) return;
+      const card = e.target.closest('.card');
+      if (!card) return;
+      const list = card.querySelector('[id$="List"]');
+      if (list) {
+        const map = { waterList: 'water', iceList: 'ice', accList: 'acc' };
+        renderList(list.id, cfg.prices[map[list.id]], map[list.id], list.id === 'iceList');
+      }
+    });
+
+    function collectList(containerId, target, withImage) {
+      const items = [];
+      $(containerId).querySelectorAll('.item').forEach(el => {
+        const get = f => el.querySelector(`[data-f="${f}"]`);
+        const it = {
+          name: get('name').value.trim(),
+          description: get('description').value.trim(),
+          unit: get('unit').value.trim(),
+          price: Number(get('price').value) || 0
+        };
+        if (withImage) it.image = get('image').value.trim();
+        if (el.querySelector('.pop').checked) it.popular = true;
+        items.push(it);
+      });
+      target.length = 0;
+      items.forEach(i => target.push(i));
+    }
+
+    async function uploadImage(file, name) {
+      const buf = await file.arrayBuffer();
+      const res = await fetch('/api/image?name=' + encodeURIComponent(name), {
+        method: 'POST',
+        headers: { 'Content-Type': file.type || 'application/octet-stream' },
+        body: buf
+      });
+      const j = await res.json();
+      if (!j.ok) throw new Error(j.error || 'upload failed');
+      return j.saved;
+    }
+
+    window.saveAll = async function () {
+      const st = $('status');
+      st.className = 'status';
+      try {
+        /* текстові поля */
+        cfg.phone = $('phone').value.trim();
+        cfg.phone_display = $('phone_display').value.trim();
+        cfg.telegram = $('telegram').value.trim();
+        cfg.viber = $('viber').value.trim();
+        cfg.schedule = $('schedule').value.trim();
+        cfg.bottle_price = Number($('bottle_price').value) || 0;
+
+        /* банер */
+        if ($('banner_enabled').checked) {
+          cfg.prices.water_banner = cfg.prices.water_banner || {};
+          cfg.prices.water_banner.image = 'assets/promo-banner.png';
+          cfg.prices.water_banner.alt = $('banner_alt').value.trim() || 'Акція';
+        } else {
+          delete cfg.prices.water_banner;
+        }
+
+        collectList('waterList', cfg.prices.water, false);
+        collectList('iceList', cfg.prices.ice, true);
+        collectList('accList', cfg.prices.accessories, false);
+
+        /* завантаження зображень (якщо обрані) */
+        if ($('bannerFile').files[0]) {
+          await uploadImage($('bannerFile').files[0], 'promo-banner.png');
+        }
+        for (const file of document.querySelectorAll('#iceList .imgFile')) {
+          if (file.files[0]) {
+            const item = file.closest('.item');
+            const idx = [...$('iceList').querySelectorAll('.item')].indexOf(item);
+            const names = ['ice/kub.png', 'ice/premium.png', 'ice/krash.png', 'ice/kub-1kg.png'];
+            const saved = await uploadImage(file.files[0], names[idx] || ('ice/kub.png'));
+            cfg.prices.ice[idx].image = saved;
+          }
+        }
+
+        /* збереження config.json на сервер */
+        const res = await fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(cfg, null, 2)
+        });
+        const j = await res.json();
+        if (!j.ok) throw new Error(j.error || 'save failed');
+
+        st.textContent = '✔ Збережено! Оновіть сайт (F5), щоб побачити зміни';
+        st.className = 'status ok';
+      } catch (err) {
+        st.textContent = '✖ Помилка: ' + err.message;
+        st.className = 'status err';
+      }
+      setTimeout(() => { st.className = 'status'; }, 6000);
+    };
+
+    function escHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function escAttr(s) { return escHtml(s).replace(/"/g, '&quot;'); }
+
+    load();
+  </script>
+</body>
+</html>

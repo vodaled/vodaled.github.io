@@ -227,6 +227,7 @@ function initDropSound() {
   const section = document.querySelector('[data-drop-sound]');
   if (!section) return;
 
+  const fx = section.querySelector('.drop-fx');
   let audio = null;
   let unlocked = false;
 
@@ -267,6 +268,14 @@ function initDropSound() {
     if (now - lastMouseMove > 400) return;  /* курсор нерухомий — це скрол */
     if (now - lastPlay < 800) return;       /* захист від повторів */
     lastPlay = now;
+
+    /* анімована крапля: падіння + бризки + кола на воді */
+    if (fx) {
+      fx.classList.remove('run');
+      void fx.offsetWidth; /* reflow — перезапуск CSS-анімації */
+      fx.classList.add('run');
+    }
+
     const a = ensureAudio();
     if (a && unlocked) {
       a.currentTime = 0;
