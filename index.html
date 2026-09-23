@@ -9,7 +9,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -71,17 +71,23 @@
     </section>
 
     <!-- ===== БЛОК 3: ЦІНИ ===== -->
-    <section class="section section-alt prices" id="prices">
+    <section class="section section-alt prices" id="prices" data-drop-sound>
       <div class="container">
         <div class="section-head reveal">
           <h2>Тарифи та ціни</h2>
           <p>Актуальні ціни на воду та лід. Оплата за доставку розраховується індивідуально.</p>
         </div>
 
-        <h3 class="price-subtitle reveal"><span>💧</span> Вода</h3>
+        <h3 class="price-subtitle reveal">
+          <svg viewBox="0 0 24 24" class="icon-mono" aria-hidden="true"><path d="M12 2s6.5 7.2 6.5 12a6.5 6.5 0 1 1-13 0C5.5 9.2 12 2 12 2z"/></svg>
+          Вода
+        </h3>
         <div class="grid-3" id="waterPrices"><!-- рендериться з config.json --></div>
 
-        <h3 class="price-subtitle reveal"><span>🧊</span> Лід</h3>
+        <h3 class="price-subtitle reveal">
+          <svg viewBox="0 0 24 24" class="icon-mono cold" aria-hidden="true"><path d="M12 2 4 6.5v11L12 22l8-4.5v-11L12 2zm0 2.3 5.5 3.1L12 10.5 6.5 7.4 12 4.3zM6 9.1l5 2.8v7.3l-5-2.8V9.1zm12 0v7.3l-5 2.8v-7.3l5-2.8z"/></svg>
+          Лід
+        </h3>
         <div class="grid-4" id="icePrices"><!-- рендериться з config.json --></div>
 
         <p class="prices-note reveal" data-config="delivery-note">Оплата за доставку розраховується індивідуально (залежить від району та обсягу замовлення).</p>
@@ -144,9 +150,9 @@
           <div class="contact-card contact-map reveal delay-1">
             <h3>Зона доставки</h3>
             <div class="map" id="kyivMap" role="img" aria-label="Карта зони доставки по Києву">
-              <iframe title="Карта Києва — зона доставки VodaLed" src="https://www.openstreetmap.org/export/embed.html?bbox=30.23%2C50.21%2C30.74%2C50.59&layer=mapnik&marker=50.4017%2C30.4855" loading="lazy"></iframe>
+              <iframe title="Карта Києва — зона доставки VodaLed" src="https://www.openstreetmap.org/export/embed.html?bbox=30.4816%2C50.4123%2C30.5416%2C50.4423&layer=mapnik&marker=50.4273%2C30.5116" loading="lazy"></iframe>
             </div>
-            <p class="map-caption">Доставка по всьому Києву: правий та лівий берег. Мінімальне замовлення — 1 бутель або 1 пакет льоду.</p>
+            <p class="map-caption">Доставка по всьому Києву: правий та лівий берег. Мінімальне замовлення — 1 бутель або 1 пакет льоду. База: вул. Казимира Малевича, Київ.</p>
           </div>
         </div>
       </div>

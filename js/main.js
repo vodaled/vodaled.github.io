@@ -3,10 +3,11 @@
    1) Динамічне підвантаження header.html та footer.html
    2) Завантаження config.json та рендеринг даних (ціни, контакти, графік...)
    3) Мобільне меню, модальне вікно замовлення, карусель партнерів,
-      анімації появи (reveal on scroll)
+      анімації появи (reveal on scroll), звук «буль» на розділі Ціни
    ========================================================================== */
 
 const CONFIG_URL = 'config.json';
+const DROP_SOUND_URL = 'assets/drop.wav';
 const COMPONENTS = {
   header: 'components/header.html',
   footer: 'components/footer.html'
@@ -61,9 +62,14 @@ const ICONS = {
 function priceCardHTML(item) {
   const badge = item.popular ? '<span class="badge-popular">Хіт</span>' : '';
   const note = item.note ? `<p class="muted" style="margin-top:.4rem;font-size:.82rem">${esc(item.note)}</p>` : '';
+  const img = item.image
+    ? `<img class="card-img" src="${esc(item.image)}" alt="${esc(item.name)}" loading="lazy">`
+    : '';
+  const cardCls = 'card reveal' + (item.image ? ' card-with-img' : '') + (item.popular ? ' card-popular' : '');
   return `
-    <article class="card reveal ${item.popular ? 'card-popular' : ''}">
+    <article class="${cardCls}">
       ${badge}
+      ${img}
       <h3>${esc(item.name)}</h3>
       <p class="muted">${esc(item.description)}</p>
       ${note}
@@ -148,6 +154,15 @@ function renderConfig(cfg) {
   document.getElementById('icePrices').innerHTML = cfg.prices.ice.map(priceCardHTML).join('');
   document.getElementById('accessoriesGrid').innerHTML = cfg.prices.accessories.map(accessoryCardHTML).join('');
 
+  /* --- Банер акції ПОРУЧ З КАРТКОЮ води (права частина сітки) --- */
+  const waterSection = document.getElementById('waterPrices');
+  if (waterSection && cfg.prices.water_banner && cfg.prices.water_banner.image) {
+    const banner = document.createElement('aside');
+    banner.className = 'promo-banner reveal';
+    banner.innerHTML = `<img src="${esc(cfg.prices.water_banner.image)}" alt="${esc(cfg.prices.water_banner.alt || 'Акція')}" loading="lazy">`;
+    waterSection.appendChild(banner);
+  }
+
   /* --- Партнери: подвійний набір для нескінченної анімації --- */
   const chips = cfg.partners.map(partnerChipHTML).join('');
   document.getElementById('partnersCarousel').innerHTML = chips + chips;
@@ -204,6 +219,61 @@ function initCarousel() {
     }
     requestAnimationFrame(step);
   })();
+}
+
+/* ------------------------ Звук «буль» (hover на «Ціни») ------------------ */
+
+function initDropSound() {
+  const section = document.querySelector('[data-drop-sound]');
+  if (!section) return;
+
+  let audio = null;
+  let unlocked = false;
+
+  const ensureAudio = () => {
+    if (!audio) {
+      try {
+        audio = new Audio(DROP_SOUND_URL);
+        audio.preload = 'auto';
+      } catch (e) {
+        return null;
+      }
+    }
+    return audio;
+  };
+
+  /* Браузери дозволяють play() лише після дії користувача — розблоковуємо */
+  const unlock = () => {
+    const a = ensureAudio();
+    if (a) {
+      a.volume = 0.3;
+      a.play().then(() => { unlocked = true; }).catch(() => {});
+    }
+    document.removeEventListener('pointerdown', unlock);
+    document.removeEventListener('keydown', unlock);
+  };
+  document.addEventListener('pointerdown', unlock);
+  document.addEventListener('keydown', unlock);
+
+  /* Звук має грати саме коли користувач ЗАВОДИТЬ курсор у секцію,
+     а не коли секція «проїжджає» під нерухомим курсором під час скролу.
+     Тому граємо лише якщо миша реально рухалась останні 400 мс. */
+  let lastMouseMove = 0;
+  let lastPlay = 0;
+  document.addEventListener('mousemove', () => { lastMouseMove = performance.now(); }, { passive: true });
+
+  section.addEventListener('mouseenter', () => {
+    const now = performance.now();
+    if (now - lastMouseMove > 400) return;  /* курсор нерухомий — це скрол */
+    if (now - lastPlay < 800) return;       /* захист від повторів */
+    lastPlay = now;
+    const a = ensureAudio();
+    if (a && unlocked) {
+      a.currentTime = 0;
+      a.volume = 0.3;
+      a.play().catch(() => {});
+    }
+  });
 }
 
 /* --------------------------- Мобільне меню ------------------------------- */
@@ -275,6 +345,7 @@ function initToTop() {
   initMobileMenu();
   initModal();
   initToTop();
+  initDropSound();
 
   try {
     const res = await fetch(CONFIG_URL);

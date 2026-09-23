@@ -28,31 +28,39 @@
         "popular": true
       }
     ],
+    "water_banner": {
+      "image": "assets/promo-banner.png",
+      "alt": "Акція — вода 18,9 л від 180 грн, безкоштовна доставка від 2-х бутлів"
+    },
     "ice": [
       {
         "name": "Лід Куб",
         "description": "Лід кубиками у пакетах 10 кг — для кейтерингу, магазинів, рибалки.",
         "unit": "10 кг",
-        "price": 300
+        "price": 300,
+        "image": "assets/ice/kub.png"
       },
       {
         "name": "Лід Преміум",
         "description": "Питний лід з чистої води у пакетах 10 кг — для барів, ресторанів та коктейлів.",
         "unit": "10 кг",
         "price": 400,
-        "popular": true
+        "popular": true,
+        "image": "assets/ice/premium.png"
       },
       {
         "name": "Лід Краш",
         "description": "Дрібний крижаний лід (краш) у пакетах 10 кг — швидке охолодження напоїв та продуктів.",
         "unit": "10 кг",
-        "price": 300
+        "price": 300,
+        "image": "assets/ice/krash.png"
       },
       {
         "name": "Лід Куб 1 кг",
         "description": "Питний лід кубиками в компактній упаковці 1 кг.",
         "unit": "1 шт (1 кг)",
-        "price": 33
+        "price": 33,
+        "image": "assets/ice/kub-1kg.png"
       }
     ],
     "accessories": [
