@@ -22,6 +22,7 @@
   --shadow-lg: 0 24px 60px rgba(11, 60, 122, .16);
 
   --font-head: 'Manrope', 'Montserrat', sans-serif;
+  --font-hero: 'Unbounded', 'Manrope', sans-serif;   /* виразний шрифт для головного заголовка */
   --font-body: 'Inter', 'Roboto', sans-serif;
 }
 
@@ -245,29 +246,69 @@ a:hover { color: var(--c-cyan-d); }
 }
 
 .hero h1 {
-  font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+  font-family: var(--font-hero);
+  font-weight: 600;
+  font-size: clamp(1.45rem, 3.2vw, 2.35rem);
+  letter-spacing: 0;
+  line-height: 1.22;
   margin-bottom: .9rem;
 }
 
 .hero-subtitle { color: var(--c-grey); font-size: 1.08rem; max-width: 34em; }
 
 .hero-note {
+  position: relative;
   display: flex;
-  gap: .8rem;
+  gap: .95rem;
   align-items: flex-start;
-  background: #fff;
-  border: 1px solid var(--c-line);
-  border-left: 4px solid var(--c-cyan);
-  border-radius: 14px;
-  box-shadow: var(--shadow-sm);
-  padding: 1rem 1.2rem;
+  background: linear-gradient(135deg, #EAF6FD 0%, #F6FBFF 55%, #E7F6F4 100%);
+  border: 1px solid #CBE6F5;
+  border-radius: 16px;
+  box-shadow: 0 10px 26px rgba(22, 104, 179, .1);
+  padding: 1.1rem 1.3rem 1.1rem 1.15rem;
   margin-block: 1.4rem;
   max-width: 36em;
+  overflow: hidden;
 }
-.hero-note .ic { width: 22px; height: 22px; color: var(--c-cyan-d); flex-shrink: 0; margin-top: .15em; }
-.hero-note p { font-size: .93rem; color: var(--c-ink); }
+.hero-note::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, var(--c-cyan), var(--c-blue));
+}
+.hero-note::after {
+  content: '';
+  position: absolute;
+  right: -34px; top: -34px;
+  width: 104px; height: 104px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.9), rgba(255,255,255,0) 70%);
+  pointer-events: none;
+}
+.hero-note .ic {
+  width: 40px; height: 40px;
+  padding: 8px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--c-cyan), var(--c-blue));
+  color: #fff;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.hero-note p { font-size: .95rem; color: var(--c-ink); position: relative; z-index: 1; }
+.hero-note b { color: var(--c-deep); }
 
-.hero-actions { display: flex; flex-wrap: wrap; gap: .9rem; margin-top: 1.4rem; }
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .9rem;
+  margin-top: 1.4rem;
+  max-width: 36em;
+}
+.hero-actions .btn-primary { margin-inline: auto; }
+.hero-actions .btn-ghost { margin-inline: auto; }
 
 .hero-stats { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; max-width: 36em; }
 .stat {
@@ -361,6 +402,17 @@ a:hover { color: var(--c-cyan-d); }
 .card h3 { margin-bottom: .5rem; }
 .card .muted { color: var(--c-grey); font-size: .92rem; flex-grow: 1; }
 
+/* Картка переваги: іконка та заголовок в одному рядку, текст під ними */
+.card-feature .card-head {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  margin-bottom: .65rem;
+}
+.card-feature .card-head .icon { margin-bottom: 0; flex-shrink: 0; }
+.card-feature .card-head h3 { margin-bottom: 0; font-size: 1.12rem; }
+.card-feature .muted { flex-grow: 1; }
+
 .card .price-row {
   display: flex;
   align-items: baseline;
@@ -393,12 +445,134 @@ a:hover { color: var(--c-cyan-d); }
 .card-with-img p,
 .card-with-img .price-row,
 .card-with-img .order-btn { margin-inline: 1.3rem; }
-.card-with-img h3 { margin-top: 1rem; }
-.card-with-img .order-btn { margin-bottom: 1.3rem; }
+/* Товарна картка (лід): виразна ціна, охайна типографіка, кнопка на всю ширину */
+.card-with-img h3 { margin-top: 1.1rem; font-size: 1.1rem; }
+.card-with-img p.muted { font-size: .9rem; line-height: 1.5; }
+.card-with-img .price-row { margin-top: auto; padding-top: 1rem; }
+.card-with-img .price { font-size: 1.68rem; }
+.card-with-img .unit { color: var(--c-cyan-d); font-weight: 600; }
+.card-with-img .order-btn { margin-top: 1.1rem; margin-bottom: 1.3rem; align-self: stretch; }
+.card-with-img:hover { border-color: var(--c-cyan-d); }
 .card-with-img .badge-popular { top: 12px; left: 12px; right: auto; z-index: 2; }
 
 /* Банер акції: права колонка сітки води, тягнеться до правого краю контейнера */
 #waterPrices { grid-template-columns: minmax(0, 420px) 1fr; align-items: stretch; }
+
+/* Головна картка води — виразний градієнт, білий текст, «продуктова» аура */
+.card-water {
+  position: relative;
+  background: linear-gradient(160deg, #0E5FA8 0%, #1668B3 45%, #0E93B4 100%);
+  border: 0;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: 0 18px 44px rgba(14, 95, 168, .35);
+}
+.card-water::before {
+  content: '';
+  position: absolute;
+  top: -70px; right: -70px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .1);
+  pointer-events: none;
+}
+.card-water::after {
+  content: '';
+  position: absolute;
+  bottom: -90px; left: -50px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .07);
+  pointer-events: none;
+}
+.card-water > * { position: relative; z-index: 1; }
+.card-water:hover { transform: translateY(-6px); box-shadow: 0 24px 54px rgba(14, 95, 168, .45); border-color: transparent; }
+.card-water h3 { color: #fff; }
+.card-water .muted { color: rgba(255, 255, 255, .88); }
+.card-water .price { color: #fff; font-size: 2.1rem; }
+.card-water .unit { color: rgba(255, 255, 255, .8); }
+.card-water .note-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: .45em;
+  font-size: .82rem;
+  background: rgba(255, 255, 255, .16);
+  border-radius: 999px;
+  padding: .35em 1em;
+  margin-top: .55rem;
+  width: max-content;
+}
+.card-water .order-btn {
+  background: #fff;
+  color: #0E5FA8;
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(7, 45, 84, .25);
+  position: relative;
+  overflow: visible;
+  animation: btnPulse 2.4s ease-in-out infinite;
+}
+/* хвиля-крапля, що розходиться від кнопки */
+.card-water .order-btn::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 2px solid rgba(255, 255, 255, .75);
+  opacity: 0;
+  pointer-events: none;
+  animation: btnRipple 2.4s ease-out infinite;
+}
+.card-water .order-btn:hover {
+  filter: brightness(1.04);
+  transform: translateY(-2px);
+  animation-play-state: paused;
+}
+.card-water .order-btn:hover::after { animation-play-state: paused; opacity: 0; }
+@keyframes btnPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 6px 18px rgba(7, 45, 84, .25); }
+  50% { transform: scale(1.035); box-shadow: 0 10px 26px rgba(7, 45, 84, .38); }
+}
+@keyframes btnRipple {
+  0% { transform: scale(1); opacity: .8; }
+  70% { transform: scale(1.12); opacity: 0; }
+  100% { transform: scale(1.12); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-water .order-btn, .card-water .order-btn::after { animation: none; }
+}
+.card.card-water .badge-popular {
+  top: 14px; right: 14px; left: auto;
+  background: rgba(255, 255, 255, .2);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, .35);
+}
+
+/* Бейдж «Хіт» не виходить за межі картки */
+.card .badge-popular { max-width: calc(100% - 24px); }
+.card:not(.card-with-img):not(.card-water) .badge-popular { top: 14px; }
+/* Білий контурний ескіз бутля 18,9 л — декор у правій частині картки */
+.card-water .bottle-sketch {
+  position: absolute;
+  right: 10px;
+  bottom: 20px;
+  height: 64%;
+  width: auto;
+  aspect-ratio: 120 / 260;
+  transform: scaleX(1.18);        /* трішки ширший силуэт */
+  transform-origin: bottom right;
+  z-index: 0;
+  opacity: .5;
+  pointer-events: none;
+}
+.card-water .wave-deco {
+  position: absolute;
+  left: 0; right: 0; bottom: -4px;
+  height: 34px;
+  z-index: 0;
+  opacity: .5;
+  pointer-events: none;
+}
+.card-water .wave-deco path { fill: rgba(255, 255, 255, .25); }
 
 .promo-banner {
   border-radius: var(--radius);
@@ -566,9 +740,10 @@ a:hover { color: var(--c-cyan-d); }
 
 .partner-logo {
   width: 40px; height: 40px;
-  border-radius: 50%;
+  border-radius: 10px;
   object-fit: cover;
   background: var(--c-ice);
+  flex-shrink: 0;
 }
 
 .partner-dot {
@@ -620,16 +795,74 @@ a:hover { color: var(--c-cyan-d); }
 .contact-schedule .ic { color: var(--c-cyan-d); }
 
 .messenger-btns { display: flex; flex-direction: column; gap: .8rem; margin-bottom: .9rem; max-width: 280px; }
-.messenger-btns .btn { width: 100%; }
+.messenger-btns .btn { width: 100%; padding: .72em 1.2em; font-size: .95rem; }
 
 .contact-note { font-size: .88rem; color: var(--c-grey); }
+
+/* Соцмережі (рендеряться з config.socials) */
+.socials { display: flex; gap: .6rem; margin-top: 1.1rem; }
+.social-btn {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  transition: transform .2s ease, filter .2s ease, box-shadow .2s ease;
+  box-shadow: 0 3px 10px rgba(11, 60, 122, .12);
+}
+.social-btn:hover { transform: translateY(-3px); filter: brightness(1.08); box-shadow: 0 6px 16px rgba(11, 60, 122, .2); }
+.social-btn svg { width: 22px; height: 22px; fill: currentColor; }
+.social-instagram { background: linear-gradient(45deg, #F58529, #DD2A7B 55%, #8134AF); }
+.social-facebook  { background: #1877F2; }
+.social-telegram  { background: linear-gradient(135deg, #2AABEE, #229ED9); }
+.social-tiktok    { background: #161616; }
+.social-youtube   { background: #FF0000; }
+.social-viber     { background: #7360F2; }
+.social-link      { background: var(--c-blue); }
+
+/* Соцмережі у футері — під «Контакти», на лінію з чипами месенджерів;
+   один плоский колір без градієнтів та окантовок */
+.footer-about { display: flex; flex-direction: column; }
+.footer-about .footer-messengers { margin-top: auto; }
+.footer-col-contacts { display: flex; flex-direction: column; }
+.footer-socials { margin-top: auto; }
+.footer-socials .social-btn {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  filter: none;
+}
+.footer-socials .social-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: none;
+  filter: none;
+}
+.footer-socials .social-btn svg { width: 18px; height: 18px; }
+
+/* Тільки іконка — без кольорової плашки та окантовки */
+.footer-socials .social-btn,
+.footer-socials .social-btn:hover {
+  background: none;
+  width: auto; height: auto;
+  padding: 4px;
+  border-radius: 0;
+  color: #9DBBD6;                 /* спокійний світло-блакитний */
+}
+.footer-socials .social-btn svg { width: 26px; height: 26px; }
+.footer-socials .social-btn:hover { color: #fff; transform: none; }
 
 .map {
   border-radius: 14px;
   overflow: hidden;
   border: 1px solid var(--c-line);
   height: 320px;
+  /* Створюємо власний stacking-контекст, щоб внутрішні z-index Leaflet
+     (панелі мають 400–700) не пробивали модальне вікно (z-index 100) */
+  isolation: isolate;
 }
+.map .leaflet-container { z-index: auto; }
 .map iframe { width: 100%; height: 100%; border: 0; display: block; }
 
 .map-caption { margin-top: .9rem; font-size: .9rem; color: var(--c-grey); }
@@ -817,8 +1050,8 @@ a:hover { color: var(--c-cyan-d); }
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; text-align: left; }
-  .messenger-btns { flex-direction: row; max-width: none; }
-  .messenger-btns .btn { flex: 1; }
+  .messenger-btns { flex-direction: row; max-width: none; gap: .5rem; }
+  .messenger-btns .btn { flex: 1 1 0; min-width: 0; padding: .7em .9em; font-size: .9rem; }
   .hero-grid { grid-template-columns: 1fr; text-align: center; }
   .hero-text { display: flex; flex-direction: column; align-items: center; }
   .hero-note { text-align: left; }
@@ -849,6 +1082,7 @@ a:hover { color: var(--c-cyan-d); }
   .nav a { padding: .8rem 6%; }
 
   .header-phone span { display: none; }
+  .header-actions .btn { padding: .55em .95em; font-size: .8rem; letter-spacing: 0; }
   .burger { display: flex; }
 
   .grid-3, .grid-4, .grid-2 { grid-template-columns: 1fr; }
@@ -866,7 +1100,7 @@ a:hover { color: var(--c-cyan-d); }
   .footer-brand { flex-direction: row; }
   .footer-brand .brand-logo { margin-inline: 0; }
   .footer-messengers { justify-content: flex-start; }
-  .footer-messengers .chip { min-width: 0; padding: .5em 1em; font-size: .78rem; }
+  .footer-messengers .chip { min-width: 0; padding: .5em 1em; font-size: .78rem; flex: 1 1 0; text-align: center; white-space: nowrap; }
   .footer-links { display: block; text-align: left; }
   .footer-col { width: auto; }
   .footer-col h4, .footer-col p { text-align: left; }
@@ -874,9 +1108,30 @@ a:hover { color: var(--c-cyan-d); }
   .site-footer h4 { font-size: .95rem; }
 
   .hero-stats { gap: 1.2rem; }
+
+  /* Мобільний футер: чати Telegram/Viber переїжджають у колонку «Контакти» */
+  .footer-about { display: block; }
+  .footer-about .footer-messengers { display: none; }   /* прибираємо з лівої колонки */
+  .footer-col-contacts .footer-messengers {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: .5rem;
+    margin: .9rem 0 0;
+  }
+  .footer-col-contacts .footer-messengers .chip { width: 100%; padding: .62em 1em; font-size: .82rem; white-space: nowrap; }
+  /* соцкнопки — під чатами */
+  .footer-socials { margin-top: .8rem; justify-content: flex-start; }
 }
 
 @media (max-width: 420px) {
   .brand-name { font-size: 1.05rem; }
   .hero-actions .btn { width: 100%; }
+  .header-actions .btn { display: none; }  /* на вузьких — кнопка у меню */
+  .nav.open .nav-cta { display: inline-flex; }
+}
+
+/* Кнопка «Доставимо сьогодні» в мобільному меню */
+.nav-cta { display: none; }
+@media (max-width: 760px) {
+  .nav-cta { display: inline-flex; margin: .6rem 6% 0; justify-content: center; }
 }

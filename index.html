@@ -9,7 +9,8 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -31,12 +32,12 @@
       <div class="container hero-grid">
         <div class="hero-text reveal">
           <p class="hero-kicker">Доставка по Києву · <span data-config="schedule">Пн–Нд: 08:00 – 20:00</span></p>
-          <h1 data-config="hero-title">Замовити доставку води за справедливою ціною</h1>
-          <p class="hero-subtitle" data-config="hero-subtitle">Чиста питна вода 18,9 л та крижаний лід у пакетах — швидка доставка по Києву для дому й офісу.</p>
+          <h1 data-config="hero-title">Замовити доставку за справедливою ціною</h1>
+          <p class="hero-subtitle" data-config="hero-subtitle">Чиста питна вода та лід для дому та бізнесу</p>
 
-          <div class="hero-note" data-config="hero-note">
+          <div class="hero-note">
             <svg viewBox="0 0 24 24" class="ic" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 2.4 1.2 4.1 2.6 5.5.7.7 1.4 1.9 1.4 3v.5h6v-.5c0-1.1.7-2.3 1.4-3C17.8 13.1 19 11.4 19 9a7 7 0 0 0-7-7zm-3 21h6a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2z"/></svg>
-            <p>Для доставки води необхідно надати на обмін порожні бутлі об'ємом 18,9 л, або їх можливо придбати (вартість 1 бутля становить <b data-config="bottle-price">350</b> грн)</p>
+            <p data-config="hero-note">Для доставки води необхідно надати на обмін порожні бутлі об'ємом 18,9 л, або їх можливо придбати (вартість 1 бутля становить <b data-config="bottle-price">350</b> грн)</p>
           </div>
 
           <div class="hero-actions">
@@ -156,13 +157,12 @@
               </a>
             </div>
             <p class="contact-note">Телефон одночасно є Telegram та Viber чатом — просто напишіть нам.</p>
+            <div class="socials" id="socialsRow" aria-label="Соцмережі"><!-- рендериться з config.json --></div>
           </div>
 
           <div class="contact-card contact-map reveal delay-1">
             <h3>Зона доставки</h3>
-            <div class="map" id="kyivMap" role="img" aria-label="Карта зони доставки по Києву">
-              <iframe title="Карта Києва — зона доставки VodaLed" src="https://www.openstreetmap.org/export/embed.html?bbox=30.4816%2C50.4123%2C30.5416%2C50.4423&layer=mapnik&marker=50.4273%2C30.5116" loading="lazy"></iframe>
-            </div>
+            <div class="map" id="kyivMap" role="img" aria-label="Карта зони доставки по Києву"><!-- Leaflet рендериться з js/main.js --></div>
             <p class="map-caption">Доставка по всьому Києву: правий та лівий берег. Мінімальне замовлення — 1 бутель або 1 пакет льоду. База: вул. Казимира Малевича, Київ.</p>
           </div>
         </div>
@@ -190,6 +190,7 @@
 
   <button class="to-top" id="toTop" aria-label="Нагору">↑</button>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="js/main.js"></script>
 </body>
 </html>

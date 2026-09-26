@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#003c3c"/>
+      <stop offset="1" stop-color="#00695c"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="22" fill="url(#g)"/>
+  <g transform="translate(60 10) scale(1.05)" opacity="0.95"><circle cx="12" cy="13" r="4.6" fill="none" stroke="white" stroke-width="1.8"/><path d="M16.6 13h3.4M17.4 16.4h2.4M17.6 9.8l.4-2.6h2" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></g>
+  <text x="14" y="80" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="800" fill="white">AK</text>
+</svg>

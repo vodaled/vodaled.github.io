@@ -7,13 +7,20 @@
   },
   "phone": "+380933602424",
   "phone_display": "093 360 24 24",
-  "telegram": "https://t.me/0933602424",
+  "telegram": "https://t.me/vodaled",
   "viber": "viber://chat?number=%2B380933602424",
+  "socials": [
+    { "id": "instagram", "url": "https://instagram.com/vodaled" },
+    { "id": "facebook",  "url": "https://facebook.com/vodaled" },
+    { "id": "telegram",  "url": "https://t.me/vodaled" },
+    { "id": "tiktok",    "url": "" },
+    { "id": "youtube",   "url": "" }
+  ],
   "schedule": "Пн–Нд: 08:00 – 20:00",
   "bottle_price": 350,
   "hero": {
-    "title": "Замовити доставку води за справедливою ціною",
-    "subtitle": "Чиста питна вода 18,9 л та крижаний лід у пакетах — швидка доставка по Києву для дому й офісу.",
+    "title": "Замовити доставку за справедливою ціною",
+    "subtitle": "Чиста питна вода та лід для дому та бізнесу",
     "cta": "Замовити доставку",
     "note": "Для доставки води необхідно надати на обмін порожні бутлі об'ємом 18,9 л, або їх можливо придбати (вартість 1 бутля становить 350 грн)"
   },
@@ -69,42 +76,48 @@
         "description": "Нова пляшка для питної води ємністю 18,9 л.",
         "unit": "1 шт",
         "price": 350,
-        "icon": "bottle"
+        "icon": "bottle",
+        "image": "assets/accessories/bottle.png"
       },
       {
         "name": "Помпа механічна",
         "description": "Ручна помпа на бутель 18,9 л — не потребує електрики.",
         "unit": "1 шт",
         "price": 250,
-        "icon": "pump"
+        "icon": "pump",
+        "image": "assets/accessories/pump-mech.png"
       },
       {
         "name": "Помпа електрична",
         "description": "Електрична помпа на бутель з акумулятором та USB-зарядкою.",
         "unit": "1 шт",
         "price": 550,
-        "icon": "pump-electric"
+        "icon": "pump-electric",
+        "image": "assets/accessories/pump-electric.png"
       },
       {
         "name": "Кулер настільний",
         "description": "Компактний кулер для води на стіл — охолодження та кімнатна подача.",
         "unit": "оренда / міс",
         "price": 200,
-        "icon": "cooler"
+        "icon": "cooler",
+        "image": "assets/accessories/cooler-desk.png"
       },
       {
         "name": "Кулер підлоговий",
         "description": "Підлоговий кулер зі шафкою — ідеально для офісу та кафетерію.",
         "unit": "оренда / міс",
         "price": 300,
-        "icon": "cooler"
+        "icon": "cooler",
+        "image": "assets/accessories/cooler-floor.png"
       },
       {
         "name": "Холодильник для льоду",
         "description": "Спеціальна морозильна шафа для зберігання льоду.",
         "unit": "оренда / міс",
         "price": 1500,
-        "icon": "freezer"
+        "icon": "freezer",
+        "image": "assets/accessories/freezer.png"
       }
     ]
   },
@@ -131,12 +144,12 @@
     }
   ],
   "partners": [
-    { "name": "Aroma Kava", "logo": "" },
-    { "name": "Barman UA", "logo": "" },
-    { "name": "Fresh Market", "logo": "" },
-    { "name": "Sushi Master", "logo": "" },
-    { "name": "Kyiv Catering", "logo": "" },
-    { "name": "Ice Bar", "logo": "" }
+    { "name": "Aroma Kava",   "logo": "assets/partners/aroma-kava.svg" },
+    { "name": "Barman UA",    "logo": "assets/partners/barman-ua.svg" },
+    { "name": "Fresh Market", "logo": "assets/partners/fresh-market.svg" },
+    { "name": "Sushi Master", "logo": "assets/partners/sushi-master.svg" },
+    { "name": "Kyiv Catering", "logo": "assets/partners/kyiv-catering.svg" },
+    { "name": "Ice Bar",      "logo": "assets/partners/ice-bar.svg" }
   ],
   "delivery": {
     "area": "Доставка по всьому Києву: правий та лівий берег. Мінімальне замовлення — 1 бутель або 1 пакет льоду. Безкоштовна доставка від 2-х бутлів у межах міста."
