@@ -269,29 +269,115 @@ function observeReveals() {
 }
 
 /* ------------------------------ Карусель -------------------------------- */
+/* Автопрокрутка + стрілки «вліво/вправо» + перетягування мишкою/пальцем.
+   Набір чипів задвоєний, тому зсув, утримуваний у межах половини стрічки,
+   дає безшовне зациклення без стрибків. */
+
+const CAROUSEL_AUTO_SPEED = 0.5;        /* px за кадр автопрокрутки */
+const CAROUSEL_ARROW_MIN = 260;         /* мінімальний крок стрілки, px */
 
 function initCarousel() {
   const track = document.getElementById('partnersCarousel');
+  const prevBtn = document.getElementById('carPrev');
+  const nextBtn = document.getElementById('carNext');
   if (!track) return;
 
   let x = 0;
-  let paused = false;
   let half = 0;
+  let mode = 'auto';          /* auto | arrow | drag */
+  let arrowDir = 0;
+  let arrowTargetX = 0;
+  let drag = null;            /* { startX, startOffset } */
+  let hoverPaused = false;
 
   const measure = () => { half = track.scrollWidth / 2; };
   measure();
-  window.addEventListener('resize', measure);
 
-  track.addEventListener('mouseenter', () => { paused = true; });
-  track.addEventListener('mouseleave', () => { paused = false; });
-  track.addEventListener('touchstart', () => { paused = true; }, { passive: true });
-  track.addEventListener('touchend', () => { paused = false; });
+  /* М'яке зациклення: тримаємо зсув у межах половини стрічки.
+     Повертає застосований зсув (дельту), щоб цілі анімацій можна було
+     загорнути разом із x і не «гнатися» за недосяжною точкою. */
+  const normalizeX = () => {
+    let delta = 0;
+    if (half <= 0) return delta;
+    while (x <= -half) { x += half; delta += half; }
+    while (x > 0) { x -= half; delta -= half; }
+    return delta;
+  };
+
+  const apply = () => { track.style.transform = `translateX(${x}px)`; };
+
+  const setMode = (m) => {
+    mode = m;
+    track.classList.toggle('dragging', m === 'drag');
+  };
+
+  /* --- Стрілки --- */
+  const arrowStep = (dir) => {
+    const styles = getComputedStyle(track);
+    const gap = parseFloat(styles.gap) || 0;
+    const first = track.firstElementChild;
+    const chip = first ? first.getBoundingClientRect().width + gap : 0;
+    return dir * Math.max(chip, CAROUSEL_ARROW_MIN);
+  };
+
+  const nudge = (dir) => {
+    measure();
+    setMode('arrow');
+    arrowDir = dir;
+    arrowTargetX = x + arrowStep(dir);
+  };
+
+  /* Стрічка рухається вліво (x зменшується), тому «наступні» = x - крок */
+  prevBtn?.addEventListener('click', () => nudge(1));
+  nextBtn?.addEventListener('click', () => nudge(-1));
+
+  /* --- Перетягування мишкою або пальцем --- */
+  track.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    drag = { startX: e.clientX, startOffset: x, moved: false };
+    setMode('drag');
+  });
+
+  window.addEventListener('pointermove', (e) => {
+    if (mode !== 'drag' || !drag) return;
+    const dx = e.clientX - drag.startX;
+    if (Math.abs(dx) > 4) drag.moved = true;
+    x = drag.startOffset + dx;
+    normalizeX();
+    apply();
+  });
+
+  window.addEventListener('pointerup', () => {
+    if (mode !== 'drag' || !drag) return;
+    drag = null;
+    setMode('auto');
+    hoverPaused = false;
+  });
+
+  track.addEventListener('mouseenter', () => { hoverPaused = true; });
+  track.addEventListener('mouseleave', () => { hoverPaused = false; });
+
+  window.addEventListener('resize', () => { measure(); normalizeX(); apply(); });
 
   (function step() {
-    if (!paused && half > 0) {
-      x -= 0.5; /* швидкість прокрутки, px за кадр */
-      if (-x >= half) x += half;
-      track.style.transform = `translateX(${x}px)`;
+    if (mode === 'auto' && !hoverPaused && half > 0) {
+      x -= CAROUSEL_AUTO_SPEED;
+      normalizeX();
+      apply();
+    } else if (mode === 'arrow' && arrowDir !== 0) {
+      /* Плавний рух до цілі стрілки, потім пауза 1.4 с і повернення до авто */
+      const remain = arrowTargetX - x;
+      if (Math.abs(remain) <= 3) {
+        x = arrowTargetX;
+        arrowTargetX += normalizeX();
+        apply();
+        arrowDir = 0;
+        setTimeout(() => { if (mode === 'arrow') setMode('auto'); }, 1400);
+      } else {
+        x += remain * 0.14;
+        arrowTargetX += normalizeX();
+        apply();
+      }
     }
     requestAnimationFrame(step);
   })();

@@ -22,7 +22,7 @@
   --shadow-lg: 0 24px 60px rgba(11, 60, 122, .16);
 
   --font-head: 'Manrope', 'Montserrat', sans-serif;
-  --font-hero: 'Unbounded', 'Manrope', sans-serif;   /* виразний шрифт для головного заголовка */
+  --font-hero: 'Montserrat', 'Manrope', sans-serif;  /* виразний шрифт заголовків — як на промо-банері */
   --font-body: 'Inter', 'Roboto', sans-serif;
 }
 
@@ -44,7 +44,20 @@ img { max-width: 100%; display: block; }
 
 h1, h2, h3, h4 { font-family: var(--font-head); line-height: 1.2; color: var(--c-deep); letter-spacing: -0.01em; }
 
-h2 { font-size: clamp(1.5rem, 3.2vw, 2.1rem); }
+h2 {
+  font-family: var(--font-hero);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 3.2vw, 2.1rem);
+  /* Той самий шрифт і градієнт, що й у заголовка hero (кольори промо-банера) */
+  color: #023470; /* фолбек */
+  background: linear-gradient(100deg, #023470 8%, #1668B3 48%, #4598DC 92%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Градієнт тягнеться по ширині тексту, а не всього блоку */
+.section-head h2 { width: fit-content; margin-inline: auto; }
 h3 { font-size: 1.12rem; }
 
 a { color: var(--c-blue); text-decoration: none; }
@@ -247,11 +260,17 @@ a:hover { color: var(--c-cyan-d); }
 
 .hero h1 {
   font-family: var(--font-hero);
-  font-weight: 600;
+  font-weight: 800;
   font-size: clamp(1.45rem, 3.2vw, 2.35rem);
   letter-spacing: 0;
   line-height: 1.22;
   margin-bottom: .9rem;
+  /* Градієнт заголовка — як на промо-банері: глибокий синій -> яскравий блакитний */
+  color: #023470; /* фолбек, якщо браузер не вміє background-clip: text */
+  background: linear-gradient(100deg, #023470 8%, #1668B3 48%, #4598DC 92%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .hero-subtitle { color: var(--c-grey); font-size: 1.08rem; max-width: 34em; }
@@ -412,6 +431,51 @@ a:hover { color: var(--c-cyan-d); }
 .card-feature .card-head .icon { margin-bottom: 0; flex-shrink: 0; }
 .card-feature .card-head h3 { margin-bottom: 0; font-size: 1.12rem; }
 .card-feature .muted { flex-grow: 1; }
+
+/* Розділ «Чому обирають VodaLed»: акцентні картки з номером,
+   градієнтною іконкою та кольоровою рискою при наведенні */
+#featuresGrid { counter-reset: feat; }
+#featuresGrid .card-feature {
+  counter-increment: feat;
+  --acc1: var(--c-cyan);
+  --acc2: var(--c-blue);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F3FAFE 100%);
+  overflow: hidden;
+}
+#featuresGrid .card-feature:nth-child(2) { --acc1: #4598DC; --acc2: var(--c-deep); }
+#featuresGrid .card-feature:nth-child(3) { --acc1: #7FC7E8; --acc2: #0E93B4; }
+#featuresGrid .card-feature:nth-child(4) { --acc1: #0E93B4; --acc2: #0B3C7A; }
+#featuresGrid .card-feature::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 0; height: 4px;
+  background: linear-gradient(90deg, var(--acc1), var(--acc2));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .35s ease;
+}
+#featuresGrid .card-feature:hover::before { transform: scaleX(1); }
+#featuresGrid .card-feature::after {
+  content: '0' counter(feat);
+  position: absolute;
+  top: 8px; right: 16px;
+  font-family: var(--font-hero);
+  font-weight: 800;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--acc1);
+  opacity: .14;
+  pointer-events: none;
+}
+#featuresGrid .card-feature .icon {
+  width: 54px; height: 54px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--acc1), var(--acc2));
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(11, 60, 122, .22);
+}
+#featuresGrid .card-feature .icon svg { width: 28px; height: 28px; }
+#featuresGrid .card-feature:hover { border-color: var(--acc1); }
 
 .card .price-row {
   display: flex;
@@ -722,7 +786,46 @@ a:hover { color: var(--c-cyan-d); }
   display: flex;
   gap: 1.2rem;
   width: max-content;
+  cursor: grab;
+  touch-action: pan-y;   /* вертикальний скрол сторінки не блокується, горизонтальний свайп — карусель */
+  user-select: none;
+  -webkit-user-select: none;
 }
+.carousel.dragging { cursor: grabbing; }
+.carousel img { -webkit-user-drag: none; }
+
+/* Контейнер зі стрілками: поза .carousel-wrap, щоб mask-image їх не робив прозорими */
+.carousel-zone { position: relative; }
+
+.car-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--c-line);
+  background: #fff;
+  color: var(--c-deep);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  z-index: 2;
+  transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+.car-btn:hover {
+  background: var(--c-blue);
+  border-color: var(--c-blue);
+  color: #fff;
+  transform: translateY(-50%) scale(1.06);
+}
+.car-btn:focus-visible { outline: 2px solid var(--c-deep); outline-offset: 2px; }
+.car-btn svg { width: 24px; height: 24px; fill: currentColor; }
+.car-prev { left: 12px; }
+.car-next { right: 12px; }
+
+.carousel:focus-visible { outline: 2px solid var(--c-blue); outline-offset: 4px; border-radius: 12px; }
 
 .partner-chip {
   display: flex;
@@ -820,10 +923,9 @@ a:hover { color: var(--c-cyan-d); }
 .social-viber     { background: #7360F2; }
 .social-link      { background: var(--c-blue); }
 
-/* Соцмережі у футері — під «Контакти», на лінію з чипами месенджерів;
+/* Соцмережі у футері — в колонці «про компанію», під текстом;
    один плоский колір без градієнтів та окантовок */
 .footer-about { display: flex; flex-direction: column; }
-.footer-about .footer-messengers { margin-top: auto; }
 .footer-col-contacts { display: flex; flex-direction: column; }
 .footer-socials { margin-top: auto; }
 .footer-socials .social-btn {
@@ -941,6 +1043,16 @@ a:hover { color: var(--c-cyan-d); }
 }
 .footer-brand .brand-name { color: #fff; }
 .footer-brand .brand-name b { color: #8FD4EF; }
+
+/* Вирівнювання низів колонок футера (лише десктоп): соцкнопки,
+   чат-чипи «Контактів» і список «Розділи» завершуються на одному рівні */
+@media (min-width: 761px) {
+  .footer-col { display: flex; flex-direction: column; }
+  .footer-col-contacts .footer-messengers { margin-top: auto; }
+  .footer-links { margin-top: auto; font-size: .92rem; }
+  .footer-links li { margin-bottom: .4rem; }
+  .footer-links li:last-child { margin-bottom: 0; }  /* низ списка = низ чипів поруч */
+}
 
 /* ------------------------------- Modal ---------------------------------- */
 
@@ -1109,9 +1221,14 @@ a:hover { color: var(--c-cyan-d); }
 
   .hero-stats { gap: 1.2rem; }
 
-  /* Мобільний футер: чати Telegram/Viber переїжджають у колонку «Контакти» */
+  .car-btn { width: 38px; height: 38px; }
+  .car-btn svg { width: 20px; height: 20px; }
+  .car-prev { left: 6px; }
+  .car-next { right: 6px; }
+
+  /* Мобільний футер: чати Telegram/Viber — у колонці «Контакти»,
+     соцмережі — в лівій колонці під описом */
   .footer-about { display: block; }
-  .footer-about .footer-messengers { display: none; }   /* прибираємо з лівої колонки */
   .footer-col-contacts .footer-messengers {
     display: grid;
     grid-template-columns: 1fr;
