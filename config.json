@@ -45,7 +45,7 @@
         "description": "Лід кубиками у пакетах 10 кг — для кейтерингу, магазинів, рибалки.",
         "unit": "10 кг",
         "price": 300,
-        "image": "assets/ice/kub.png"
+        "image": "assets/ice/kub.jpg"
       },
       {
         "name": "Лід Преміум",
@@ -53,21 +53,21 @@
         "unit": "10 кг",
         "price": 400,
         "popular": true,
-        "image": "assets/ice/premium.png"
+        "image": "assets/ice/premium.jpg"
       },
       {
         "name": "Лід Краш",
         "description": "Дрібний крижаний лід (краш) у пакетах 10 кг — швидке охолодження напоїв та продуктів.",
         "unit": "10 кг",
         "price": 300,
-        "image": "assets/ice/krash.png"
+        "image": "assets/ice/krash.jpg"
       },
       {
         "name": "Лід Куб 1 кг",
         "description": "Питний лід кубиками в компактній упаковці 1 кг.",
         "unit": "1 шт (1 кг)",
         "price": 33,
-        "image": "assets/ice/kub-1kg.png"
+        "image": "assets/ice/kub-1kg.jpg"
       }
     ],
     "accessories": [
@@ -77,7 +77,7 @@
         "unit": "1 шт",
         "price": 350,
         "icon": "bottle",
-        "image": "assets/accessories/bottle.png"
+        "image": "assets/accessories/bottle.jpg"
       },
       {
         "name": "Помпа механічна",
@@ -85,7 +85,7 @@
         "unit": "1 шт",
         "price": 250,
         "icon": "pump",
-        "image": "assets/accessories/pump-mech.png"
+        "image": "assets/accessories/pump-mech.jpg"
       },
       {
         "name": "Помпа електрична",
@@ -93,7 +93,7 @@
         "unit": "1 шт",
         "price": 550,
         "icon": "pump-electric",
-        "image": "assets/accessories/pump-electric.png"
+        "image": "assets/accessories/pump-electric.jpg"
       },
       {
         "name": "Кулер настільний",
@@ -101,7 +101,7 @@
         "unit": "оренда / міс",
         "price": 200,
         "icon": "cooler",
-        "image": "assets/accessories/cooler-desk.png"
+        "image": "assets/accessories/cooler-desk.jpg"
       },
       {
         "name": "Кулер підлоговий",
@@ -109,15 +109,15 @@
         "unit": "оренда / міс",
         "price": 300,
         "icon": "cooler",
-        "image": "assets/accessories/cooler-floor.png"
+        "image": "assets/accessories/cooler-floor.jpg"
       },
       {
         "name": "Холодильник для льоду",
-        "description": "Спеціальна морозильна шафа для зберігання льоду.",
+        "description": "Портативний холодильник для зберігання льоду.",
         "unit": "оренда / міс",
         "price": 1500,
         "icon": "freezer",
-        "image": "assets/accessories/freezer.png"
+        "image": "assets/accessories/freezer.jpg"
       }
     ]
   },
