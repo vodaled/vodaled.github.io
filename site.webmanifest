@@ -1,0 +1,15 @@
+{
+  "name": "VodaLed — Доставка води та льоду по Києву",
+  "short_name": "VodaLed",
+  "description": "Доставка питної води 18,9 л та льоду по Києву за 2 години",
+  "lang": "uk",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#ffffff",
+  "theme_color": "#0B3C7A",
+  "icons": [
+    { "src": "assets/favicon-16.png", "sizes": "16x16", "type": "image/png" },
+    { "src": "assets/favicon-32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

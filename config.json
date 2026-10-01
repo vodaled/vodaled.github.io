@@ -19,7 +19,6 @@
   "schedule": "Пн–Нд: 08:00 – 20:00",
   "bottle_price": 350,
   "hero": {
-    "title": "Замовити доставку за справедливою ціною",
     "subtitle": "Чиста питна вода та лід для дому та бізнесу",
     "cta": "Замовити доставку",
     "note": "Для доставки води необхідно надати на обмін порожні бутлі об'ємом 18,9 л, або їх можливо придбати (вартість 1 бутля становить 350 грн)"
@@ -35,10 +34,6 @@
         "popular": true
       }
     ],
-    "water_banner": {
-      "image": "assets/promo-banner.jpg",
-      "alt": "Акція — вода 18,9 л від 180 грн, безкоштовна доставка від 2-х бутлів"
-    },
     "ice": [
       {
         "name": "Лід Куб",
@@ -144,7 +139,7 @@
     }
   ],
   "partners": [
-    { "name": "Aroma Kava",   "logo": "assets/partners/aroma-kava.svg" },
+    { "name": "Puma",   "logo": "assets/partners/puma.gif" },
     { "name": "Barman UA",    "logo": "assets/partners/barman-ua.svg" },
     { "name": "Fresh Market", "logo": "assets/partners/fresh-market.svg" },
     { "name": "Sushi Master", "logo": "assets/partners/sushi-master.svg" },

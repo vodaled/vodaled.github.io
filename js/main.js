@@ -194,7 +194,6 @@ function renderConfig(cfg) {
     'telegram-link': cfg.telegram,
     'viber-link': cfg.viber,
     'schedule': cfg.schedule,
-    'hero-title': cfg.hero.title,
     'hero-subtitle': cfg.hero.subtitle,
     'hero-cta': cfg.hero.cta,
     'hero-note': cfg.hero.note,
@@ -218,13 +217,41 @@ function renderConfig(cfg) {
   document.getElementById('icePrices').innerHTML = cfg.prices.ice.map(w => priceCardHTML(w, false)).join('');
   document.getElementById('accessoriesGrid').innerHTML = cfg.prices.accessories.map(accessoryCardHTML).join('');
 
-  /* --- Банер акції ПОРУЧ З КАРТКОЮ води (права частина сітки) --- */
+  /* --- Промо-ВІДЕО поруч з карткою води (права частина сітки).
+     Постер — власний перший кадр відео (preload=auto без атрибута poster);
+     поверх — темна заставка з центральною кнопкою плей (стиль YouTube) --- */
   const waterSection = document.getElementById('waterPrices');
-  if (waterSection && cfg.prices.water_banner && cfg.prices.water_banner.image) {
+  if (waterSection) {
     const banner = document.createElement('aside');
     banner.className = 'promo-banner reveal';
-    banner.innerHTML = `<img src="${esc(cfg.prices.water_banner.image)}" alt="${esc(cfg.prices.water_banner.alt || 'Акція')}" loading="lazy">`;
+    banner.innerHTML = `
+      <div class="video-shell">
+        <video class="promo-video" controls playsinline preload="metadata"
+               aria-label="Промо-відео VodaLed">
+          <source src="assets/vodaled_promo.mp4" type="video/mp4">
+          Ваш браузер не підтримує вбудоване відео.
+        </video>
+        <button class="video-cover" type="button" aria-label="Відтворити відео">
+          <span class="play-ic">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          </span>
+        </button>
+      </div>`;
     waterSection.appendChild(banner);
+
+    const video = banner.querySelector('.promo-video');
+    const cover = banner.querySelector('.video-cover');
+    if (video && cover) {
+      const hide = () => cover.classList.add('hidden');
+      const show = () => cover.classList.remove('hidden');
+      cover.addEventListener('click', () => {
+        hide();
+        video.play().catch(() => show());
+      });
+      video.addEventListener('playing', hide);
+      video.addEventListener('pause', show);
+      video.addEventListener('ended', show);
+    }
   }
 
   /* --- Соцмережі (під «Зв'язок» та у футері) --- */
@@ -423,7 +450,7 @@ function initDropSound() {
   document.addEventListener('pointerdown', unlock, { capture: true });
   document.addEventListener('keydown', unlock);
   /* На тачскрінах pointerdown іноді не доходить до документу перед touch-action
-     обробкою — дублюємо розблокування на touchend та перший скрол-стоп */
+     обробкою — дублюємо розблокування на touchend */
   document.addEventListener('touchend', unlock, { passive: true, capture: true });
   document.addEventListener('touchstart', function firstTouch() {
     document.removeEventListener('touchstart', firstTouch);
@@ -436,6 +463,22 @@ function initDropSound() {
   let lastMouseMove = 0;
   let lastPlay = 0;
   document.addEventListener('mousemove', () => { lastMouseMove = performance.now(); }, { passive: true });
+
+  /* Крапля падає ПРЯМО НА ПРОМО-ВІДЕО: центруємо drop-fx так, щоб
+     «лінія води» (240px всередині fx) збігалася з центром відео */
+  const positionFx = () => {
+    if (!fx) return;
+    const video = section.querySelector('.promo-video') || section.querySelector('.video-shell');
+    if (!video) return;
+    const sRect = section.getBoundingClientRect();
+    const vRect = video.getBoundingClientRect();
+    const cx = vRect.left + vRect.width / 2 - sRect.left;
+    const cy = vRect.top + vRect.height / 2 - sRect.top;
+    fx.style.left = Math.round(cx - fx.offsetWidth / 2) + 'px';
+    fx.style.top = Math.round(cy - 240) + 'px';
+  };
+  positionFx();
+  window.addEventListener('resize', positionFx);
 
   /* На тачскрінах немає mouseenter від курсора — тригеримо на торканні секції */
   const touchTrigger = () => {
@@ -456,8 +499,10 @@ function initDropSound() {
 
   function playFx() {
 
-    /* анімована крапля: падіння + бризки + кола на воді */
+    /* анімована крапля: падіння + бризки + кола на воді.
+       Перед кожним запуском переприцілюємося на відео (лейаут міг змінитися) */
     if (fx) {
+      positionFx();
       fx.classList.remove('run');
       void fx.offsetWidth; /* reflow — перезапуск CSS-анімації */
       fx.classList.add('run');
@@ -597,7 +642,97 @@ function initModal() {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 }
 
+/* ------------------- Крапки свайп-каруселі переваг ----------------------- */
+/* Лише для мобільного вигляду (≤760px): крапкові індикатори сторінок
+   [01+02] та [03+04]; активна підсвічується за scrollLeft сітки. */
+
+function initFeatureDots() {
+  const grid = document.getElementById('featuresGrid');
+  const dotsBox = document.getElementById('featDots');
+  if (!grid || !dotsBox || grid.dataset.dotsInit) return;
+  grid.dataset.dotsInit = '1';
+
+  const cards = grid.querySelectorAll('.card-feature');
+  if (cards.length < 3) return;
+
+  /* Пара карток = одна сторінка крапки */
+  const pages = [];
+  for (let i = 0; i < cards.length; i += 2) pages.push(cards[i]);
+
+  dotsBox.innerHTML = pages.map((_, i) =>
+    `<span class="feat-dot${i === 0 ? ' active' : ''}"></span>`
+  ).join('');
+  const dots = [...dotsBox.querySelectorAll('.feat-dot')];
+
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const max = grid.scrollWidth - grid.clientWidth;
+    if (max <= 0) return;
+    const pos = Math.min(grid.scrollLeft / max, 1);
+    const idx = Math.min(Math.round(pos * (pages.length - 1)), pages.length - 1);
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  };
+
+  grid.addEventListener('scroll', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+
+  /* --- Перетягування мишкою/пальцем, як у каруселі партнерів --- */
+  let dragId = null;
+  let dragStartX = 0;
+  let dragStartScroll = 0;
+
+  grid.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    dragId = e.pointerId;
+    dragStartX = e.clientX;
+    dragStartScroll = grid.scrollLeft;
+    grid.classList.add('dragging');
+  });
+
+  grid.addEventListener('pointermove', (e) => {
+    if (dragId !== e.pointerId) return;
+    grid.scrollLeft = dragStartScroll - (e.clientX - dragStartX);
+  });
+
+  const endDrag = () => {
+    dragId = null;
+    grid.classList.remove('dragging');
+  };
+  grid.addEventListener('pointerup', endDrag);
+  grid.addEventListener('pointercancel', endDrag);
+  grid.addEventListener('pointerleave', endDrag);
+}
+
 /* ------------------------------ Кнопка вгору ----------------------------- */
+
+/* ------------------------- Паралакс бутля в hero -------------------------
+   Легкий ефект: при прокрутці бутель «відстає» від сторінки (спливає вгору
+   до 48px). Тільки transform через requestAnimationFrame — без reflow. */
+function initBottleParallax() {
+  const bottle = document.querySelector('.hero-bottle');
+  const hero = bottle && bottle.closest('.hero');
+  if (!bottle || !hero) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  let raf = 0;
+  const update = () => {
+    raf = 0;
+    if (window.innerWidth <= 760) { bottle.style.transform = ''; return; } /* мобільна сітка — без ефекту */
+    const r = hero.getBoundingClientRect();
+    if (r.bottom <= 0) return; /* hero повністю прокручено */
+    const p = Math.min(1, Math.max(0, -r.top / r.height)); /* 0 → 1 у міру прокрутки */
+    bottle.style.transform = 'translate3d(0, ' + (-p * 48).toFixed(1) + 'px, 0)';
+  };
+  const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+}
 
 function initToTop() {
   const btn = document.getElementById('toTop');
@@ -617,6 +752,7 @@ function initToTop() {
   initMobileMenu();
   initModal();
   initToTop();
+  initBottleParallax();
   initDropSound();
 
   try {
@@ -630,5 +766,6 @@ function initToTop() {
   }
 
   initCarousel();
+  initFeatureDots();
   initKyivMap();
 })();

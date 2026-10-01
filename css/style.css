@@ -63,6 +63,9 @@ h3 { font-size: 1.12rem; }
 a { color: var(--c-blue); text-decoration: none; }
 a:hover { color: var(--c-cyan-d); }
 
+/* Якорі не ховаються під липким хедером */
+section[id], h3[id] { scroll-margin-top: 108px; }
+
 .ic { width: 1.1em; height: 1.1em; fill: currentColor; vertical-align: -0.18em; }
 
 /* ------------------------------- Buttons -------------------------------- */
@@ -111,43 +114,89 @@ a:hover { color: var(--c-cyan-d); }
 .btn-lg { padding: 1em 2.1em; font-size: 1.02rem; }
 
 /* ------------------------------- Header --------------------------------- */
+/* Дизайн за референсом користувача: світлий крижаний фон, двоярусний
+   вордмарк, сині посилання з дропдаунами «Вода»/«Лід», блок телефону
+   з градієнтним колом і графіком, бірюзовий роздільник, блакитна CTA */
 
 .site-header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, .86);
-  backdrop-filter: blur(10px);
+  background: linear-gradient(180deg, #F9FDFE 0%, #F4FAFD 100%);
   border-bottom: 1px solid var(--c-line);
+  box-shadow: 0 2px 14px rgba(11, 60, 122, .05);
 }
 
 .header-inner {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  padding-block: .65rem;
+  gap: 1.1rem;
+  padding-block: .95rem;   /* вища панель хедера */
 }
 
-.brand { display: flex; align-items: center; gap: .6rem; }
-.brand-logo { width: 46px; height: 46px; object-fit: contain; }
+/* Бренд: логотип + вордмарк VodaLed + дрібний підзаголовок */
+.brand { display: flex; align-items: center; gap: .65rem; flex-shrink: 0; }
+.brand-logo {
+  width: 62px; height: 62px;
+  object-fit: contain;
+  transform-origin: 50% 55%;
+  will-change: transform;
+}
+
+/* Анімація логотипа при наведенні: «плюх» з нахилами, як крапля у воді */
+.brand:hover .brand-logo { animation: logoSplash .85s ease; }
+@keyframes logoSplash {
+  0%   { transform: rotate(0) scale(1); }
+  22%  { transform: rotate(-8deg) scale(1.07); }
+  46%  { transform: rotate(7deg) scale(1.06); }
+  70%  { transform: rotate(-4deg) scale(1.03); }
+  88%  { transform: rotate(2deg); }
+  100% { transform: rotate(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand:hover .brand-logo { animation: none; }
+}
+.brand-text { display: flex; flex-direction: column; line-height: 1.1; }
 .brand-name {
+  font-family: var(--font-hero);
+  font-weight: 800;
+  font-size: 1.7rem;
+  color: #0B347C;              /* «Voda» — темно-синій, як у референсі */
+  letter-spacing: .01em;
+}
+.brand-name b { color: #028DF8; font-weight: 800; }  /* «Led» — яскравий блакитний */
+.brand-tagline {
   font-family: var(--font-head);
   font-weight: 700;
-  font-size: 1.25rem;
-  color: var(--c-deep);
-  letter-spacing: .02em;
+  font-size: .65rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--c-grey);
+  margin-top: .18rem;
 }
-.brand-name b { color: var(--c-cyan-d); font-weight: 700; }
 
-.nav { display: flex; gap: 1.4rem; margin-inline: auto; }
-.nav a {
-  color: var(--c-ink);
-  font-weight: 500;
-  font-size: .95rem;
+/* Меню: сині жирні посилання; «Вода» і «Лід» — з дропдаунами */
+.nav { display: flex; align-items: center; gap: 1.6rem; margin-inline: auto; }
+.nav > a,
+.nav-item > a {
+  display: inline-flex;
+  align-items: center;
+  gap: .3em;
   position: relative;
-  padding: .35em 0;
+  color: #0B347C;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.02rem;
+  padding: .4em 0;
+  transition: color .2s ease;
+  white-space: nowrap;
 }
-.nav a::after {
+.nav > a:hover,
+.nav-item > a:hover { color: #028DF8; }
+
+/* Блакитна лінія, що «пробігає» під посиланням при наведенні */
+.nav > a::after,
+.nav-item > a::after {
   content: "";
   position: absolute;
   left: 0; bottom: 0;
@@ -158,21 +207,74 @@ a:hover { color: var(--c-cyan-d); }
   transform-origin: left;
   transition: transform .25s ease;
 }
-.nav a:hover { color: var(--c-blue); }
-.nav a:hover::after { transform: scaleX(1); }
+.nav > a:hover::after { transform: scaleX(1); }
 
-.header-actions { display: flex; align-items: center; gap: .9rem; }
+/* Телефон: градієнтне коло з іконкою + номер і графік у два рядки */
+.header-actions { display: flex; align-items: center; gap: .8rem; }
 
 .header-phone {
   display: inline-flex;
   align-items: center;
-  gap: .45em;
-  font-weight: 700;
-  color: var(--c-deep);
+  gap: .6rem;
   white-space: nowrap;
 }
-.header-phone .ic { color: var(--c-cyan-d); }
-.header-phone:hover { color: var(--c-cyan-d); }
+.phone-ic {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #2395F8, #0184F7);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(2, 141, 248, .35);
+  flex-shrink: 0;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.phone-ic svg { width: 17px; height: 17px; fill: currentColor; }
+.header-phone:hover .phone-ic {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 18px rgba(2, 141, 248, .45);
+}
+.phone-text { display: flex; flex-direction: column; line-height: 1.25; }
+.phone-num {
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #0B347C;
+  transition: color .2s ease;
+}
+.header-phone:hover .phone-num { color: #028DF8; }
+.phone-sched {
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--c-grey);
+}
+
+/* Бірюзовий роздільник між телефоном і кнопкою — тонка лінія */
+.header-divider {
+  width: 2px;
+  height: 40px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #19AED3, #48BDDB);
+  opacity: .75;
+}
+
+/* CTA у хедері: той самий колір і градієнт, що в іконки телефону поруч */
+.btn-head {
+  background: linear-gradient(160deg, #2395F8, #0184F7);
+  color: #fff;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: .9em 1.9em;
+  box-shadow: 0 8px 18px rgba(2, 141, 248, .35);
+}
+.btn-head:hover {
+  background: linear-gradient(160deg, #3BA4FA, #028DF8);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 11px 22px rgba(2, 141, 248, .45);
+}
+.btn-head:focus-visible { outline: 2px solid #0B347C; }
 
 .burger {
   display: none;
@@ -221,7 +323,6 @@ a:hover { color: var(--c-cyan-d); }
 
 /* ------------------------------- Grids ---------------------------------- */
 
-.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.4rem; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.4rem; }
 
@@ -230,60 +331,130 @@ a:hover { color: var(--c-cyan-d); }
 .hero {
   position: relative;
   overflow: hidden;
-  background:
-    radial-gradient(900px 480px at 85% -10%, rgba(127, 199, 232, .35), transparent 60%),
-    radial-gradient(700px 420px at -10% 110%, rgba(25, 184, 216, .18), transparent 60%),
-    linear-gradient(180deg, #F7FCFF 0%, #EAF6FC 100%);
-  padding-block: clamp(3rem, 7vw, 5.5rem) clamp(3rem, 6vw, 5rem);
-}
-
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1.05fr .95fr;
-  gap: 2.5rem;
+  min-height: 480px;
+  display: flex;
   align-items: center;
-  position: relative;
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+
+/* Банер-підложка: повна ширина (hero.png), шар бутля з льодом праворуч */
+.hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% 50%;
+  z-index: 0;
+}
+
+/* Мінімальна вуаль: лише легкий дотик за текстовим блоком, щоб
+   зелень і край фото лишалися вираженими (контраст дає підсвітка) */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1; /* під бутлем (z-index:1 теж — DOM-порядок, вуаль нижче) */
+  background: linear-gradient(90deg,
+    rgba(249, 253, 254, .55) 0%,
+    rgba(249, 253, 254, .28) 22%,
+    rgba(249, 253, 254, .08) 40%,
+    rgba(249, 253, 254, 0) 55%);
+}
+
+/* Бутель із льодом — окремий шар поверх банера, там само, де він був
+   у попередній версії банера: праворуч, на крижано-блакитній ділянці */
+.hero-bottle {
+  position: absolute;
+  right: max(2%, calc((100% - 1240px) / 2));
+  bottom: 0;
+  height: 86%;
+  width: auto;
+  object-fit: contain;
+  object-position: bottom center;
   z-index: 1;
+  pointer-events: none;
+  user-select: none;
 }
 
-.hero-kicker {
-  display: inline-block;
-  font-size: .85rem;
-  font-weight: 600;
-  color: var(--c-cyan-d);
-  background: rgba(255,255,255,.7);
-  border: 1px solid var(--c-line);
-  border-radius: 999px;
-  padding: .35em 1em;
-  margin-bottom: 1.1rem;
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 560px;
+  /* Ліва межа — як у .container інших секцій: 4%, але не ширше 1160px */
+  margin-left: max(4%, calc((100% - 1160px) / 2));
+  margin-right: 0;
 }
 
-.hero h1 {
+.hero-title {
   font-family: var(--font-hero);
   font-weight: 800;
-  font-size: clamp(1.45rem, 3.2vw, 2.35rem);
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  line-height: 1.12;
   letter-spacing: 0;
-  line-height: 1.22;
-  margin-bottom: .9rem;
-  /* Градієнт заголовка — як на промо-банері: глибокий синій -> яскравий блакитний */
-  color: #023470; /* фолбек, якщо браузер не вміє background-clip: text */
+  margin-bottom: .8rem;
+  display: flex;
+  flex-direction: column;
+  /* Той самий градієнт, що в заголовків розділів */
+  width: fit-content;
+  color: #023470; /* фолбек */
   background: linear-gradient(100deg, #023470 8%, #1668B3 48%, #4598DC 92%);
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.hero-subtitle { color: var(--c-grey); font-size: 1.08rem; max-width: 34em; }
+.hero-subtitle {
+  color: var(--c-ink);
+  font-size: clamp(1.02rem, 1.6vw, 1.2rem);
+  font-weight: 500;
+  margin-bottom: 1.3rem;
+}
+
+/* Міні-переваги з іконками — як у макеті */
+.hero-chips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem 1.4rem;
+  margin-bottom: 1.4rem;
+  padding: 0;
+}
+.hero-chips li {
+  display: inline-flex;
+  align-items: center;
+  gap: .6em;
+  font-weight: 600;
+  font-size: .92rem;
+  line-height: 1.25;
+  color: #0B347C;
+  /* Легке біле підсвічування тексту — читаємость на темних ділянках фото */
+  text-shadow:
+    0 0 6px rgba(255, 255, 255, .95),
+    0 0 14px rgba(255, 255, 255, .65),
+    0 1px 2px rgba(255, 255, 255, .9);
+}
+/* Контурні іконки, як у макеті користувача: синій контур без підкладки,
+   з білим ореолом по зовнішньому контуру */
+.hero-chips svg {
+  width: 34px; height: 34px;
+  flex-shrink: 0;
+  filter:
+    drop-shadow(0 0 3px rgba(255, 255, 255, 1))
+    drop-shadow(0 0 8px rgba(255, 255, 255, .75));
+}
 
 .hero-note {
   position: relative;
   display: flex;
   gap: .95rem;
   align-items: flex-start;
-  background: linear-gradient(135deg, #EAF6FD 0%, #F6FBFF 55%, #E7F6F4 100%);
-  border: 1px solid #CBE6F5;
-  border-radius: 16px;
-  box-shadow: 0 10px 26px rgba(22, 104, 179, .1);
+  /* Скляна картка в стилі hero: напівпрозоре біле скло + блюр фона */
+  background: rgba(255, 255, 255, .62);
+  border: 1px solid rgba(255, 255, 255, .85);
+  border-radius: 18px;
+  box-shadow: 0 14px 34px rgba(11, 60, 122, .14);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   padding: 1.1rem 1.3rem 1.1rem 1.15rem;
   margin-block: 1.4rem;
   max-width: 36em;
@@ -323,70 +494,65 @@ a:hover { color: var(--c-cyan-d); }
   display: flex;
   flex-wrap: wrap;
   gap: .9rem;
-  margin-top: 1.4rem;
-  max-width: 36em;
+  margin-top: 1.5rem;
 }
-.hero-actions .btn-primary { margin-inline: auto; }
-.hero-actions .btn-ghost { margin-inline: auto; }
 
-.hero-stats { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; max-width: 36em; }
-.stat {
-  flex: 1 1 150px;
-  background: linear-gradient(180deg, #F3F7FA, #EBF2F8);
-  border: 1px solid var(--c-line);
-  border-radius: 14px;
-  padding: .95rem 1.2rem .85rem;
-  text-align: center;
-  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+/* Кнопка hero — червоний градієнт, як у логотипі (#BD202F) */
+.hero-actions .btn-primary {
+  background: linear-gradient(160deg, #D9273A 0%, #BD202F 52%, #931724 100%);
+  box-shadow: 0 8px 20px rgba(189, 32, 47, .35);
 }
-.stat:hover {
-  transform: translateY(-3px);
-  border-color: var(--c-sky);
-  box-shadow: var(--shadow-sm);
+.hero-actions .btn-primary:hover {
+  background: linear-gradient(160deg, #E4354A 0%, #BD202F 55%, #A31C2B 100%);
+  box-shadow: 0 12px 28px rgba(189, 32, 47, .45);
 }
-.stat b {
-  display: block;
-  font-family: var(--font-head);
-  font-size: 1.3rem;
-  color: var(--c-deep);
-  margin-bottom: .15rem;
-}
-.stat span { font-size: .84rem; color: var(--c-grey); line-height: 1.35; display: block; }
+.hero-actions .btn-primary:focus-visible { outline: 2px solid #931724; }
 
-.hero-visual { display: flex; justify-content: center; }
-
-.hero-product-card {
-  background: rgba(255,255,255,.65);
-  border: 1px solid rgba(255,255,255,.9);
-  border-radius: 26px;
-  box-shadow: var(--shadow-lg);
-  padding: 1.6rem;
-  transform: rotate(1.5deg);
-  transition: transform .35s ease;
-  backdrop-filter: blur(6px);
-  width: min(480px, 100%);
+/* ------------------------- Поява hero при завантаженні ------------------- */
+/* Плавне послідовне з'явлення: заголовок влітає зліва, решта ніжно
+   спливає вгору. Тільки opacity/transform — без перемальовок шарів.
+   Анімація грає один раз при завантаженні (не на скрол). */
+@keyframes heroSlideIn {
+  from { opacity: 0; transform: translateX(-60px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
-.hero-product-card:hover { transform: rotate(0deg) translateY(-4px); }
-.hero-product-card img { width: 100%; height: auto; border-radius: 14px; }
-
-/* Декоративні бульбашки */
-.hero-bg { position: absolute; inset: 0; pointer-events: none; }
-.bubble {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(127,199,232,.25));
-  border: 1px solid rgba(255,255,255,.7);
-  animation: float 9s ease-in-out infinite;
+@keyframes heroRiseIn {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.bubble.b1 { width: 90px;  height: 90px;  left: 6%;  bottom: 12%; animation-delay: 0s; }
-.bubble.b2 { width: 46px;  height: 46px;  left: 42%; top: 12%;   animation-delay: 1.2s; }
-.bubble.b3 { width: 130px; height: 130px; right: 4%; top: 55%;   animation-delay: .6s; opacity: .7; }
-.bubble.b4 { width: 34px;  height: 34px;  right: 30%; bottom: 8%; animation-delay: 2s; }
-
-@keyframes float {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50%      { transform: translateY(-22px) scale(1.04); }
+@keyframes heroBottleIn {
+  from { opacity: 0; transform: translateY(30px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+.hero-title {
+  animation: heroSlideIn .9s cubic-bezier(.22, .8, .3, 1) .15s both;
+}
+.hero-subtitle {
+  animation: heroRiseIn .8s ease-out .45s both;
+}
+.hero-chips li:nth-child(1) { animation: heroRiseIn .7s ease-out .6s both; }
+.hero-chips li:nth-child(2) { animation: heroRiseIn .7s ease-out .72s both; }
+.hero-chips li:nth-child(3) { animation: heroRiseIn .7s ease-out .84s both; }
+.hero-note {
+  animation: heroRiseIn .8s ease-out 1s both;
+}
+.hero-actions {
+  animation: heroRiseIn .8s ease-out 1.15s both;
+}
+/* fill-mode: backwards — після завершення анімації transform звільняється
+   для JS-паралаксу (інлайн-стиль), вхідна анімація при цьому не ламається */
+.hero-bottle {
+  will-change: transform;
+  animation: heroBottleIn 1.1s cubic-bezier(.22, .8, .3, 1) .35s backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-title, .hero-subtitle, .hero-chips li, .hero-note, .hero-actions, .hero-bottle {
+    animation: none;
+  }
+}
+
+
 
 /* ------------------------------- Cards ---------------------------------- */
 
@@ -553,7 +719,18 @@ a:hover { color: var(--c-cyan-d); }
 .card-water:hover { transform: translateY(-6px); box-shadow: 0 24px 54px rgba(14, 95, 168, .45); border-color: transparent; }
 .card-water h3 { color: #fff; }
 .card-water .muted { color: rgba(255, 255, 255, .88); }
-.card-water .price { color: #fff; font-size: 2.1rem; }
+/* Ціна — ніби білим по яскравій червоній стрічці (колір логотипа) */
+.card-water .price {
+  display: inline-block;
+  background: linear-gradient(135deg, #E0243A 0%, #BD202F 55%, #931724 100%);
+  color: #fff;
+  font-size: 1.9rem;
+  line-height: 1;
+  padding: .18em .55em .24em;
+  border-radius: 10px;
+  transform: rotate(-2deg);
+  box-shadow: 0 8px 18px rgba(147, 23, 36, .4);
+}
 .card-water .unit { color: rgba(255, 255, 255, .8); }
 .card-water .note-inline {
   display: inline-flex;
@@ -639,16 +816,76 @@ a:hover { color: var(--c-cyan-d); }
 .card-water .wave-deco path { fill: rgba(255, 255, 255, .25); }
 
 .promo-banner {
+  position: relative;          /* фіксує геометрію: розмір не залежить від шару відео */
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--c-line);
-  height: 100%;
-  display: flex;
-  align-items: center;
+  /* Пропорція 16:9 — відео завжди нормальної висоти, не стиснуте;
+     раніше висоту давав сам <video> у потоці, тепер шелл абсолютний */
+  aspect-ratio: 16 / 9;
+  align-self: center;          /* не розтягується на всю висоту картки води */
   background: linear-gradient(135deg, var(--c-cyan), var(--c-deep));
 }
-.promo-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Промо-відео у тій самій рамці, що й банер */
+/* Шелл заповнює банер абсолютно — його розмір ВЗагалІ не залежить
+   від стану відео (сайт не «дихає» під час анімацій) */
+.video-shell {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  background: #0B3C7A;   /* темна підкладка на крайній випадок */
+}
+.promo-banner .promo-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #0B3C7A;
+}
+
+/* Темна заставка з центральною кнопкою плей (як у YouTube) —
+   видно, доки відео не почало відтворюватись (і знову після завершення) */
+.video-cover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  background: linear-gradient(180deg, rgba(4, 18, 38, .38) 0%, rgba(3, 14, 30, .62) 100%);
+  border-radius: inherit;
+  transition: opacity .3s ease, visibility .3s ease;
+}
+.video-cover.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.video-cover:hover { background: linear-gradient(180deg, rgba(4, 18, 38, .3) 0%, rgba(3, 14, 30, .55) 100%); }
+
+.video-cover .play-ic {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #2395F8, #0184F7);
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(2, 141, 248, .45);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.video-cover:hover .play-ic {
+  transform: scale(1.08);
+  box-shadow: 0 14px 34px rgba(2, 141, 248, .55);
+}
+.video-cover .play-ic svg {
+  width: 30px; height: 30px;
+  fill: currentColor;
+  margin-left: 4px;   /* оптичне центрування трикутника */
+}
+@media (max-width: 760px) {
+  .video-cover .play-ic { width: 56px; height: 56px; }
+  .video-cover .play-ic svg { width: 24px; height: 24px; }
+}
 
 .badge-popular {
   position: absolute;
@@ -924,7 +1161,7 @@ a:hover { color: var(--c-cyan-d); }
 .social-link      { background: var(--c-blue); }
 
 /* Соцмережі у футері — в колонці «про компанію», під текстом;
-   один плоский колір без градієнтів та окантовок */
+   колір підібрано під світлий фон футера */
 .footer-about { display: flex; flex-direction: column; }
 .footer-col-contacts { display: flex; flex-direction: column; }
 .footer-socials { margin-top: auto; }
@@ -950,7 +1187,7 @@ a:hover { color: var(--c-cyan-d); }
   width: auto; height: auto;
   padding: 4px;
   border-radius: 0;
-  color: #9DBBD6;                 /* спокійний світло-блакитний */
+  color: #9DBBD6;                 /* монохромні іконки на темному тлі */
 }
 .footer-socials .social-btn svg { width: 26px; height: 26px; }
 .footer-socials .social-btn:hover { color: #fff; transform: none; }
@@ -971,6 +1208,7 @@ a:hover { color: var(--c-cyan-d); }
 
 /* ------------------------------- Footer --------------------------------- */
 
+/* Футер — блакитний градієнтний (як до світлої версії) */
 .site-footer {
   background: linear-gradient(180deg, #0E2E52, #0B3C7A);
   color: #D7E9F7;
@@ -1032,10 +1270,11 @@ a:hover { color: var(--c-cyan-d); }
   color: rgba(215, 233, 247, .75);
 }
 
-/* Лого на темному фоні: біла плашка, щоб не зливався */
+/* Бренд у футері: вордмарк + теглайн на темному тлі (лого — на білій плашці) */
 .footer-brand .brand-logo {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
   padding: 4px;
   background: #fff;
   border-radius: 12px;
@@ -1043,6 +1282,8 @@ a:hover { color: var(--c-cyan-d); }
 }
 .footer-brand .brand-name { color: #fff; }
 .footer-brand .brand-name b { color: #8FD4EF; }
+.footer-brand .brand-tagline { color: rgba(215, 233, 247, .8); }
+.footer-brand:hover .brand-logo { animation: logoSplash .85s ease; }
 
 /* Вирівнювання низів колонок футера (лише десктоп): соцкнопки,
    чат-чипи «Контактів» і список «Розділи» завершуються на одному рівні */
@@ -1136,6 +1377,9 @@ a:hover { color: var(--c-cyan-d); }
 .to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
 .to-top:hover { transform: translateY(-3px); }
 
+/* Крапкові індикатори: на десктопі приховані */
+.feat-dots { display: none; }
+
 /* ------------------------------- Reveal animations ---------------------- */
 
 .reveal {
@@ -1151,12 +1395,26 @@ a:hover { color: var(--c-cyan-d); }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
-  .bubble { animation: none; }
   .drop-fx { display: none; }
   html { scroll-behavior: auto; }
 }
 
 /* ------------------------------- Responsive ----------------------------- */
+
+@media (min-width: 761px) and (max-width: 1279px) {
+  /* Щільніший хедер, щоб усе вміщалось до 1280px */
+  .header-inner { gap: 1rem; padding-block: .7rem; }
+  .brand-name { font-size: 1.4rem; }
+  .brand-tagline { font-size: .57rem; }
+  .brand-logo { width: 50px; height: 50px; }
+  .nav { gap: 1.15rem; }
+  .nav > a, .nav-item > a { font-size: .95rem; }
+  .header-actions { gap: .7rem; }
+  .phone-num { font-size: 1rem; }
+  .phone-sched { font-size: .72rem; }
+  .phone-ic { width: 36px; height: 36px; }
+  .btn-head { padding: .75em 1.4em; font-size: .92rem; }
+}
 
 @media (max-width: 1020px) {
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
@@ -1164,18 +1422,24 @@ a:hover { color: var(--c-cyan-d); }
   .footer-grid { grid-template-columns: 1fr 1fr; text-align: left; }
   .messenger-btns { flex-direction: row; max-width: none; gap: .5rem; }
   .messenger-btns .btn { flex: 1 1 0; min-width: 0; padding: .7em .9em; font-size: .9rem; }
-  .hero-grid { grid-template-columns: 1fr; text-align: center; }
-  .hero-text { display: flex; flex-direction: column; align-items: center; }
-  .hero-note { text-align: left; }
-  .hero-visual { order: -1; }
-  .hero-product-card { max-width: 480px; width: 100%; }
+  /* Hero на планшеті: банер фоном, текст поверх */
+  .hero { min-height: 420px; }
+  .hero-img { object-position: 75% 50%; }
+  .hero-bottle { height: 62%; right: -2%; }
+  .hero-overlay {
+    background: linear-gradient(180deg,
+      rgba(249, 253, 254, .9) 0%,
+      rgba(249, 253, 254, .72) 55%,
+      rgba(249, 253, 254, .35) 100%);
+  }
+  .hero-content { max-width: 640px; }
   .contacts-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 760px) {
   .nav {
     position: fixed;
-    top: 64px;
+    top: 92px;   /* під вищим хедером */
     left: 0;
     right: 0;
     background: #fff;
@@ -1193,11 +1457,22 @@ a:hover { color: var(--c-cyan-d); }
   .nav.open { transform: translateY(0); opacity: 1; visibility: visible; }
   .nav a { padding: .8rem 6%; }
 
-  .header-phone span { display: none; }
-  .header-actions .btn { padding: .55em .95em; font-size: .8rem; letter-spacing: 0; }
-  .burger { display: flex; }
+  .header-phone .phone-text { display: none; }   /* лишається градієнтне коло — клікабельний tel: */
+  .header-divider { display: none; }
+  .header-actions .btn-head { display: none; }
+  .burger { display: flex; margin-left: auto; }   /* бургер притиснутий до правого краю */
+  .header-actions { margin-left: auto; }
 
-  .grid-3, .grid-4, .grid-2 { grid-template-columns: 1fr; }
+  /* Компактний хедер на мобільному */
+  .header-inner { gap: .8rem; padding-block: .5rem; }
+  .brand-logo { width: 46px; height: 46px; }
+  .brand-name { font-size: 1.3rem; }
+  .brand-tagline { font-size: .55rem; }
+  .phone-ic { width: 38px; height: 38px; }
+  .header-inner > .nav { margin-inline: 0; }
+  .nav { top: 64px; }   /* меню впритул під компактним хедером */
+
+  .grid-3, .grid-4 { grid-template-columns: 1fr; }
   #waterPrices { grid-template-columns: 1fr; }
 
   /* Футер на мобільному: сітка 2x2 —
@@ -1219,7 +1494,61 @@ a:hover { color: var(--c-cyan-d); }
   .footer-col p { font-size: .88rem; }
   .site-footer h4 { font-size: .95rem; }
 
-  .hero-stats { gap: 1.2rem; }
+  /* Hero на мобільному: інша композиція — фото з пейзажами Києва прибрано,
+     фон — градієнт крижаного неба. Переваги (іконки + текст) — ВЕРТИКАЛЬНО
+     вздовж лівого краю бутля (одна сітка: колонка чипів + колонка бутля),
+     плашка про обмін і кнопка — знизу на чистому градієнтному тлі.
+     .hero-content розкривається через display:contents — його діти стають
+     елементами сітки hero */
+  .hero {
+    display: grid;
+    grid-template-columns: .62fr 1.38fr;
+    align-items: center;
+    column-gap: .25rem;
+    min-height: 0;
+    padding: 1.3rem 4% 2rem;
+    background: linear-gradient(180deg, #EAF6FD 0%, #D8EEFA 34%, #BFE4F6 62%, #A9D8F1 100%);
+  }
+  .hero-img, .hero-overlay { display: none; }
+  .hero-content { display: contents; }
+  .hero-title {
+    grid-column: 1 / -1;
+    display: block;
+    text-wrap: balance;
+    font-size: clamp(2.3rem, 9vw, 3.1rem);
+  }
+  .hero-subtitle { grid-column: 1 / -1; margin-bottom: 1rem; }
+  .hero-chips {
+    grid-column: 1;
+    grid-row: 3;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .7rem;
+    margin-bottom: 0;
+  }
+  .hero-chips li { font-size: .78rem; }
+  .hero-chips svg { width: 24px; height: 24px; }
+  .hero-bottle {
+    grid-column: 2;
+    grid-row: 3;
+    position: static;
+    width: calc(100% + 15%);
+    max-width: none;
+    height: auto;
+    margin: 0 -11% 0 0;
+    justify-self: end;
+    align-self: center;
+  }
+  .hero-note {
+    grid-column: 1 / -1;
+    gap: .7rem;
+    padding: .8rem .9rem;
+    margin-block: 1.1rem .9rem;
+  }
+  .hero-note p { font-size: .78rem; line-height: 1.45; }
+  .hero-note .ic { width: 30px; height: 30px; padding: 6px; }
+  .hero-actions { grid-column: 1 / -1; margin-top: 0; }
+  .hero-actions .btn { width: 100%; }
 
   .car-btn { width: 38px; height: 38px; }
   .car-btn svg { width: 20px; height: 20px; }
@@ -1238,6 +1567,49 @@ a:hover { color: var(--c-cyan-d); }
   .footer-col-contacts .footer-messengers .chip { width: 100%; padding: .62em 1em; font-size: .82rem; white-space: nowrap; }
   /* соцкнопки — під чатами */
   .footer-socials { margin-top: .8rem; justify-content: flex-start; }
+
+  /* «Чому обирають VodaLed» на мобільному: картки 1–2 поруч,
+     3–4 гортаються свайпом праворуч/ліворуч (лише ≤760px) */
+  #featuresGrid {
+    display: flex;
+    gap: .9rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: .35rem;
+    cursor: grab;                 /* перетягування як у каруселі партнерів */
+  }
+  #featuresGrid::-webkit-scrollbar { display: none; }
+  #featuresGrid.dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;       /* snap не бореться з ручним перетягуванням */
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #featuresGrid .card-feature {
+    flex: 0 0 47%;              /* дві картки на екрані + краєчок третьої як підказка свайпу */
+    scroll-snap-align: start;
+    padding: 1.1rem 1rem;
+  }
+  /* У вузькій картці іконка стає над заголовком, щоб текст не обрізався */
+  #featuresGrid .card-feature .card-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .6rem;
+  }
+  #featuresGrid .card-feature .card-head h3 { font-size: 1rem; }
+  #featuresGrid .card-feature .muted { font-size: .86rem; }
+
+  /* Крапкові індикатори під свайп-каруселлю (видно лише на мобільному) */
+  .feat-dots { display: flex; justify-content: center; gap: .45rem; margin-top: 1rem; }
+  .feat-dot {
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: #C9DDEA;
+    transition: width .25s ease, background .25s ease;
+  }
+  .feat-dot.active { width: 22px; background: var(--c-cyan-d); }
 }
 
 @media (max-width: 420px) {
