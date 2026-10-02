@@ -1,15 +1,39 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#1668B3"/>
-      <stop offset="1" stop-color="#0B3C7A"/>
+    <linearGradient id="ice" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#DCEEF9"/>
     </linearGradient>
-    <linearGradient id="drop" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#EAF6FD"/>
-      <stop offset="1" stop-color="#7FC7E8"/>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#A9DCF4"/>
+      <stop offset="1" stop-color="#6FBEE6"/>
     </linearGradient>
+    <clipPath id="diaClip">
+      <path d="M32 3 61 32 32 61 3 32Z"/>
+    </clipPath>
   </defs>
-  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
-  <path d="M32 10c8 10.5 15 19.5 15 28a15 15 0 1 1-30 0c0-8.5 7-17.5 15-28z" fill="url(#drop)"/>
-  <path d="M25.5 38a6.6 6.6 0 0 0 4.7 6.2" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/>
+
+  <!-- Біла підкладка (як у favicon.ico / apple-touch-icon) -->
+  <rect width="64" height="64" rx="9" fill="#FFFFFF"/>
+
+  <!-- Крижаний ромб-щит -->
+  <path d="M32 3 61 32 32 61 3 32Z" fill="url(#ice)"/>
+
+  <!-- Гори (як у логотипі) + снігові шапки; внизу — вода -->
+  <g clip-path="url(#diaClip)">
+    <path d="M6 42 24 18 31 26 39 11 58 42Z" fill="#9CC6E4" stroke="#2E51A4" stroke-width="2.4" stroke-linejoin="round"/>
+    <path d="M39 11 44.5 19 40 16.5 36.5 20.5 34.5 15 31 19Z" fill="#FFFFFF"/>
+    <path d="M24 18 27.5 23.5 24 21.5 21 25 19.5 20.5Z" fill="#FFFFFF"/>
+    <path d="M0 47 Q8 43 16 47 T32 47 T48 47 T64 47 L64 64 0 64Z" fill="url(#sea)"/>
+    <path d="M2 53 Q10 49 18 53 T34 53 T50 53 T66 53" fill="none" stroke="#2E51A4" stroke-width="2.2"/>
+    <path d="M4 59 Q12 55 20 59 T36 59 T52 59 T68 59" fill="none" stroke="#FFFFFF" stroke-width="2" opacity=".85"/>
+  </g>
+
+  <!-- Контур ромба поверх вмісту -->
+  <path d="M32 3 61 32 32 61 3 32Z" fill="none" stroke="#2E51A4" stroke-width="3" stroke-linejoin="round"/>
+
+  <!-- Червона стрічка VODALED (колір бренду #BD202F) -->
+  <rect x="5.5" y="23.5" width="53" height="23" rx="2.5" fill="#BD202F" stroke="#2E51A4" stroke-width="3"/>
+  <text x="32" y="35.6" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="800" letter-spacing="0.2" fill="#FFFFFF">VODALED</text>
+  <text x="32" y="43.6" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="5" font-style="italic" fill="#FFFFFF">Water &amp; Ice</text>
 </svg>
