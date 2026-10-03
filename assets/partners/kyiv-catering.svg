@@ -1,11 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 96" width="160" height="96">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 176 62" width="176" height="62">
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#4a148c"/>
       <stop offset="1" stop-color="#7e57c2"/>
     </linearGradient>
   </defs>
-  <rect width="160" height="96" rx="16" fill="url(#g)"/>
-  <g transform="translate(104 29) scale(1.6)" opacity="0.95"><circle cx="12" cy="7" r="2.6" fill="none" stroke="white" stroke-width="1.7"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0z" fill="none" stroke="white" stroke-width="1.7" stroke-linejoin="round"/></g>
-  <text x="18" y="62" font-family="Segoe UI, Arial, sans-serif" font-size="40" font-weight="800" fill="white">KC</text>
+  <rect width="176" height="62" rx="10" fill="url(#g)"/>
+  <g transform="translate(66 9) scale(1.8333)"><circle cx="12" cy="7" r="2.6" fill="none" stroke="white" stroke-width="1.7"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0z" fill="none" stroke="white" stroke-width="1.7" stroke-linejoin="round"/></g>
 </svg>

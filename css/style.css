@@ -301,6 +301,18 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 
 .section-alt { background: var(--c-ice); }
 
+/* Розділ «Чому обирають VodaLed» — розфарбований: легкий градієнтний фон
+   з двома м'якими кольоровими плямами (бірюза ліворуч, синій праворуч),
+   щоб секція не зливалась з білими картками */
+.features {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(560px 300px at 4% -8%, rgba(25, 184, 216, .16), transparent 70%),
+    radial-gradient(520px 300px at 96% 108%, rgba(22, 104, 179, .14), transparent 70%),
+    linear-gradient(180deg, #FFFFFF 0%, #EFF9FD 100%);
+}
+
 .section-head { text-align: center; max-width: 640px; margin: 0 auto 2.6rem; }
 .section-head p { color: var(--c-grey); margin-top: .6rem; }
 
@@ -361,13 +373,13 @@ section[id], h3[id] { scroll-margin-top: 108px; }
     rgba(249, 253, 254, 0) 55%);
 }
 
-/* Бутель із льодом — окремий шар поверх банера, там само, де він був
-   у попередній версії банера: праворуч, на крижано-блакитній ділянці */
+/* Бутель із льодом — окремий шар поверх банера, як до збільшення:
+   86% висоти hero (правий якір лишаємо безпечний, щоб не вилазив за край) */
 .hero-bottle {
   position: absolute;
-  right: max(2%, calc((100% - 1240px) / 2));
+  right: max(2%, calc((95% - 1240px) / 2));
   bottom: 0;
-  height: 86%;
+  height: 80%;
   width: auto;
   object-fit: contain;
   object-position: bottom center;
@@ -383,6 +395,8 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   /* Ліва межа — як у .container інших секцій: 4%, але не ширше 1160px */
   margin-left: max(4%, calc((100% - 1160px) / 2));
   margin-right: 0;
+  /* Вертикальний центр геро-контенту трохи вище геометричного центру */
+  margin-top: clamp(2.5rem, 5vw, 4rem);
 }
 
 .hero-title {
@@ -403,14 +417,29 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   -webkit-text-fill-color: transparent;
 }
 
+/* Підзаголовок і чипи «сидять» на білій хмаринці: м'який розмитий
+   білий ореол за текстом (псевдоелемент з filter: blur), без жорсткої
+   картки чи рамки — текст гарно читається на будь-якій ділянці фото */
 .hero-subtitle {
+  position: relative;
   color: var(--c-ink);
   font-size: clamp(1.02rem, 1.6vw, 1.2rem);
   font-weight: 500;
   margin-bottom: 1.3rem;
 }
+.hero-subtitle::before {
+  content: '';
+  position: absolute;
+  inset: -0.55em -1em -0.55em -0.75em;
+  background: radial-gradient(120% 130% at 30% 40%, rgba(255,255,255,.95) 0%, rgba(255,255,255,.8) 45%, rgba(255,255,255,.55) 72%, rgba(255,255,255,0) 100%);
+  filter: blur(10px);
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+}
 
-/* Міні-переваги з іконками — як у макеті */
+/* Міні-переваги з іконками — як у макеті; кожен чип теж на своїй
+   маленькій хмаринці (замість text-shadow тепер білий блур-ореол) */
 .hero-chips {
   list-style: none;
   display: flex;
@@ -420,6 +449,7 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   padding: 0;
 }
 .hero-chips li {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: .6em;
@@ -427,11 +457,16 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   font-size: .92rem;
   line-height: 1.25;
   color: #0B347C;
-  /* Легке біле підсвічування тексту — читаємость на темних ділянках фото */
-  text-shadow:
-    0 0 6px rgba(255, 255, 255, .95),
-    0 0 14px rgba(255, 255, 255, .65),
-    0 1px 2px rgba(255, 255, 255, .9);
+}
+.hero-chips li::before {
+  content: '';
+  position: absolute;
+  inset: -0.5em -0.9em;
+  background: radial-gradient(110% 130% at 40% 45%, rgba(255,255,255,.92) 0%, rgba(255,255,255,.72) 50%, rgba(255,255,255,0) 100%);
+  filter: blur(9px);
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
 }
 /* Контурні іконки, як у макеті користувача: синій контур без підкладки,
    з білим ореолом по зовнішньому контуру */
@@ -601,16 +636,28 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 /* Розділ «Чому обирають VodaLed»: акцентні картки з номером,
    градієнтною іконкою та кольоровою рискою при наведенні */
 #featuresGrid { counter-reset: feat; }
+/* Кожна картка — власний м'який градієнт від білого до світлого
+   блакитного відтінку (бірюза → небо → класичний блакитний → глибокий).
+   Різні, але в одній колірній сім'ї, перехід плавний — без різкості. */
 #featuresGrid .card-feature {
   counter-increment: feat;
   --acc1: var(--c-cyan);
   --acc2: var(--c-blue);
-  background: linear-gradient(180deg, #FFFFFF 0%, #F3FAFE 100%);
+  background: linear-gradient(145deg, #FFFFFF 0%, #FFFFFF 30%, #E1F6FB 100%);
   overflow: hidden;
 }
-#featuresGrid .card-feature:nth-child(2) { --acc1: #4598DC; --acc2: var(--c-deep); }
-#featuresGrid .card-feature:nth-child(3) { --acc1: #7FC7E8; --acc2: #0E93B4; }
-#featuresGrid .card-feature:nth-child(4) { --acc1: #0E93B4; --acc2: #0B3C7A; }
+#featuresGrid .card-feature:nth-child(2) {
+  --acc1: #4598DC; --acc2: var(--c-deep);
+  background: linear-gradient(145deg, #FFFFFF 0%, #FFFFFF 30%, #E0EFFC 100%);
+}
+#featuresGrid .card-feature:nth-child(3) {
+  --acc1: #7FC7E8; --acc2: #0E93B4;
+  background: linear-gradient(145deg, #FFFFFF 0%, #FFFFFF 30%, #E6F3FD 100%);
+}
+#featuresGrid .card-feature:nth-child(4) {
+  --acc1: #0E93B4; --acc2: #0B3C7A;
+  background: linear-gradient(145deg, #FFFFFF 0%, #FFFFFF 30%, #DCEAF8 100%);
+}
 #featuresGrid .card-feature::before {
   content: '';
   position: absolute;
@@ -819,7 +866,8 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   position: relative;          /* фіксує геометрію: розмір не залежить від шару відео */
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  /* Легка тінь під відео: м'який «float» над фоном секції */
+  box-shadow: 0 14px 32px rgba(11, 60, 122, .16), 0 4px 10px rgba(11, 60, 122, .08);
   border: 1px solid var(--c-line);
   /* Пропорція 16:9 — відео завжди нормальної висоти, не стиснуте;
      раніше висоту давав сам <video> у потоці, тепер шелл абсолютний */
@@ -1064,25 +1112,26 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 
 .carousel:focus-visible { outline: 2px solid var(--c-blue); outline-offset: 4px; border-radius: 12px; }
 
+/* Суцільна плитка партнера: 176x62 (подвійний розмір), без тексту — тільки логотип */
 .partner-chip {
-  display: flex;
-  align-items: center;
-  gap: .7rem;
+  flex: 0 0 auto;
+  width: 176px;
+  height: 62px;
   background: #fff;
   border: 1px solid var(--c-line);
-  border-radius: 999px;
-  padding: .8rem 1.5rem;
+  border-radius: 10px;
+  padding: 0;
+  overflow: hidden;
   box-shadow: var(--shadow-sm);
-  white-space: nowrap;
   transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
 }
 .partner-chip:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--c-sky); }
 
 .partner-logo {
-  width: 40px; height: 40px;
-  border-radius: 10px;
-  object-fit: cover;
-  background: var(--c-ice);
+  width: 176px; height: 62px;
+  object-fit: contain;
+  border-radius: 9px;
+  background: #fff;
   flex-shrink: 0;
 }
 
@@ -1096,6 +1145,7 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   font-family: var(--font-head);
   font-weight: 700;
   font-size: 1rem;
+  margin: auto;
 }
 
 /* ------------------------------- Contacts ------------------------------- */

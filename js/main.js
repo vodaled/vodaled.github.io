@@ -3,7 +3,7 @@
    1) Динамічне підвантаження header.html та footer.html
    2) Завантаження config.json та рендеринг даних (ціни, контакти, графік...)
    3) Мобільне меню, модальне вікно замовлення, карусель партнерів,
-      анімації появи (reveal on scroll), звук «буль» на розділі Ціни
+      анімації появи (reveal on scroll), звук «буль» у зоні «Вода» + відео
    ========================================================================== */
 
 const CONFIG_URL = 'config.json';
@@ -171,18 +171,18 @@ function socialBtnHTML(s) {
 }
 
 function partnerChipHTML(p) {
+  /* Суцільна плитка 88x31: лише логотип, без текстових підписів
+     (назва — в alt/title для доступності й тултіпа) */
   if (p.logo) {
     return `
       <div class="partner-chip">
-        <img class="partner-logo" src="${esc(p.logo)}" alt="${esc(p.name)}" loading="lazy">
-        <span>${esc(p.name)}</span>
+        <img class="partner-logo" src="${esc(p.logo)}" alt="${esc(p.name)}" title="${esc(p.name)}" loading="lazy">
       </div>`;
   }
   const initial = (p.name || '?').trim().charAt(0).toUpperCase();
   return `
     <div class="partner-chip">
       <span class="partner-dot">${esc(initial)}</span>
-      <span>${esc(p.name)}</span>
     </div>`;
 }
 
@@ -317,8 +317,22 @@ function initCarousel() {
   let drag = null;            /* { startX, startOffset } */
   let hoverPaused = false;
 
+  /* Нескінченна стрічка працює лише коли половина (ідентична копія набору)
+     НЕ вужча за видиму область: інакше в кінці з'являвся б порожній простір
+     і помітний стрибок при зацикленні. За потреби подвоюємо набір чипів —
+     половинки лишаються ідентичними, тож «шов» завжди за екраном. */
+  const ensureLoopWidth = () => {
+    const wrap = track.parentElement;
+    if (!wrap) return;
+    let guard = 0;
+    while (track.scrollWidth / 2 < wrap.clientWidth + 40 && guard++ < 3) {
+      track.innerHTML += track.innerHTML;
+    }
+    half = track.scrollWidth / 2;
+  };
+
   const measure = () => { half = track.scrollWidth / 2; };
-  measure();
+  ensureLoopWidth();
 
   /* М'яке зациклення: тримаємо зсув у межах половини стрічки.
      Повертає застосований зсув (дельту), щоб цілі анімацій можна було
@@ -384,7 +398,7 @@ function initCarousel() {
   track.addEventListener('mouseenter', () => { hoverPaused = true; });
   track.addEventListener('mouseleave', () => { hoverPaused = false; });
 
-  window.addEventListener('resize', () => { measure(); normalizeX(); apply(); });
+  window.addEventListener('resize', () => { ensureLoopWidth(); normalizeX(); apply(); });
 
   (function step() {
     if (mode === 'auto' && !hoverPaused && half > 0) {
@@ -410,12 +424,17 @@ function initCarousel() {
   })();
 }
 
-/* ------------------------ Звук «буль» (hover на «Ціни») ------------------ */
+/* ----------------- Звук «буль» (зона «Вода» + промо-відео) --------------- */
+/* Звук і анімована крапля прив'язані ЛИШЕ до зони «Вода» (заголовок #water,
+   картка води, промо-відео) — не до цілої секції «Ціни» і не до карток
+   «Чому обирають VodaLed». На десктопі — mouseenter у зону, на тач — торкання. */
 
 function initDropSound() {
   const section = document.querySelector('[data-drop-sound]');
   if (!section) return;
 
+  const waterZone = section.querySelector('#water');
+  const waterGrid = section.querySelector('#waterPrices');
   const fx = section.querySelector('.drop-fx');
   let audio = null;
   let unlocked = false;
@@ -480,21 +499,30 @@ function initDropSound() {
   positionFx();
   window.addEventListener('resize', positionFx);
 
-  /* На тачскрінах немає mouseenter від курсора — тригеримо на торканні секції */
+  /* Зона-тригер: тільки «Вода» — заголовок #water + сітка #waterPrices
+     (картка води + промо-відео). Картки «Лід», «Аксесуари» і «Чому
+     обирають VodaLed» звуку НЕ дають. Пелюх
+     section.dataset.dropSound='water-zone' ставиться з index.html. */
+  const zoneEls = [waterZone, waterGrid].filter(Boolean);
+  const zones = zoneEls.length ? zoneEls : [section];
+
+  /* На тачскрінах немає mouseenter від курсора — тригеримо на торканні зони */
   const touchTrigger = () => {
     const now = performance.now();
     if (now - lastPlay < 800) return;
     lastPlay = now;
     playFx();
   };
-  section.addEventListener('touchstart', touchTrigger, { passive: true });
-
-  section.addEventListener('mouseenter', () => {
+  const hoverTrigger = () => {
     const now = performance.now();
     if (now - lastMouseMove > 400) return;  /* курсор нерухомий — це скрол */
     if (now - lastPlay < 800) return;       /* захист від повторів */
     lastPlay = now;
     playFx();
+  };
+  zones.forEach(z => {
+    z.addEventListener('touchstart', touchTrigger, { passive: true });
+    z.addEventListener('mouseenter', hoverTrigger);
   });
 
   function playFx() {
@@ -710,28 +738,48 @@ function initFeatureDots() {
 /* ------------------------------ Кнопка вгору ----------------------------- */
 
 /* ------------------------- Паралакс бутля в hero -------------------------
-   Легкий ефект: при прокрутці бутель «відстає» від сторінки (спливає вгору
-   до 48px). Тільки transform через requestAnimationFrame — без reflow. */
+   Легкий ефект: при прокрутці бутель ледве «відстає» від сторінки.
+   Амплітуда менша (22px), а сам рух згладжений lerp-інтерполяцією
+   в requestAnimationFrame — вібрація м'яка, без різких стрибків.
+   Тільки transform — без reflow. */
 function initBottleParallax() {
   const bottle = document.querySelector('.hero-bottle');
   const hero = bottle && bottle.closest('.hero');
   if (!bottle || !hero) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  let raf = 0;
-  const update = () => {
-    raf = 0;
-    if (window.innerWidth <= 760) { bottle.style.transform = ''; return; } /* мобільна сітка — без ефекту */
-    const r = hero.getBoundingClientRect();
-    if (r.bottom <= 0) return; /* hero повністю прокручено */
-    const p = Math.min(1, Math.max(0, -r.top / r.height)); /* 0 → 1 у міру прокрутки */
-    bottle.style.transform = 'translate3d(0, ' + (-p * 48).toFixed(1) + 'px, 0)';
-  };
-  const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+  const AMPLITUDE = 22;  /* px — навпіл менше, ніж раніше */
+  const EASE = 0.09;     /* коефіцієнт згладжування: менше = плавніше */
 
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
-  onScroll();
+  let target = 0;
+  let current = 0;
+  let raf = 0;
+
+  const computeTarget = () => {
+    if (window.innerWidth <= 760) return 0; /* мобільна сітка — без ефекту */
+    const r = hero.getBoundingClientRect();
+    if (r.bottom <= 0) return 0; /* hero повністю прокручено */
+    const p = Math.min(1, Math.max(0, -r.top / r.height)); /* 0 → 1 */
+    return -p * AMPLITUDE;
+  };
+
+  const step = () => {
+    target = computeTarget();
+    current += (target - current) * EASE;
+    if (Math.abs(target - current) < 0.05) current = target;
+    bottle.style.transform = (current === 0 && target === 0)
+      ? ''
+      : 'translate3d(0, ' + current.toFixed(2) + 'px, 0)';
+    const settled = current === target;
+    const offscreen = hero.getBoundingClientRect().bottom <= 0;
+    if (settled && offscreen) { raf = 0; return; } /* економимо кадри поза екраном */
+    raf = requestAnimationFrame(step);
+  };
+  const wake = () => { if (!raf) raf = requestAnimationFrame(step); };
+
+  window.addEventListener('scroll', wake, { passive: true });
+  window.addEventListener('resize', wake);
+  wake();
 }
 
 function initToTop() {
