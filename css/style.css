@@ -417,6 +417,12 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   -webkit-text-fill-color: transparent;
 }
 
+/* Мобільні елементи hero (заголовок «м», ряд іконок,
+   картка «Для доставки води», фон-постер) — на десктопі приховані.
+   Кнопка: на десктопі data-config-спан, на мобільному — довгий спан */
+.hero-title-m, .hero-mob-feats, .hero-mob-card, .hero-mob-bg { display: none; }
+.cta-mob { display: none; }
+
 /* Підзаголовок і чипи «сидять» на білій хмаринці: м'який розмитий
    білий ореол за текстом (псевдоелемент з filter: blur), без жорсткої
    картки чи рамки — текст гарно читається на будь-якій ділянці фото */
@@ -582,7 +588,8 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   animation: heroBottleIn 1.1s cubic-bezier(.22, .8, .3, 1) .35s backwards;
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-title, .hero-subtitle, .hero-chips li, .hero-note, .hero-actions, .hero-bottle {
+  .hero-title, .hero-subtitle, .hero-chips li, .hero-note, .hero-actions, .hero-bottle,
+  .hero-mob-feats li, .hero-mob-card {
     animation: none;
   }
 }
@@ -602,10 +609,15 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   flex-direction: column;
   transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
 }
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--c-sky);
+/* Підйом картки при наведенні — лише для пристроїв зі справжнім hover.
+   На тач-екранах :hover «залипає» після тапу і картки здіймаються вгору,
+   тому на мобільному лишається тільки горизонтальний свайп */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--c-sky);
+  }
 }
 
 .card .icon {
@@ -667,7 +679,9 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   transform-origin: left;
   transition: transform .35s ease;
 }
-#featuresGrid .card-feature:hover::before { transform: scaleX(1); }
+@media (hover: hover) and (pointer: fine) {
+  #featuresGrid .card-feature:hover::before { transform: scaleX(1); }
+}
 #featuresGrid .card-feature::after {
   content: '0' counter(feat);
   position: absolute;
@@ -1544,61 +1558,258 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   .footer-col p { font-size: .88rem; }
   .site-footer h4 { font-size: .95rem; }
 
-  /* Hero на мобільному: інша композиція — фото з пейзажами Києва прибрано,
-     фон — градієнт крижаного неба. Переваги (іконки + текст) — ВЕРТИКАЛЬНО
-     вздовж лівого краю бутля (одна сітка: колонка чипів + колонка бутля),
-     плашка про обмін і кнопка — знизу на чистому градієнтному тлі.
-     .hero-content розкривається через display:contents — його діти стають
-     елементами сітки hero */
+  /* Hero на мобільному: вертикальний постер за референсом —
+     фон hero-mob.png (небо/Київ/водна гладь), великий заголовок і
+     підзаголовок зверху, бутель з льодом по центру «на воді»,
+     ряд із 4 іконок-переваг, біла картка «Для доставки води»
+     з іконкою гір, червона кнопка — далі плавний перехід у
+     «Чому обирають VodaLed».
+     Вертикальні відступи — у vw: зони фонового зображення
+     масштабуються разом із шириною екрана, тому композиція
+     тримається на будь-якому девайсі. Порядок елементів керується
+     через flex order (hero-content розкритий через display:contents) */
   .hero {
-    display: grid;
-    grid-template-columns: .62fr 1.38fr;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    column-gap: .25rem;
     min-height: 0;
-    padding: 1.3rem 4% 2rem;
-    background: linear-gradient(180deg, #EAF6FD 0%, #D8EEFA 34%, #BFE4F6 62%, #A9D8F1 100%);
+    padding: 0 4% 13vw;
+    background: linear-gradient(180deg, #CFEFFD 0, #B6E1FD 158vw, #A5D7F6 92%, #9CCBEE 100%);
   }
   .hero-img, .hero-overlay { display: none; }
-  .hero-content { display: contents; }
-  .hero-title {
-    grid-column: 1 / -1;
+  .hero-mob-bg {
     display: block;
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 158.4vw;              /* 100% ширини × 1188/750 */
+    background: url('../assets/hero-mob.png') top center / 100% auto no-repeat;
+    z-index: 0;
+    pointer-events: none;
+  }
+  /* Нижче хвилі фон зображення (біла картка-заготовка) перекриваємо
+     суцільним блакитним — далі композицію веде власна розмітка */
+  .hero-mob-bg::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 133.5vw;
+    bottom: 0;
+    background: #B5E1FD;
+  }
+  .hero-content { display: contents; }
+
+  .hero-title {
+    order: 1;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    margin-top: 2.5vw;
+    text-align: center;
     text-wrap: balance;
-    font-size: clamp(2.3rem, 9vw, 3.1rem);
+    font-size: clamp(1.65rem, 7.6vw, 3rem);
+    line-height: 1.14;
   }
-  .hero-subtitle { grid-column: 1 / -1; margin-bottom: 1rem; }
-  .hero-chips {
-    grid-column: 1;
-    grid-row: 3;
+  .hero-title-1, .hero-title-2 { display: none; }
+  .hero-title-m {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: .7rem;
-    margin-bottom: 0;
+    align-items: center;
   }
-  .hero-chips li { font-size: .78rem; }
-  .hero-chips svg { width: 24px; height: 24px; }
+  /* Велика частина — розмір не змінюється; хвостик — меншим, одним рядком */
+  .ht-m-main { display: block; }
+  .ht-m-sub {
+    display: block;
+    margin-top: .35em;
+    font-size: clamp(1rem, 4.4vw, 1.3rem);
+    font-weight: 700;
+    white-space: nowrap;
+    letter-spacing: .01em;
+  }
+
+  .hero-subtitle { display: none; }
+
+  .hero-chips { display: none; }
+
   .hero-bottle {
-    grid-column: 2;
-    grid-row: 3;
-    position: static;
-    width: calc(100% + 15%);
-    max-width: none;
+    order: 3;
+    position: relative;
+    z-index: 1;
+    right: auto;
+    bottom: auto;
+    width: 84vw;
     height: auto;
-    margin: 0 -11% 0 0;
-    justify-self: end;
-    align-self: center;
+    /* Від'ємний відступ: без підзаголовка бутель іде одразу після
+       заголовка — виставляємо так, щоб видимий низ став на лінію води
+       (~57% висоти фону); верх зображення (14% — прозорий) не заважає */
+    margin-top: 10.9vw;
   }
-  .hero-note {
-    grid-column: 1 / -1;
-    gap: .7rem;
-    padding: .8rem .9rem;
-    margin-block: 1.1rem .9rem;
+
+  .hero-mob-feats {
+    order: 4;
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1vw;
+    width: 100%;
+    margin-top: 1.5vw;
+    padding: 0;
+    list-style: none;
+    text-align: center;
   }
-  .hero-note p { font-size: .78rem; line-height: 1.45; }
-  .hero-note .ic { width: 30px; height: 30px; padding: 6px; }
-  .hero-actions { grid-column: 1 / -1; margin-top: 0; }
-  .hero-actions .btn { width: 100%; }
+  .hero-mob-feats .hf-ic {
+    display: grid;
+    place-items: center;
+    width: 13.5vw;
+    height: 13.5vw;
+    max-width: 64px;
+    max-height: 64px;
+    margin-inline: auto;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #E9F5FD, #CDE7F9);
+    box-shadow: 0 2px 10px rgba(22, 104, 179, .14);
+  }
+  .hero-mob-feats .hf-ic svg { width: 60%; height: 60%; }
+  .hero-mob-feats b {
+    display: block;
+    margin-top: 2vw;
+    font-size: clamp(.74rem, 3.4vw, .95rem);
+    line-height: 1.22;
+    color: #0B347C;
+  }
+  .hero-mob-feats small {
+    display: block;
+    margin-top: .8vw;
+    font-size: clamp(.62rem, 2.6vw, .78rem);
+    line-height: 1.32;
+    color: #3D6390;
+  }
+  /* Анімації іконок і підписів при наведенні — тільки для пристроїв
+     зі справжнім hover (миша/трекпад), на тач-екранах не спрацьовують */
+  .hero-mob-feats .hf-ic { transition: transform .25s ease, box-shadow .25s ease; }
+  .hero-mob-feats b, .hero-mob-feats small { transition: color .25s ease, transform .25s ease; }
+  @media (hover: hover) and (pointer: fine) {
+    /* Підйом — на крузі-іконці, бо на li входна анімація (fill: both)
+       утримує transform і скасовує би hover-зсув */
+    .hero-mob-feats li:hover .hf-ic {
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: 0 6px 16px rgba(22, 104, 179, .3);
+    }
+    .hero-mob-feats li:hover b { color: #1668B3; }
+    .hero-mob-feats li:hover b,
+    .hero-mob-feats li:hover small { transform: translateY(-2px); }
+    .hero-mob-feats li:nth-child(1):hover .hf-ic svg { animation: hfDrip .6s ease; }
+    .hero-mob-feats li:nth-child(2):hover .hf-ic svg { animation: hfSpin .8s ease-in-out; }
+    .hero-mob-feats li:nth-child(3):hover .hf-ic svg { animation: hfDrive .7s ease; }
+    .hero-mob-feats li:nth-child(4):hover .hf-ic svg { animation: hfShield .55s ease; }
+  }
+  /* Крапля падає, сніжинка обертається, вантажівка їде, щит гуркоче */
+  @keyframes hfDrip {
+    0% { transform: translateY(-14%); }
+    55% { transform: translateY(16%); }
+    100% { transform: translateY(0); }
+  }
+  @keyframes hfSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(180deg); }
+  }
+  @keyframes hfDrive {
+    0% { transform: translateX(0); }
+    30% { transform: translateX(18%); }
+    65% { transform: translateX(-10%); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes hfShield {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.22); }
+    70% { transform: scale(.94); }
+    100% { transform: scale(1); }
+  }
+
+  .hero-mob-card {
+    order: 5;
+    display: block;
+    position: relative;
+    z-index: 2;
+    width: 89%;
+    margin-top: 7.5vw;
+    animation: heroRiseIn .8s ease-out 1.05s both;
+    padding: 9.5vw 4.5vw 6.5vw;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 18px 44px rgba(11, 60, 122, .16);
+    text-align: center;
+  }
+  .hmc-mountains {
+    position: absolute;
+    top: -6.8vw;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18vw;
+    height: auto;
+    max-width: 76px;
+  }
+  .hmc-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5vw;
+    width: fit-content;
+    margin-inline: auto;
+    font-family: var(--font-hero);
+    font-weight: 800;
+    font-size: clamp(1.15rem, 5.2vw, 1.5rem);
+    line-height: 1.2;
+    white-space: nowrap;
+    color: #023470;
+    background: linear-gradient(100deg, #023470 8%, #1668B3 48%, #4598DC 92%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hmc-title::before, .hmc-title::after {
+    content: '';
+    flex: 0 0 7vw;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, rgba(156, 195, 232, 0), #9CC3E8);
+  }
+  .hmc-title::after { transform: scaleX(-1); }
+  .hmc-text {
+    margin-top: 3.2vw;
+    font-size: clamp(.8rem, 3.6vw, .95rem);
+    line-height: 1.5;
+    color: var(--c-ink);
+  }
+
+  .hero-note { display: none; }
+
+  .hero-actions { order: 6; width: 100%; margin-top: 5.5vw; }
+  .hero-actions .cta-desk { display: none; }
+  .cta-mob { display: inline; }
+  /* Довгий текст кнопки — вміщуємо в рамку без переповнення */
+  .hero-actions .btn {
+    width: 100%;
+    font-size: .88rem;
+    padding: .9em 1em;
+    white-space: nowrap;
+  }
+
+  /* Іконки-переваги з'являються каскадом, як чипи на десктопі */
+  .hero-mob-feats li:nth-child(1) { animation: heroRiseIn .7s ease-out .6s both; }
+  .hero-mob-feats li:nth-child(2) { animation: heroRiseIn .7s ease-out .72s both; }
+  .hero-mob-feats li:nth-child(3) { animation: heroRiseIn .7s ease-out .84s both; }
+  .hero-mob-feats li:nth-child(4) { animation: heroRiseIn .7s ease-out .96s both; }
+
+  /* Плавний перехід: блакитний градієнт hero продовжується у розділ
+     «Чому обирають VodaLed» і м'яко світлішає до білого */
+  .features {
+    background:
+      radial-gradient(560px 300px at 4% 40%, rgba(25, 184, 216, .16), transparent 70%),
+      radial-gradient(520px 300px at 96% 108%, rgba(22, 104, 179, .14), transparent 70%),
+      linear-gradient(180deg, #9CCBEE 0%, #E3F3FB 12%, #FFFFFF 22%, #EFF9FD 100%);
+  }
 
   .car-btn { width: 38px; height: 38px; }
   .car-btn svg { width: 20px; height: 20px; }
