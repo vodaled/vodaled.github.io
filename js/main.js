@@ -552,6 +552,41 @@ function initDropSound() {
 
 const KYIV_CENTER = [50.4273, 30.5116]; /* вул. Казимира Малевича */
 
+/* ------------------- Жести карти: 1 палець — сайт, 2 — карта ------------ */
+/* Leaflet сам перехоплює однофінгерний свайп по карті — сторінка «залипає»
+   на ній (а на тач-пристроях він ще й ставить контейнеру touch-action: none,
+   див. CSS #kyivMap).
+   Тут однофінгерні дотики не доходять до обробників Leaflet
+   (capture + stopImmediatePropagation), тому палець просто гортає сторінку.
+   Два пальці, навпаки, віддаються вбудованому L.TouchZoom: він уміє і пінч,
+   і переміщення — карта їде за середньою точкою пальців. */
+function initMapTouchGestures(holder) {
+  holder.addEventListener('touchstart', e => {
+    if (e.touches.length < 2) e.stopImmediatePropagation();
+  }, { capture: true });
+}
+
+/* --------------- Тап-анімації іконок-переваг (мобільний) ---------------- */
+/* На тач-екранах немає hover, тому той самий «підйом» іконки вмикає
+   клас .tap-anim на ~0.9 с після дотику (CSS :active тримає стан лише
+   поки палець притиснутий — анімації не видно). */
+function initHeroFeatTaps() {
+  const list = document.querySelector('.hero-mob-feats');
+  if (!list) return;
+
+  list.querySelectorAll('li').forEach(li => {
+    let timer = 0;
+    li.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'mouse') return;   /* мишею працює :hover */
+      li.classList.remove('tap-anim');
+      void li.offsetWidth;                     /* reflow — перезапуск анімації */
+      li.classList.add('tap-anim');
+      clearTimeout(timer);
+      timer = setTimeout(() => li.classList.remove('tap-anim'), 900);
+    });
+  });
+}
+
 async function initKyivMap() {
   const holder = document.getElementById('kyivMap');
   if (!holder || !window.L) return;
@@ -570,6 +605,9 @@ async function initKyivMap() {
     zoomSnap: 0.25
   });
   window.__kyivMap = map;        /* для діагностики в консолі */
+
+  /* Дотики: один палець гортає сайт, два — рухають/зумлять карту */
+  initMapTouchGestures(holder);
 
   /* Зум колесом — лише коли користувач «зафіксов» карту кліком */
   map.on('click', () => map.scrollWheelZoom.enable());
@@ -791,6 +829,18 @@ function initToTop() {
   btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
+/* ------------------- Ширина плашки .hero-note = кнопці CTA -------------- */
+/* Десктопна плашка .hero-note має бути рівно ширині кнопки CTA.
+   Ширина кнопки залежить від тексту hero.cta з config.json і від
+   шрифтів, тому виставляємо її у CSS-змінну --hero-cta-w після рендеру
+   конфігу, при зміні вікна та після завантаження шрифтів */
+function syncHeroNoteWidth() {
+  const btn = document.querySelector('.hero-actions .btn-lg');
+  if (btn && btn.offsetWidth) {
+    document.documentElement.style.setProperty('--hero-cta-w', btn.offsetWidth + 'px');
+  }
+}
+
 /* -------------------------------- Ініціалізація -------------------------- */
 
 (async function init() {
@@ -813,6 +863,11 @@ function initToTop() {
     observeReveals(); /* усе одно показати статичний контент */
   }
 
+  syncHeroNoteWidth();
+  window.addEventListener('resize', syncHeroNoteWidth);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncHeroNoteWidth);
+
+  initHeroFeatTaps();
   initCarousel();
   initFeatureDots();
   initKyivMap();

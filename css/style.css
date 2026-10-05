@@ -346,7 +346,10 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   min-height: 480px;
   display: flex;
   align-items: center;
-  padding-block: clamp(2.5rem, 5vw, 4rem);
+  padding-top: clamp(2.5rem, 5vw, 4rem);
+  /* Нижній падінг трохи менший: компенсує висоту плашки «Для доставки
+     води», щоб hero не виріс (плашка вища за стару нотатку) */
+  padding-bottom: calc(clamp(2.5rem, 5vw, 4rem) - 14px);
 }
 
 /* Банер-підложка: повна ширина (hero.png), шар бутля з льодом праворуч */
@@ -383,14 +386,23 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   width: auto;
   object-fit: contain;
   object-position: bottom center;
-  z-index: 1;
+  /* Шар 2: понад вуаллю (z1) і сіткою переваг (z1), але ПІД текстовим
+     блоком — заголовок/підзаголовок/плашка/кнопка мають z-index 2
+     і DOM-порядком після бутля, тому лишаються зверху. Сітка переваг
+     (z-index 1) навпаки — ховається під бутлем, коли на якомусь ширині
+     4-й пункт «Гарантія якості» заїжджає на зображення.
+     pointer-events: none — кліки це не блокує */
+  z-index: 2;
   pointer-events: none;
   user-select: none;
 }
 
 .hero-content {
   position: relative;
-  z-index: 2;
+  /* Без власного z-index (раніше був 2): щоб сітка переваг могла
+     опинитись ПІД бутлем, діти беруть участь у спільному шарі hero:
+     заголовок/підзаголовок/плашка/кнопка — z-index 2 (понад бутлем),
+     сітка переваг — z-index 1 (під бутлем) */
   max-width: 560px;
   /* Ліва межа — як у .container інших секцій: 4%, але не ширше 1160px */
   margin-left: max(4%, calc((100% - 1160px) / 2));
@@ -402,14 +414,19 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 .hero-title {
   font-family: var(--font-hero);
   font-weight: 800;
-  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-size: clamp(2.15rem, 4.5vw, 3.5rem);
   line-height: 1.12;
   letter-spacing: 0;
   margin-bottom: .8rem;
+  /* Заголовок не вміщується в один рядок — балансуємо перенос,
+     щоб не лишалось «сироти» з одного слова на другому рядку */
+  text-wrap: balance;
   display: flex;
   flex-direction: column;
   /* Той самий градієнт, що в заголовків розділів */
   width: fit-content;
+  position: relative;
+  z-index: 2;               /* понад бутлем і вуаллю */
   color: #023470; /* фолбек */
   background: linear-gradient(100deg, #023470 8%, #1668B3 48%, #4598DC 92%);
   -webkit-background-clip: text;
@@ -420,118 +437,207 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 /* Мобільні елементи hero (заголовок «м», ряд іконок,
    картка «Для доставки води», фон-постер) — на десктопі приховані.
    Кнопка: на десктопі data-config-спан, на мобільному — довгий спан */
-.hero-title-m, .hero-mob-feats, .hero-mob-card, .hero-mob-bg { display: none; }
+.hero-title-m, .hero-mob-card, .hero-mob-bg { display: none; }
 .cta-mob { display: none; }
 
-/* Підзаголовок і чипи «сидять» на білій хмаринці: м'який розмитий
-   білий ореол за текстом (псевдоелемент з filter: blur), без жорсткої
-   картки чи рамки — текст гарно читається на будь-якій ділянці фото */
+/* Підзаголовок: той самий шрифт/колір, що в заголовка. Білого
+   хало-псевдоелемента немає (прибрано на прохання користувача) */
 .hero-subtitle {
   position: relative;
-  color: var(--c-ink);
-  font-size: clamp(1.02rem, 1.6vw, 1.2rem);
-  font-weight: 500;
+  z-index: 2;               /* понад бутлем і вуаллю */
+  /* Той самий шрифт і жирність, що в заголовка .hero-title */
+  font-family: var(--font-hero);
+  font-weight: 800;
+  font-size: clamp(1.1rem, 1.7vw, 1.32rem);
   margin-bottom: 1.3rem;
 }
-.hero-subtitle::before {
-  content: '';
-  position: absolute;
-  inset: -0.55em -1em -0.55em -0.75em;
-  background: radial-gradient(120% 130% at 30% 40%, rgba(255,255,255,.95) 0%, rgba(255,255,255,.8) 45%, rgba(255,255,255,.55) 72%, rgba(255,255,255,0) 100%);
-  filter: blur(10px);
-  z-index: -1;
-  border-radius: 50%;
-  pointer-events: none;
+/* Той самий градієнт, що в .hero-title. Стиль — на span, а не на p:
+   фон елемента з background-clip:text малюється ПІД дочірнім
+   псевдоелементом-хало (z-index:-1), а вміст span фарбується над ним */
+.hero-subtitle span {
+  color: #023470; /* фолбек */
+  background: linear-gradient(100deg, #023470 8%, #1668B3 48%, #4598DC 92%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
+/* Білого хало-псевдоелемента більше немає — користувач попросив
+   прибрати «туман» під підзаголовком */
 
-/* Міні-переваги з іконками — як у макеті; кожен чип теж на своїй
-   маленькій хмаринці (замість text-shadow тепер білий блур-ореол) */
-.hero-chips {
+/* Міні-переваги з іконками — та сама сітка, що й на мобільному:
+   кругла градієнтна іконка, жирний підпис і пояснення під ним.
+   Іконки та тексти скопійовано з мобільної версії (ті самі чотири
+   пункти); на ≤760px розміри перекриває мобільний блок нижче */
+.hero-mob-feats {
   list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: .6rem 1.4rem;
-  margin-bottom: 1.4rem;
-  padding: 0;
-}
-.hero-chips li {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: .6em;
-  font-weight: 600;
-  font-size: .92rem;
-  line-height: 1.25;
-  color: #0B347C;
+  z-index: 1;               /* під бутлем (z2), понад вуаллю (z1, DOM-порядок) */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .8rem;
+  padding: 0;
+  text-align: center;
 }
-.hero-chips li::before {
-  content: '';
-  position: absolute;
-  inset: -0.5em -0.9em;
-  background: radial-gradient(110% 130% at 40% 45%, rgba(255,255,255,.92) 0%, rgba(255,255,255,.72) 50%, rgba(255,255,255,0) 100%);
-  filter: blur(9px);
-  z-index: -1;
+.hero-mob-feats .hf-ic {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-inline: auto;
   border-radius: 50%;
-  pointer-events: none;
+  background: linear-gradient(180deg, #E9F5FD, #CDE7F9);
+  box-shadow: 0 2px 10px rgba(22, 104, 179, .14);
+  transition: transform .25s ease, box-shadow .25s ease;
 }
-/* Контурні іконки, як у макеті користувача: синій контур без підкладки,
-   з білим ореолом по зовнішньому контуру */
-.hero-chips svg {
-  width: 34px; height: 34px;
-  flex-shrink: 0;
-  filter:
-    drop-shadow(0 0 3px rgba(255, 255, 255, 1))
-    drop-shadow(0 0 8px rgba(255, 255, 255, .75));
+.hero-mob-feats .hf-ic svg { width: 60%; height: 60%; }
+.hero-mob-feats b {
+  display: block;
+  margin-top: .55rem;
+  font-size: .92rem;
+  line-height: 1.22;
+  color: #0B347C;
+  transition: color .25s ease, transform .25s ease;
+}
+.hero-mob-feats small {
+  display: block;
+  margin-top: .3rem;
+  font-size: .76rem;
+  line-height: 1.32;
+  color: #3D6390;
+  transition: color .25s ease, transform .25s ease;
 }
 
+/* Десктоп: відступ під сіткою і каскадна поява (білої хмаринки
+   за пунктами більше немає — прибрано на прохання користувача) */
+@media (min-width: 761px) {
+  .hero-mob-feats { margin-bottom: 1.4rem; }
+  .hero-mob-feats li:nth-child(1) { animation: heroRiseIn .7s ease-out .6s both; }
+  .hero-mob-feats li:nth-child(2) { animation: heroRiseIn .7s ease-out .72s both; }
+  .hero-mob-feats li:nth-child(3) { animation: heroRiseIn .7s ease-out .84s both; }
+  .hero-mob-feats li:nth-child(4) { animation: heroRiseIn .7s ease-out .96s both; }
+}
+
+/* Анімації іконок і підписів при наведенні — тільки для пристроїв
+   зі справжнім hover (миша/трекпад) */
+@media (hover: hover) and (pointer: fine) {
+  /* Підйом — на крузі-іконці, бо на li входна анімація (fill: both)
+     утримує transform і скасовує би hover-зсув */
+  .hero-mob-feats li:hover .hf-ic {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 0 6px 16px rgba(22, 104, 179, .3);
+  }
+  .hero-mob-feats li:hover b { color: #1668B3; }
+  .hero-mob-feats li:hover b,
+  .hero-mob-feats li:hover small { transform: translateY(-2px); }
+  .hero-mob-feats li:nth-child(1):hover .hf-ic svg { animation: hfDrip .6s ease; }
+  .hero-mob-feats li:nth-child(2):hover .hf-ic svg { animation: hfSpin .8s ease-in-out; }
+  .hero-mob-feats li:nth-child(3):hover .hf-ic svg { animation: hfDrive .7s ease; }
+  .hero-mob-feats li:nth-child(4):hover .hf-ic svg { animation: hfShield .55s ease; }
+}
+/* Тач-екрани: той самий «підйом» вмикає клас .tap-anim, який ставить
+   main.js на ~0.9 с після дотику (:active тримався б лише поки палець
+   притиснутий — анімації не видно) */
+.hero-mob-feats li.tap-anim .hf-ic {
+  transform: translateY(-5px) scale(1.1);
+  box-shadow: 0 6px 16px rgba(22, 104, 179, .3);
+}
+.hero-mob-feats li.tap-anim b { color: #1668B3; }
+.hero-mob-feats li.tap-anim b,
+.hero-mob-feats li.tap-anim small { transform: translateY(-2px); }
+.hero-mob-feats li:nth-child(1).tap-anim .hf-ic svg { animation: hfDrip .6s ease; }
+.hero-mob-feats li:nth-child(2).tap-anim .hf-ic svg { animation: hfSpin .8s ease-in-out; }
+.hero-mob-feats li:nth-child(3).tap-anim .hf-ic svg { animation: hfDrive .7s ease; }
+.hero-mob-feats li:nth-child(4).tap-anim .hf-ic svg { animation: hfShield .55s ease; }
+/* Крапля падає, сніжинка обертається, вантажівка їде, щит гуркоче */
+@keyframes hfDrip {
+  0% { transform: translateY(-14%); }
+  55% { transform: translateY(16%); }
+  100% { transform: translateY(0); }
+}
+@keyframes hfSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(180deg); }
+}
+@keyframes hfDrive {
+  0% { transform: translateX(0); }
+  30% { transform: translateX(18%); }
+  65% { transform: translateX(-10%); }
+  100% { transform: translateX(0); }
+}
+@keyframes hfShield {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.22); }
+  70% { transform: scale(.94); }
+  100% { transform: scale(1); }
+}
+
+/* Плашка «Для доставки води» на десктопі: та сама, що й на мобільному —
+   біла картка, іконка гір на верхньому краї, градієнтний заголовок із
+   рисками, текст. Розміри підібрані так, щоб плашка займала приблизно
+   стільки ж місця, скільки кнопка CTA: width береться з CSS-змінної
+   --hero-cta-w, яку main.js виставляє рівно в ширину кнопки
+   (текст у config.json може змінюватись). Плашка може збільшити hero
+   по висоті — це дозволено */
 .hero-note {
   position: relative;
-  display: flex;
-  gap: .95rem;
-  align-items: flex-start;
-  /* Скляна картка в стилі hero: напівпрозоре біле скло + блюр фона */
-  background: rgba(255, 255, 255, .62);
-  border: 1px solid rgba(255, 255, 255, .85);
-  border-radius: 18px;
-  box-shadow: 0 14px 34px rgba(11, 60, 122, .14);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding: 1.1rem 1.3rem 1.1rem 1.15rem;
-  margin-block: 1.4rem;
+  z-index: 2;               /* понад бутлем і вуаллю */
+  display: block;
+  width: var(--hero-cta-w, 428px);
   max-width: 36em;
-  overflow: hidden;
+  /* Верхній відступ трохи більший: у ньому сидить іконка гір, яка
+     виступає над краєм плашки (bottom: 100%) */
+  padding: 1rem 1.3rem .9rem;
+  margin-block: 1.7rem 1.4rem;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 14px 34px rgba(11, 60, 122, .16);
+  text-align: center;
 }
-.hero-note::before {
-  content: '';
+.hero-note .hmc-mountains {
   position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 5px;
-  background: linear-gradient(180deg, var(--c-cyan), var(--c-blue));
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: auto;
 }
-.hero-note::after {
+.hero-note .hmc-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: fit-content;
+  margin-inline: auto;
+  font-family: var(--font-hero);
+  font-weight: 800;
+  font-size: 1.05rem;
+  line-height: 1.15;
+  white-space: nowrap;
+  color: #023470;
+  background: linear-gradient(100deg, #023470 8%, #1668B3 48%, #4598DC 92%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-note .hmc-title::before,
+.hero-note .hmc-title::after {
   content: '';
-  position: absolute;
-  right: -34px; top: -34px;
-  width: 104px; height: 104px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,255,255,.9), rgba(255,255,255,0) 70%);
-  pointer-events: none;
+  flex: 0 0 3.5rem;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(156, 195, 232, 0), #9CC3E8);
 }
-.hero-note .ic {
-  width: 40px; height: 40px;
-  padding: 8px;
-  box-sizing: border-box;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--c-cyan), var(--c-blue));
-  color: #fff;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
+.hero-note .hmc-title::after { transform: scaleX(-1); }
+.hero-note .hmc-text {
+  margin-top: .35rem;
+  font-size: .82rem;
+  line-height: 1.4;
+  color: var(--c-ink);
 }
-.hero-note p { font-size: .95rem; color: var(--c-ink); position: relative; z-index: 1; }
-.hero-note b { color: var(--c-deep); }
 
 .hero-actions {
+  position: relative;
+  z-index: 2;               /* понад бутлем і вуаллю */
   display: flex;
   flex-wrap: wrap;
   gap: .9rem;
@@ -572,9 +678,6 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 .hero-subtitle {
   animation: heroRiseIn .8s ease-out .45s both;
 }
-.hero-chips li:nth-child(1) { animation: heroRiseIn .7s ease-out .6s both; }
-.hero-chips li:nth-child(2) { animation: heroRiseIn .7s ease-out .72s both; }
-.hero-chips li:nth-child(3) { animation: heroRiseIn .7s ease-out .84s both; }
 .hero-note {
   animation: heroRiseIn .8s ease-out 1s both;
 }
@@ -588,7 +691,7 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   animation: heroBottleIn 1.1s cubic-bezier(.22, .8, .3, 1) .35s backwards;
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-title, .hero-subtitle, .hero-chips li, .hero-note, .hero-actions, .hero-bottle,
+  .hero-title, .hero-subtitle, .hero-note, .hero-actions, .hero-bottle,
   .hero-mob-feats li, .hero-mob-card {
     animation: none;
   }
@@ -1126,11 +1229,11 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 
 .carousel:focus-visible { outline: 2px solid var(--c-blue); outline-offset: 4px; border-radius: 12px; }
 
-/* Суцільна плитка партнера: 176x62 (подвійний розмір), без тексту — тільки логотип */
+/* Суцільна плитка партнера: 120x60, без тексту — тільки логотип */
 .partner-chip {
   flex: 0 0 auto;
-  width: 176px;
-  height: 62px;
+  width: 120px;
+  height: 60px;
   background: #fff;
   border: 1px solid var(--c-line);
   border-radius: 10px;
@@ -1139,10 +1242,14 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   box-shadow: var(--shadow-sm);
   transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
 }
-.partner-chip:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--c-sky); }
+/* Підйом плитки — тільки на пристроях зі справжнім hover (на тачі
+   :hover «залипає» після торкання) */
+@media (hover: hover) and (pointer: fine) {
+  .partner-chip:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--c-sky); }
+}
 
 .partner-logo {
-  width: 176px; height: 62px;
+  width: 120px; height: 60px;
   object-fit: contain;
   border-radius: 9px;
   background: #fff;
@@ -1267,6 +1374,12 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 }
 .map .leaflet-container { z-index: auto; }
 .map iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+/* Leaflet на тач-пристроях ставить контейнеру .leaflet-touch-drag
+   з touch-action: none — тому дотик до карти «залипав» і сторінка не
+   горталась. Повертаємо авто: однофінгерний свайп гортає сторінку, а
+   пальців два — карта рухається і зумиться (initMapTouchGestures) */
+#kyivMap { touch-action: auto; }
 
 .map-caption { margin-top: .9rem; font-size: .9rem; color: var(--c-grey); }
 
@@ -1574,7 +1687,12 @@ section[id], h3[id] { scroll-margin-top: 108px; }
     align-items: center;
     min-height: 0;
     padding: 0 4% 13vw;
-    background: linear-gradient(180deg, #CFEFFD 0, #B6E1FD 158vw, #A5D7F6 92%, #9CCBEE 100%);
+    /* Нижче постеру фон має бути РІВНО #B5E1FD — тим самим кольором,
+       яким .hero-mob-bg::after перекриває низ зображення і з якого
+       починається розділ «Чому обирають». Інакше на стику з'являється
+       видима смуга: раніше hero темнішав до #9CCBEE і розділ різко
+       світлішав назад */
+    background: linear-gradient(180deg, #CFEFFD 0, #B6E1FD 158vw, #B5E1FD 158.4vw, #B5E1FD 100%);
   }
   .hero-img, .hero-overlay { display: none; }
   .hero-mob-bg {
@@ -1629,8 +1747,6 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 
   .hero-subtitle { display: none; }
 
-  .hero-chips { display: none; }
-
   .hero-bottle {
     order: 3;
     position: relative;
@@ -1639,10 +1755,10 @@ section[id], h3[id] { scroll-margin-top: 108px; }
     bottom: auto;
     width: 84vw;
     height: auto;
-    /* Від'ємний відступ: без підзаголовка бутель іде одразу після
-       заголовка — виставляємо так, щоб видимий низ став на лінію води
-       (~57% висоти фону); верх зображення (14% — прозорий) не заважає */
-    margin-top: 10.9vw;
+    /* Без підзаголовка бутель іде одразу після заголовка — піднімаємо
+       його трохи вище, щоб скоротити порожнє небо над ним; верх
+       зображення (14% — прозорий) не заважає */
+    margin-top: 9vw;
   }
 
   .hero-mob-feats {
@@ -1653,7 +1769,7 @@ section[id], h3[id] { scroll-margin-top: 108px; }
     grid-template-columns: repeat(4, 1fr);
     gap: 1vw;
     width: 100%;
-    margin-top: 1.5vw;
+    margin-top: 1.1vw;
     padding: 0;
     list-style: none;
     text-align: center;
@@ -1685,48 +1801,7 @@ section[id], h3[id] { scroll-margin-top: 108px; }
     line-height: 1.32;
     color: #3D6390;
   }
-  /* Анімації іконок і підписів при наведенні — тільки для пристроїв
-     зі справжнім hover (миша/трекпад), на тач-екранах не спрацьовують */
-  .hero-mob-feats .hf-ic { transition: transform .25s ease, box-shadow .25s ease; }
-  .hero-mob-feats b, .hero-mob-feats small { transition: color .25s ease, transform .25s ease; }
-  @media (hover: hover) and (pointer: fine) {
-    /* Підйом — на крузі-іконці, бо на li входна анімація (fill: both)
-       утримує transform і скасовує би hover-зсув */
-    .hero-mob-feats li:hover .hf-ic {
-      transform: translateY(-5px) scale(1.1);
-      box-shadow: 0 6px 16px rgba(22, 104, 179, .3);
-    }
-    .hero-mob-feats li:hover b { color: #1668B3; }
-    .hero-mob-feats li:hover b,
-    .hero-mob-feats li:hover small { transform: translateY(-2px); }
-    .hero-mob-feats li:nth-child(1):hover .hf-ic svg { animation: hfDrip .6s ease; }
-    .hero-mob-feats li:nth-child(2):hover .hf-ic svg { animation: hfSpin .8s ease-in-out; }
-    .hero-mob-feats li:nth-child(3):hover .hf-ic svg { animation: hfDrive .7s ease; }
-    .hero-mob-feats li:nth-child(4):hover .hf-ic svg { animation: hfShield .55s ease; }
-  }
-  /* Крапля падає, сніжинка обертається, вантажівка їде, щит гуркоче */
-  @keyframes hfDrip {
-    0% { transform: translateY(-14%); }
-    55% { transform: translateY(16%); }
-    100% { transform: translateY(0); }
-  }
-  @keyframes hfSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(180deg); }
-  }
-  @keyframes hfDrive {
-    0% { transform: translateX(0); }
-    30% { transform: translateX(18%); }
-    65% { transform: translateX(-10%); }
-    100% { transform: translateX(0); }
-  }
-  @keyframes hfShield {
-    0% { transform: scale(1); }
-    35% { transform: scale(1.22); }
-    70% { transform: scale(.94); }
-    100% { transform: scale(1); }
-  }
-
+  /* Плашка «Для доставки води» — без постійної анімації */
   .hero-mob-card {
     order: 5;
     display: block;
@@ -1735,15 +1810,18 @@ section[id], h3[id] { scroll-margin-top: 108px; }
     width: 89%;
     margin-top: 7.5vw;
     animation: heroRiseIn .8s ease-out 1.05s both;
-    padding: 9.5vw 4.5vw 6.5vw;
+    padding: 8.4vw 4.5vw 6.5vw;
     background: #fff;
     border-radius: 24px;
     box-shadow: 0 18px 44px rgba(11, 60, 122, .16);
     text-align: center;
   }
+  /* Іконка гір прив'язана до верхнього краю плашки: bottom: 100% тримає
+     основу рівно на краї (жодних магічних top у vw), тому іконка не
+     від'їжджає, якщо зміняться відступи чи падінг плашки */
   .hmc-mountains {
     position: absolute;
-    top: -6.8vw;
+    bottom: 100%;            /* основа — рівно по верхньому краю плашки */
     left: 50%;
     transform: translateX(-50%);
     width: 18vw;
@@ -1802,13 +1880,18 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   .hero-mob-feats li:nth-child(3) { animation: heroRiseIn .7s ease-out .84s both; }
   .hero-mob-feats li:nth-child(4) { animation: heroRiseIn .7s ease-out .96s both; }
 
-  /* Плавний перехід: блакитний градієнт hero продовжується у розділ
-     «Чому обирають VodaLed» і м'яко світлішає до білого */
+  /* Плавний перехід: hero закінчується рівним #B5E1FD, а розділ
+     «Чому обирають VodaLed» продовжує той самий колір довгим згладженим
+     градієнтом. Кроки розставлено по S-кривій: спочатку майже нульовий
+     нахил (щоб не було видно старту), далі м'який розгін і гальмування
+     у білий — жодних різких зламів на жодній межі */
   .features {
     background:
       radial-gradient(560px 300px at 4% 40%, rgba(25, 184, 216, .16), transparent 70%),
       radial-gradient(520px 300px at 96% 108%, rgba(22, 104, 179, .14), transparent 70%),
-      linear-gradient(180deg, #9CCBEE 0%, #E3F3FB 12%, #FFFFFF 22%, #EFF9FD 100%);
+      linear-gradient(180deg,
+        #B5E1FD 0%, #BDE4FD 5%, #CCEBFD 11%, #DDF1FD 17%,
+        #EDF7FE 24%, #F8FCFF 32%, #FFFFFF 40%, #F4FAFE 100%);
   }
 
   .car-btn { width: 38px; height: 38px; }
@@ -1835,6 +1918,13 @@ section[id], h3[id] { scroll-margin-top: 108px; }
     display: flex;
     gap: .9rem;
     overflow-x: auto;
+    /* overflow-x: auto автоматично робило вісь Y теж auto, і ряд мав
+       прихований вертикальний запас скролу (.reveal зсуває картки на 26px)
+       — вертикальний свайп спершу смикав картки вгору/вниз, і лише потім
+       сторінку. Тепер гортається ЛИШЕ горизонтально */
+    overflow-y: hidden;
+    touch-action: pan-y;          /* вертикальний жест — сторінці, горизонтальний — свайпу */
+    overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
@@ -1859,8 +1949,12 @@ section[id], h3[id] { scroll-margin-top: 108px; }
     align-items: flex-start;
     gap: .6rem;
   }
-  #featuresGrid .card-feature .card-head h3 { font-size: 1rem; }
-  #featuresGrid .card-feature .muted { font-size: .86rem; }
+  /* Компактніший текст і менша іконка — на вузькому екрані картка
+     читається краще, а свайп-стрічка менше «губить» повітря */
+  #featuresGrid .card-feature .card-head h3 { font-size: .92rem; }
+  #featuresGrid .card-feature .muted { font-size: .8rem; }
+  #featuresGrid .card-feature .icon { width: 46px; height: 46px; border-radius: 14px; }
+  #featuresGrid .card-feature .icon svg { width: 24px; height: 24px; }
 
   /* Крапкові індикатори під свайп-каруселлю (видно лише на мобільному) */
   .feat-dots { display: flex; justify-content: center; gap: .45rem; margin-top: 1rem; }

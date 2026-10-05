@@ -79,7 +79,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=Montserrat:wght@800;900&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-  <link rel="stylesheet" href="css/style.css?v=13">
+  <link rel="stylesheet" href="css/style.css?v=23">
 </head>
 <body>
 
@@ -98,48 +98,35 @@
 
       <div class="container hero-content">
         <h1 class="hero-title">
-          <span class="hero-title-1">Замовити доставку</span>
-          <span class="hero-title-2">за справедливою ціною</span>
+          <span class="hero-title-1">Чиста питна вода та лід</span>
           <span class="hero-title-m"><span class="ht-m-main">Чиста питна вода та лід</span><span class="ht-m-sub">для дому та бізнесу</span></span>
         </h1>
-        <p class="hero-subtitle" data-config="hero-subtitle">Чиста питна вода та лід для дому та бізнесу</p>
+        <!-- Текст у span: градієнтний текст (background-clip) має фарбуватися
+             НАД білим хало-псевдоелементом .hero-subtitle::before (z-index:-1) -->
+        <p class="hero-subtitle"><span data-config="hero-subtitle">для дому та бізнесу</span></p>
 
-        <ul class="hero-chips" aria-label="Наші переваги">
-          <li>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="#1668B3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4c3.1 3.9 5.8 7.3 5.8 10.6a5.8 5.8 0 1 1-11.6 0C6.2 10.7 8.9 7.3 12 3.4z"/><path d="M9.3 14.6a2.7 2.7 0 0 0 1.9 2.5"/></g></svg>
-            <span>Якісна<br>питна вода</span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="#1668B3" stroke-width="1.6" stroke-linecap="round"><path d="M12 3v18"/><path d="m4.2 7.5 15.6 9M19.8 7.5l-15.6 9"/><path d="M9.9 4.5 12 6l2.1-1.5M9.9 19.5 12 18l2.1 1.5M6.6 10.3 5.7 8l2.4.3M17.4 13.7l.9 2.3-2.4-.3M17.4 10.3 18.3 8l-2.4.3M6.6 13.7l-.9 2.3 2.4-.3"/></g></svg>
-            <span>Кристально<br>чистий лід</span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="#1668B3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7.5h9.5V15H6z"/><path d="M15.5 10h2.6l2.4 2.9V15h-5"/><circle cx="8.6" cy="16.8" r="1.7"/><circle cx="16.9" cy="16.8" r="1.7"/><path d="M10.3 16.8h4.9M2.5 9h3M1.8 11.5h3M2.8 14h2.2"/></g></svg>
-            <span>Доставка<br>по всьому Києву</span>
-          </li>
-        </ul>
-
-        <!-- Мобільний ряд переваг: 4 іконки з підписами (на десктопі прихований) -->
+        <!-- Міні-переваги: та сама сітка, що й на мобільному
+             (іконки та тексти скопійовано з мобільної версії) -->
         <ul class="hero-mob-feats" aria-label="Наші переваги">
           <li>
             <span class="hf-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="#1668B3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4c3.1 3.9 5.8 7.3 5.8 10.6a5.8 5.8 0 1 1-11.6 0C6.2 10.7 8.9 7.3 12 3.4z"/><path d="M9.3 14.6a2.7 2.7 0 0 0 1.9 2.5"/></g></svg></span>
             <b>Чиста вода</b>
-            <small>з&nbsp;артезіанських джерел</small>
+            <small>для пиття та приготування їжі</small>
           </li>
           <li>
             <span class="hf-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="#1668B3" stroke-width="1.6" stroke-linecap="round"><path d="M12 3v18"/><path d="m4.2 7.5 15.6 9M19.8 7.5l-15.6 9"/><path d="M9.9 4.5 12 6l2.1-1.5M9.9 19.5 12 18l2.1 1.5M6.6 10.3 5.7 8l2.4.3M17.4 13.7l.9 2.3-2.4-.3M17.4 10.3 18.3 8l-2.4.3M6.6 13.7l-.9 2.3 2.4-.3"/></g></svg></span>
             <b>Якісний лід</b>
-            <small>для ваших напоїв</small>
+            <small>для напоїв та охолодження продуктів</small>
           </li>
           <li>
             <span class="hf-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="#1668B3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7.5h9.5V15H6z"/><path d="M15.5 10h2.6l2.4 2.9V15h-5"/><circle cx="8.6" cy="16.8" r="1.7"/><circle cx="16.9" cy="16.8" r="1.7"/><path d="M10.3 16.8h4.9M2.5 9h3M1.8 11.5h3M2.8 14h2.2"/></g></svg></span>
             <b>Швидка доставка</b>
-            <small>по Києву та області</small>
+            <small>по Києву</small>
           </li>
           <li>
             <span class="hf-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="#1668B3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 5.6v5.2c0 4.4 2.9 7.5 7 9.2 4.1-1.7 7-4.8 7-9.2V5.6L12 3z"/><path d="m9.2 11.9 2 2 3.6-4.2"/></g></svg></span>
             <b>Гарантія якості</b>
-            <small>на кожне замовлення</small>
+            <small>маємо всі сертифікати</small>
           </li>
         </ul>
 
@@ -150,13 +137,17 @@
           <p class="hmc-text" data-config="hero-note">Необхідно надати на обмін порожні бутлі об'ємом 18,9 л, або їх можливо придбати (вартість 1 бутля становить 350 грн)</p>
         </div>
 
+        <!-- Плашка «Для доставки води» — та сама, що на мобільному (іконка
+             гір на верхньому краї, градієнтний заголовок, текст), але з
+             десктопними розмірами: див. .hero-note у style.css -->
         <div class="hero-note">
-          <svg viewBox="0 0 24 24" class="ic" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 2.4 1.2 4.1 2.6 5.5.7.7 1.4 1.9 1.4 3v.5h6v-.5c0-1.1.7-2.3 1.4-3C17.8 13.1 19 11.4 19 9a7 7 0 0 0-7-7zm-3 21h6a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2z"/></svg>
-          <p data-config="hero-note">Необхідно надати на обмін порожні бутлі об'ємом 18,9 л, або їх можливо придбати (вартість 1 бутля становить <b data-config="bottle-price">350</b> грн)</p>
+          <img class="hmc-mountains" src="assets/mountains.webp" alt="" aria-hidden="true">
+          <h2 class="hmc-title">Для доставки води</h2>
+          <p class="hmc-text" data-config="hero-note">Необхідно надати на обмін порожні бутлі об'ємом 18,9 л, або їх можливо придбати (вартість 1 бутля становить 350 грн)</p>
         </div>
 
         <div class="hero-actions">
-          <button class="btn btn-primary btn-lg js-order" type="button"><span class="cta-desk" data-config="hero-cta">Замовити доставку</span><span class="cta-mob">Замовити доставку за справедливою ціною</span></button>
+          <button class="btn btn-primary btn-lg js-order" type="button"><span class="cta-desk" data-config="hero-cta">Замовити доставку за справедливою ціною</span><span class="cta-mob">Замовити доставку за справедливою ціною</span></button>
         </div>
       </div>
     </section>
@@ -301,6 +292,6 @@
   <button class="to-top" id="toTop" aria-label="Нагору">↑</button>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="js/main.js?v=4"></script>
+  <script src="js/main.js?v=6"></script>
 </body>
 </html>
