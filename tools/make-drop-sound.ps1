@@ -1,13 +1,12 @@
-# Generates a water-drop "bloop" sound (WAV, 8kHz, 16-bit mono, ~0.4s).
-# Sound design: a sine whose pitch SLIDES DOWN (1400 -> 450 Hz) with a rising-
-# then-falling envelope and slight vibrato - the classic cartoon "bloop/bul".
-# Also writes base64 to bloop.b64.txt (consumed by main.js).
-# ASCII-only script (safe for Windows PowerShell 5.1).
+# Generates a NEW water "bloop" sound (WAV, 11.025kHz, 16-bit mono, ~0.55s).
+# Sound design: TWO descending blips ("bul-bul") - the first higher and short,
+# the second lower and deeper, like a heavy drop falling into a full bottle.
+# Writes assets/drop.wav (consumed by main.js). ASCII-only script (PS 5.1).
 
 $ErrorActionPreference = 'Stop'
 
-$sr = 8000
-$n  = 3200   # samples (~0.40 s)
+$sr = 11025
+$n  = 6000   # samples (~0.545 s)
 
 $data = New-Object byte[] (44 + $n * 2)
 
@@ -40,33 +39,39 @@ Put-I16 $data 34 16
 Put-Str $data 36 'data'
 Put-I32 $data 40 ($n * 2)
 
-# ---- "bloop": pitch falls fast then settles, phase integrated numerically ----
-$f0 = 1400.0    # start pitch (Hz)
-$f1 = 450.0     # end pitch (Hz)
-$fall = 60.0    # how fast pitch falls (1/s)
-$vibF = 28.0    # vibrato rate (Hz)
-$vibD = 0.02    # vibrato depth (0..1)
+# ---- two blips, incremental phase integration (O(n) total) ----
+# bul #1: starts t=0     (higher, short):   f0 950 -> f1 520, fall 45, rel 16
+# bul #2: starts t=0.16  (lower, deeper):   f0 700 -> f1 300, fall 38, rel 9.5
+$t2 = 0.16
+$ph1 = 0.0; $on1 = $false
+$ph2 = 0.0; $on2 = $false
+$dt = 1.0 / $sr
+$twoPi = 2 * [Math]::PI
 
-$phase = 0.0
 for ($i = 0; $i -lt $n; $i++) {
-  $t = $i / $sr
+  $t = $i * $dt
+  $v = 0.0
 
-  # falling pitch: f = f1 + (f0-f1)*exp(-fall*t)
-  $fall_ = [Math]::Exp(-$fall * $t)
-  $f = $f1 + ($f0 - $f1) * $fall_
+  if ($on1) {
+    $f = 520.0 + (950.0 - 520.0) * [Math]::Exp(-45.0 * $t)
+    $ph1 += $twoPi * $f * $dt
+    $attack  = 1.0 - [Math]::Exp(-380.0 * $t)
+    $release = [Math]::Exp(-16.0 * $t)
+    $v += [Math]::Sin($ph1) * $attack * $release
+  } elseif ($t -ge 0) { $on1 = $true }
 
-  # vibrato, strongest in the middle
-  $vib = 1.0 + $vibD * $fall_ * [Math]::Sin(2 * [Math]::PI * $vibF * $t)
+  if ($on2) {
+    $t2l = $t - $t2
+    $f = 300.0 + (700.0 - 300.0) * [Math]::Exp(-38.0 * $t2l)
+    $ph2 += $twoPi * $f * $dt
+    $attack  = 1.0 - [Math]::Exp(-380.0 * $t2l)
+    $release = [Math]::Exp(-9.5 * $t2l)
+    $v += [Math]::Sin($ph2) * $attack * $release * 1.15
+  } elseif ($t -ge $t2) { $on2 = $true }
 
-  # envelope: quick attack, smooth release
-  $attack = 1.0 - [Math]::Exp(-320 * $t)
-  $release = [Math]::Exp(-6.5 * $t)
-  $env = $attack * $release
+  # gentle soft-clip to avoid harsh digital edges
+  $v = [Math]::Tanh($v * 1.4) * 0.82
 
-  # integrate phase with current (vibrato-modulated) frequency
-  $phase += 2 * [Math]::PI * $f * $vib / $sr
-
-  $v = [Math]::Sin($phase) * $env * 0.85
   $b = [int][Math]::Round($v * 32767)
   if ($b -gt 32767)  { $b = 32767 }
   if ($b -lt -32768) { $b = -32768 }
@@ -76,7 +81,3 @@ for ($i = 0; $i -lt $n; $i++) {
 $out = Join-Path $PSScriptRoot '..\assets\drop.wav'
 [System.IO.File]::WriteAllBytes($out, $data)
 Write-Output ("WAV written: " + $out + " (" + (Get-Item $out).Length + " bytes)")
-
-$b64 = [Convert]::ToBase64String($data)
-[System.IO.File]::WriteAllText((Join-Path $PSScriptRoot 'bloop.b64.txt'), $b64)
-Write-Output ("base64 length: " + $b64.Length)

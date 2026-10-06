@@ -1,13 +1,6 @@
-/* ==========================================================================
-   VodaLed — main.js
-   1) Динамічне підвантаження header.html та footer.html
-   2) Завантаження config.json та рендеринг даних (ціни, контакти, графік...)
-   3) Мобільне меню, модальне вікно замовлення, карусель партнерів,
-      анімації появи (reveal on scroll), звук «буль» у зоні «Вода» + відео
-   ========================================================================== */
-
 const CONFIG_URL = 'config.json';
 const DROP_SOUND_URL = 'assets/drop.wav';
+const CRYSTAL_SOUND_URL = 'assets/crystal.wav';
 const COMPONENTS = {
   header: 'components/header.html',
   footer: 'components/footer.html'
@@ -171,8 +164,7 @@ function socialBtnHTML(s) {
 }
 
 function partnerChipHTML(p) {
-  /* Суцільна плитка 88x31: лише логотип, без текстових підписів
-     (назва — в alt/title для доступності й тултіпа) */
+
   if (p.logo) {
     return `
       <div class="partner-chip">
@@ -187,6 +179,9 @@ function partnerChipHTML(p) {
 }
 
 function renderConfig(cfg) {
+
+  const secText = (id) => (cfg.sections && cfg.sections[id] && cfg.sections[id].text);
+
   /* --- Текстові дані (data-config) --- */
   const map = {
     'phone-display': cfg.phone_display,
@@ -197,6 +192,15 @@ function renderConfig(cfg) {
     'hero-subtitle': cfg.hero.subtitle,
     'hero-cta': cfg.hero.cta,
     'hero-note': cfg.hero.note,
+
+    'hero-title': cfg.hero.title,
+    /* Заголовок плашки — один ключ на дві версії (.hero-note і .hero-mob-card) */
+    'hero-note-title': cfg.hero.note_title,
+    'section-features': secText('features'),
+    'section-prices': secText('prices'),
+    'section-accessories': secText('accessories'),
+    'section-partners': secText('partners'),
+    'section-contacts': secText('contacts'),
     'bottle-price': formatPrice(cfg.bottle_price),
     'footer-about': cfg.footer.about,
     'copyright': cfg.footer.copyright,
@@ -217,9 +221,6 @@ function renderConfig(cfg) {
   document.getElementById('icePrices').innerHTML = cfg.prices.ice.map(w => priceCardHTML(w, false)).join('');
   document.getElementById('accessoriesGrid').innerHTML = cfg.prices.accessories.map(accessoryCardHTML).join('');
 
-  /* --- Промо-ВІДЕО поруч з карткою води (права частина сітки).
-     Постер — власний перший кадр відео (preload=auto без атрибута poster);
-     поверх — темна заставка з центральною кнопкою плей (стиль YouTube) --- */
   const waterSection = document.getElementById('waterPrices');
   if (waterSection) {
     const banner = document.createElement('aside');
@@ -296,9 +297,6 @@ function observeReveals() {
 }
 
 /* ------------------------------ Карусель -------------------------------- */
-/* Автопрокрутка + стрілки «вліво/вправо» + перетягування мишкою/пальцем.
-   Набір чипів задвоєний, тому зсув, утримуваний у межах половини стрічки,
-   дає безшовне зациклення без стрибків. */
 
 const CAROUSEL_AUTO_SPEED = 0.5;        /* px за кадр автопрокрутки */
 const CAROUSEL_ARROW_MIN = 260;         /* мінімальний крок стрілки, px */
@@ -317,10 +315,6 @@ function initCarousel() {
   let drag = null;            /* { startX, startOffset } */
   let hoverPaused = false;
 
-  /* Нескінченна стрічка працює лише коли половина (ідентична копія набору)
-     НЕ вужча за видиму область: інакше в кінці з'являвся б порожній простір
-     і помітний стрибок при зацикленні. За потреби подвоюємо набір чипів —
-     половинки лишаються ідентичними, тож «шов» завжди за екраном. */
   const ensureLoopWidth = () => {
     const wrap = track.parentElement;
     if (!wrap) return;
@@ -334,9 +328,6 @@ function initCarousel() {
   const measure = () => { half = track.scrollWidth / 2; };
   ensureLoopWidth();
 
-  /* М'яке зациклення: тримаємо зсув у межах половини стрічки.
-     Повертає застосований зсув (дельту), щоб цілі анімацій можна було
-     загорнути разом із x і не «гнатися» за недосяжною точкою. */
   const normalizeX = () => {
     let delta = 0;
     if (half <= 0) return delta;
@@ -425,9 +416,6 @@ function initCarousel() {
 }
 
 /* ----------------- Звук «буль» (зона «Вода» + промо-відео) --------------- */
-/* Звук і анімована крапля прив'язані ЛИШЕ до зони «Вода» (заголовок #water,
-   картка води, промо-відео) — не до цілої секції «Ціни» і не до карток
-   «Чому обирають VodaLed». На десктопі — mouseenter у зону, на тач — торкання. */
 
 function initDropSound() {
   const section = document.querySelector('[data-drop-sound]');
@@ -468,23 +456,17 @@ function initDropSound() {
   };
   document.addEventListener('pointerdown', unlock, { capture: true });
   document.addEventListener('keydown', unlock);
-  /* На тачскрінах pointerdown іноді не доходить до документу перед touch-action
-     обробкою — дублюємо розблокування на touchend */
+
   document.addEventListener('touchend', unlock, { passive: true, capture: true });
   document.addEventListener('touchstart', function firstTouch() {
     document.removeEventListener('touchstart', firstTouch);
     setTimeout(unlock, 350);
   }, { passive: true, capture: true });
 
-  /* Звук має грати саме коли користувач ЗАВОДИТЬ курсор у секцію,
-     а не коли секція «проїжджає» під нерухомим курсором під час скролу.
-     Тому граємо лише якщо миша реально рухалась останні 400 мс. */
   let lastMouseMove = 0;
   let lastPlay = 0;
   document.addEventListener('mousemove', () => { lastMouseMove = performance.now(); }, { passive: true });
 
-  /* Крапля падає ПРЯМО НА ПРОМО-ВІДЕО: центруємо drop-fx так, щоб
-     «лінія води» (240px всередині fx) збігалася з центром відео */
   const positionFx = () => {
     if (!fx) return;
     const video = section.querySelector('.promo-video') || section.querySelector('.video-shell');
@@ -499,10 +481,6 @@ function initDropSound() {
   positionFx();
   window.addEventListener('resize', positionFx);
 
-  /* Зона-тригер: тільки «Вода» — заголовок #water + сітка #waterPrices
-     (картка води + промо-відео). Картки «Лід», «Аксесуари» і «Чому
-     обирають VodaLed» звуку НЕ дають. Пелюх
-     section.dataset.dropSound='water-zone' ставиться з index.html. */
   const zoneEls = [waterZone, waterGrid].filter(Boolean);
   const zones = zoneEls.length ? zoneEls : [section];
 
@@ -527,8 +505,6 @@ function initDropSound() {
 
   function playFx() {
 
-    /* анімована крапля: падіння + бризки + кола на воді.
-       Перед кожним запуском переприцілюємося на відео (лейаут міг змінитися) */
     if (fx) {
       positionFx();
       fx.classList.remove('run');
@@ -546,20 +522,99 @@ function initDropSound() {
 }
 
 /* ------------------------------ Карта Leaflet: Київ ---------------------- */
-/* Контур міста цілком + маркер бази. Зум колесом миші вмикається після кліка
-   по карті (щоб скрол сторінки не заважав) та вимикається, коли курсор
-   йде з карти. Межі міста — GeoJSON з OpenStreetMap (Nominatim). */
 
 const KYIV_CENTER = [50.4273, 30.5116]; /* вул. Казимира Малевича */
 
+/* ----------------- Звук кришталю (картки льоду) ------------------------- */
+
+function initIceSound() {
+  const iceZone = document.getElementById('ice');
+  const iceGrid = document.getElementById('icePrices');
+  if (!iceGrid) return;
+
+  let audio = null;
+  let unlocked = false;
+
+  const ensureAudio = () => {
+    if (!audio) {
+      try {
+        audio = new Audio(CRYSTAL_SOUND_URL);
+        audio.preload = 'auto';
+        audio.volume = 0.5;
+      } catch (e) {
+        return null;
+      }
+    }
+    return audio;
+  };
+
+  let unlocking = false;
+  const unlock = () => {
+    if (unlocked || unlocking) return;
+    const a = ensureAudio();
+    if (!a) return;
+    unlocking = true;
+    a.volume = 0;                 /* тихо, щоб перший дотик не засвітився */
+    a.play().then(() => {
+      unlocked = true;
+      unlocking = false;
+      a.pause();
+      a.currentTime = 0;
+      a.volume = 0.5;
+    }).catch(() => { unlocking = false; });
+  };
+  document.addEventListener('pointerdown', unlock, { capture: true });
+  document.addEventListener('keydown', unlock);
+
+  const play = () => {
+    const a = ensureAudio();
+    if (!a) return;
+    a.currentTime = 0;
+    a.volume = 0.5;
+    const p = a.play();
+    if (p && p.catch) p.catch(() => { /* ще не розблоковано — мовчки */ });
+  };
+
+  let lastMouseMove = 0;
+  let lastPlay = 0;
+  document.addEventListener('mousemove', () => { lastMouseMove = performance.now(); }, { passive: true });
+
+  /* На тач-пристроях hover не існує — ловимо тап по картці */
+  iceGrid.addEventListener('touchstart', () => {
+    const now = performance.now();
+    if (now - lastPlay < 600) return;
+    lastPlay = now;
+    play();
+  }, { passive: true });
+
+  let lastCard = null;
+  iceGrid.addEventListener('mouseover', e => {
+    const card = e.target.closest ? e.target.closest('.card') : null;
+    if (!card || card === lastCard) return;   /* повторно всередині тієї ж картки — мовчки */
+    lastCard = card;
+    const now = performance.now();
+    if (now - lastMouseMove > 400) return;    /* курсор нерухомий — це скрол */
+    if (now - lastPlay < 600) return;         /* не частимо при швидкому перебігу */
+    lastPlay = now;
+    play();
+  });
+
+  iceGrid.addEventListener('mouseleave', () => { lastCard = null; });
+
+  /* Заголовок «Лід» теж дзвенить — щоб зона відчувалася цілісною */
+  if (iceZone) {
+    iceZone.addEventListener('mouseenter', () => {
+      const now = performance.now();
+      if (now - lastMouseMove > 400) return;
+      if (now - lastPlay < 600) return;
+      lastPlay = now;
+      play();
+    });
+  }
+}
+
 /* ------------------- Жести карти: 1 палець — сайт, 2 — карта ------------ */
-/* Leaflet сам перехоплює однофінгерний свайп по карті — сторінка «залипає»
-   на ній (а на тач-пристроях він ще й ставить контейнеру touch-action: none,
-   див. CSS #kyivMap).
-   Тут однофінгерні дотики не доходять до обробників Leaflet
-   (capture + stopImmediatePropagation), тому палець просто гортає сторінку.
-   Два пальці, навпаки, віддаються вбудованому L.TouchZoom: він уміє і пінч,
-   і переміщення — карта їде за середньою точкою пальців. */
+
 function initMapTouchGestures(holder) {
   holder.addEventListener('touchstart', e => {
     if (e.touches.length < 2) e.stopImmediatePropagation();
@@ -567,9 +622,7 @@ function initMapTouchGestures(holder) {
 }
 
 /* --------------- Тап-анімації іконок-переваг (мобільний) ---------------- */
-/* На тач-екранах немає hover, тому той самий «підйом» іконки вмикає
-   клас .tap-anim на ~0.9 с після дотику (CSS :active тримає стан лише
-   поки палець притиснутий — анімації не видно). */
+
 function initHeroFeatTaps() {
   const list = document.querySelector('.hero-mob-feats');
   if (!list) return;
@@ -621,8 +674,6 @@ async function initKyivMap() {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
-  /* Шари та початковий вигляд додаємо ТІЛЬКИ після того,
-     як контейнер отримав розмір (інакше Leaflet падає на нульовому розмірі) */
   const setup = () => {
     /* Початковий вигляд — увесь Київ видно цілком */
     map.setView(KYIV_CENTER, 10.5);
@@ -709,8 +760,6 @@ function initModal() {
 }
 
 /* ------------------- Крапки свайп-каруселі переваг ----------------------- */
-/* Лише для мобільного вигляду (≤760px): крапкові індикатори сторінок
-   [01+02] та [03+04]; активна підсвічується за scrollLeft сітки. */
 
 function initFeatureDots() {
   const grid = document.getElementById('featuresGrid');
@@ -775,26 +824,25 @@ function initFeatureDots() {
 
 /* ------------------------------ Кнопка вгору ----------------------------- */
 
-/* ------------------------- Паралакс бутля в hero -------------------------
-   Легкий ефект: при прокрутці бутель ледве «відстає» від сторінки.
-   Амплітуда менша (22px), а сам рух згладжений lerp-інтерполяцією
-   в requestAnimationFrame — вібрація м'яка, без різких стрибків.
-   Тільки transform — без reflow. */
-function initBottleParallax() {
+function initBottleMotion() {
   const bottle = document.querySelector('.hero-bottle');
   const hero = bottle && bottle.closest('.hero');
   if (!bottle || !hero) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const AMPLITUDE = 22;  /* px — навпіл менше, ніж раніше */
-  const EASE = 0.09;     /* коефіцієнт згладжування: менше = плавніше */
+  const AMPLITUDE = 22;    /* px — амплітуда паралаксу */
+  const EASE = 0.09;       /* згладжування паралаксу: менше = плавніше */
+  const SCALE_UP = 1.028;  /* наскільки збільшується: ледь помітно, без «стрибка» */
+  const SCALE_EASE = 0.07; /* згладжування: менше = повільніше й м'якше */
 
-  let target = 0;
-  let current = 0;
+  let posTarget = 0;
+  let posCurrent = 0;
+  let scaleTarget = 1;
+  let scaleCurrent = 1;
   let raf = 0;
 
-  const computeTarget = () => {
-    if (window.innerWidth <= 760) return 0; /* мобільна сітка — без ефекту */
+  const computePosTarget = () => {
+    if (window.innerWidth <= 760) return 0; /* мобільна сітка — без паралаксу */
     const r = hero.getBoundingClientRect();
     if (r.bottom <= 0) return 0; /* hero повністю прокручено */
     const p = Math.min(1, Math.max(0, -r.top / r.height)); /* 0 → 1 */
@@ -802,18 +850,47 @@ function initBottleParallax() {
   };
 
   const step = () => {
-    target = computeTarget();
-    current += (target - current) * EASE;
-    if (Math.abs(target - current) < 0.05) current = target;
-    bottle.style.transform = (current === 0 && target === 0)
-      ? ''
-      : 'translate3d(0, ' + current.toFixed(2) + 'px, 0)';
-    const settled = current === target;
+    posTarget = computePosTarget();
+    posCurrent += (posTarget - posCurrent) * EASE;
+    if (Math.abs(posTarget - posCurrent) < 0.05) posCurrent = posTarget;
+
+    scaleCurrent += (scaleTarget - scaleCurrent) * SCALE_EASE;
+    if (Math.abs(scaleTarget - scaleCurrent) < 0.001) scaleCurrent = scaleTarget;
+
+    bottle.style.transform = 'translate3d(0, ' + posCurrent.toFixed(2) +
+      'px, 0) scale(' + scaleCurrent.toFixed(4) + ')';
+
+    const settled = posCurrent === posTarget && scaleCurrent === scaleTarget;
     const offscreen = hero.getBoundingClientRect().bottom <= 0;
     if (settled && offscreen) { raf = 0; return; } /* економимо кадри поза екраном */
     raf = requestAnimationFrame(step);
   };
   const wake = () => { if (!raf) raf = requestAnimationFrame(step); };
+
+  const setScale = (v) => { if (scaleTarget !== v) scaleTarget = v; wake(); };
+
+  const overBottle = (x, y) => {
+    const r = bottle.getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+  };
+  /* Над кнопкою CTA та плашкою бутль не реагує: миша там — це не про нього */
+  const overInteractive = (t) => !!(t && t.closest && t.closest('.hero-actions, .hero-note'));
+
+  window.addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse') return;
+    setScale(!overInteractive(e.target) && overBottle(e.clientX, e.clientY) ? SCALE_UP : 1);
+  }, { passive: true });
+
+  window.addEventListener('pointerdown', e => {
+    if (!overInteractive(e.target) && overBottle(e.clientX, e.clientY)) setScale(SCALE_UP);
+  }, { passive: true });
+
+  /* Відпускання повертає бутль — і на touch, і на миші */
+  const reset = () => setScale(1);
+  window.addEventListener('pointerup', reset, { passive: true });
+  window.addEventListener('pointercancel', reset, { passive: true });
+  window.addEventListener('blur', reset);
+  document.addEventListener('scroll', reset, { passive: true });
 
   window.addEventListener('scroll', wake, { passive: true });
   window.addEventListener('resize', wake);
@@ -829,16 +906,21 @@ function initToTop() {
   btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
-/* ------------------- Ширина плашки .hero-note = кнопці CTA -------------- */
-/* Десктопна плашка .hero-note має бути рівно ширині кнопки CTA.
-   Ширина кнопки залежить від тексту hero.cta з config.json і від
-   шрифтів, тому виставляємо її у CSS-змінну --hero-cta-w після рендеру
-   конфігу, при зміні вікна та після завантаження шрифтів */
-function syncHeroNoteWidth() {
-  const btn = document.querySelector('.hero-actions .btn-lg');
-  if (btn && btn.offsetWidth) {
-    document.documentElement.style.setProperty('--hero-cta-w', btn.offsetWidth + 'px');
-  }
+/* ------------------ Ширина блоку переваг = «Чиста питна» ----------------- */
+
+function syncHeroFeatsWidth() {
+  const feats = document.querySelector('.hero-mob-feats');
+  const title = document.querySelector('.hero-title-1');
+  if (!feats || !title) return;
+  if (window.innerWidth <= 760) { feats.style.width = ''; return; }
+  let w = 0;
+  try {
+    const range = document.createRange();
+    range.selectNodeContents(title);
+    const first = range.getClientRects()[0];
+    if (first) w = first.width;
+  } catch (e) { /* Range недоступний — лишаємо ширину як є */ }
+  feats.style.width = w > 0 ? Math.ceil(w) + 'px' : '';
 }
 
 /* -------------------------------- Ініціалізація -------------------------- */
@@ -850,8 +932,9 @@ function syncHeroNoteWidth() {
   initMobileMenu();
   initModal();
   initToTop();
-  initBottleParallax();
+  initBottleMotion();
   initDropSound();
+  initIceSound();
 
   try {
     const res = await fetch(CONFIG_URL);
@@ -863,9 +946,11 @@ function syncHeroNoteWidth() {
     observeReveals(); /* усе одно показати статичний контент */
   }
 
-  syncHeroNoteWidth();
-  window.addEventListener('resize', syncHeroNoteWidth);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncHeroNoteWidth);
+  syncHeroFeatsWidth();
+  window.addEventListener('resize', syncHeroFeatsWidth);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(syncHeroFeatsWidth);
+  }
 
   initHeroFeatTaps();
   initCarousel();
