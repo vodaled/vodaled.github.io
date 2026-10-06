@@ -106,7 +106,7 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 .btn-viber:hover { background: #5b4bd8; transform: translateY(-2px); color: #fff; }
 
 .btn-sm { padding: .55em 1.2em; font-size: .88rem; }
-.btn-lg { padding: 1em 2.1em; font-size: 1.02rem; }
+.btn-lg { padding: .8em 1.6em; font-size: .9rem; }
 
 /* ------------------------------- Header --------------------------------- */
 
@@ -293,15 +293,6 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 
 .section-alt { background: var(--c-ice); }
 
-.features {
-  position: relative;
-  overflow: hidden;
-  background:
-    radial-gradient(560px 300px at 4% -8%, rgba(25, 184, 216, .16), transparent 70%),
-    radial-gradient(520px 300px at 96% 108%, rgba(22, 104, 179, .14), transparent 70%),
-    linear-gradient(180deg, #FFFFFF 0%, #EFF9FD 100%);
-}
-
 .section-head { text-align: center; max-width: 640px; margin: 0 auto 2.6rem; }
 .section-head p { color: var(--c-grey); margin-top: .6rem; }
 
@@ -386,7 +377,7 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   position: absolute;
   right: max(2%, calc((95% - 1240px) / 2));
   bottom: 0;
-  height: 73%;
+  height: 78%;   /* збільшено на прохання користувача */
   width: auto;
   object-fit: contain;
   object-position: bottom center;
@@ -409,7 +400,7 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   margin-left: max(4%, calc((100% - 1160px) / 2));
   margin-right: 0;
 
-  margin-top: calc(2.5rem - 46px);
+  margin-top: calc(2.5rem + 36px);
 }
 
 .hero-title {
@@ -488,24 +479,35 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 
 .hero-mob-feats {
   list-style: none;
-  position: relative;
-  z-index: 1;               /* під бутлем (z2), понад вуаллю (z1, DOM-порядок) */
   display: grid;
 
-  grid-template-columns: repeat(4, 5.5rem);
+  grid-template-columns: repeat(4, 1fr);
 
-  justify-content: space-between;
-  gap: .5rem;
+  gap: 0;
   padding: 0;
 
-  text-align: left;
+  text-align: center;
+}
+.hero-mob-feats li {
+  position: relative;
+  padding-inline: 1rem;      /* текст не притискається до розділювачів */
+}
+.hero-mob-feats li:not(:first-child)::before {
+  content: '';
+  position: absolute;
+  left: -1px;                /* 2px лінія по центру стику колонок */
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  border-radius: 1px;
+  background: rgba(22, 104, 179, .22);
 }
 .hero-mob-feats .hf-ic {
   display: grid;
   place-items: center;
   width: 56px;
   height: 56px;
-  margin-inline: 0;         /* не auto — значок сідає на лівий край колонки */
+  margin-inline: auto;       /* значок по центру колонки */
   border-radius: 50%;
   background: linear-gradient(180deg, #E9F5FD, #CDE7F9);
   box-shadow: 0 2px 10px rgba(22, 104, 179, .14);
@@ -529,9 +531,15 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   transition: color .25s ease, transform .25s ease;
 }
 
+/* Смуга переваг — окрема секція одразу під hero, перед «Наша продукція» */
+.hero-feats-strip {
+  padding-block: .95rem .1rem;
+  background: linear-gradient(180deg, var(--c-ice) 0, var(--c-bg) 100%);
+}
+.hero-feats-strip .container { max-width: 1160px; }
+
 @media (min-width: 761px) {
 
-  .hero-mob-feats { order: -1; margin-bottom: 1.15rem; }
   .hero-mob-feats li:nth-child(1) { animation: heroRiseIn .7s ease-out .6s both; }
   .hero-mob-feats li:nth-child(2) { animation: heroRiseIn .7s ease-out .72s both; }
   .hero-mob-feats li:nth-child(3) { animation: heroRiseIn .7s ease-out .84s both; }
@@ -591,13 +599,13 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   position: relative;
   z-index: 2;               /* понад бутлем і вуаллю */
   display: block;
-  width: clamp(250px, 30vw, 428px);
+  width: clamp(235px, 27vw, 385px);
   max-width: 100%;
 
-  padding: 1rem 1.3rem .9rem;
-  margin-block: 1.7rem 1.4rem;
+  padding: .7rem .95rem;
+  margin-block: 1.4rem 1.1rem;
   background: #fff;
-  border-radius: 20px;
+  border-radius: 18px;
   box-shadow: 0 14px 34px rgba(11, 60, 122, .16);
   text-align: center;
 }
@@ -606,7 +614,7 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  width: 56px;
+  width: 48px;
   height: auto;
 }
 .hero-note .hmc-title {
@@ -618,7 +626,7 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   margin-inline: auto;
   font-family: var(--font-hero);
   font-weight: 800;
-  font-size: 1.05rem;
+  font-size: .95rem;
   line-height: 1.15;
   white-space: nowrap;
   color: #023470;
@@ -630,15 +638,15 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 .hero-note .hmc-title::before,
 .hero-note .hmc-title::after {
   content: '';
-  flex: 0 0 3.5rem;
+  flex: 0 0 2.8rem;
   height: 2px;
   border-radius: 2px;
   background: linear-gradient(90deg, rgba(156, 195, 232, 0), #9CC3E8);
 }
 .hero-note .hmc-title::after { transform: scaleX(-1); }
 .hero-note .hmc-text {
-  margin-top: .35rem;
-  font-size: .82rem;
+  margin-top: .3rem;
+  font-size: .76rem;
   line-height: 1.4;
   color: var(--c-ink);
 
@@ -747,90 +755,6 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 
 .card h3 { margin-bottom: .5rem; }
 .card .muted { color: var(--c-grey); font-size: .92rem; flex-grow: 1; }
-
-/* Картка переваги: іконка та заголовок в одному рядку, текст під ними */
-.card-feature .card-head {
-  display: flex;
-  align-items: center;
-  gap: .9rem;
-  margin-bottom: .65rem;
-}
-.card-feature .card-head .icon { margin-bottom: 0; flex-shrink: 0; }
-.card-feature .card-head h3 { margin-bottom: 0; font-size: 1.12rem; }
-.card-feature .muted { flex-grow: 1; }
-
-#featuresGrid { counter-reset: feat; }
-
-#featuresGrid .card-feature {
-  counter-increment: feat;
-  --acc1: var(--c-cyan);
-  --acc2: var(--c-blue);
-  background: linear-gradient(145deg, #FFFFFF 0%, #FFFFFF 30%, #E1F6FB 100%);
-  overflow: hidden;
-}
-#featuresGrid .card-feature:nth-child(2) {
-  --acc1: #4598DC; --acc2: var(--c-deep);
-  background: linear-gradient(145deg, #FFFFFF 0%, #FFFFFF 30%, #E0EFFC 100%);
-}
-#featuresGrid .card-feature:nth-child(3) {
-  --acc1: #7FC7E8; --acc2: #0E93B4;
-  background: linear-gradient(145deg, #FFFFFF 0%, #FFFFFF 30%, #E6F3FD 100%);
-}
-#featuresGrid .card-feature:nth-child(4) {
-  --acc1: #0E93B4; --acc2: #0B3C7A;
-  background: linear-gradient(145deg, #FFFFFF 0%, #FFFFFF 30%, #DCEAF8 100%);
-}
-#featuresGrid .card-feature::before {
-  content: '';
-  position: absolute;
-  left: 0; right: 0; top: 0; height: 4px;
-  background: linear-gradient(90deg, var(--acc1), var(--acc2));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform .35s ease;
-}
-@media (hover: hover) and (pointer: fine) {
-  #featuresGrid .card-feature:hover::before { transform: scaleX(1); }
-}
-#featuresGrid .card-feature::after {
-  content: '0' counter(feat);
-  position: absolute;
-  top: 8px; right: 16px;
-  font-family: var(--font-hero);
-  font-weight: 800;
-  font-size: 2.4rem;
-  line-height: 1;
-  color: var(--acc1);
-  opacity: .14;
-  pointer-events: none;
-}
-#featuresGrid .card-feature .icon {
-  width: 54px; height: 54px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, var(--acc1), var(--acc2));
-  color: #fff;
-  box-shadow: 0 8px 18px rgba(11, 60, 122, .22);
-}
-#featuresGrid .card-feature .icon svg { width: 28px; height: 28px; }
-#featuresGrid .card-feature:hover { border-color: var(--acc1); }
-
-@media (hover: hover) and (pointer: fine) {
-  #featuresGrid .card-feature {
-
-    transition-property: opacity, transform, box-shadow, border-color;
-    transition-duration: .6s, .6s, .32s, .32s;
-    transition-timing-function: ease, ease, ease, ease;
-    transition-delay: var(--reveal-delay, 0s), var(--reveal-delay, 0s), 0s, 0s;
-  }
-  #featuresGrid .card-feature:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 18px 34px rgba(11, 60, 122, .14); /* запасний варіант без color-mix */
-    box-shadow:
-      0 18px 34px rgba(11, 60, 122, .14),
-      0 0 0 1px color-mix(in srgb, var(--acc1) 32%, transparent),
-      0 10px 28px color-mix(in srgb, var(--acc1) 26%, transparent);
-  }
-}
 
 .card .price-row {
   display: flex;
@@ -1099,9 +1023,12 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   font-size: .92rem;
 }
 
-/* ------------------------- Анімована крапля (Ціни) ---------------------- */
-
-.prices { position: relative; overflow: hidden; }
+/* ------------------------- Анімована крапля (Ціни) ---------------------- */.prices {
+  position: relative;
+  overflow: hidden;
+  /* Плавний перехід від смуги переваг: стартуємо з її нижнього кольору і плавно доходимо до льодяного */
+  background: linear-gradient(180deg, var(--c-bg) 0, var(--c-ice) 8rem, var(--c-ice) 100%);
+}
 
 .drop-fx {
   position: absolute;
@@ -1565,9 +1492,6 @@ section[id], h3[id] { scroll-margin-top: 108px; }
 .to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
 .to-top:hover { transform: translateY(-3px); }
 
-/* Крапкові індикатори: на десктопі приховані */
-.feat-dots { display: none; }
-
 /* ------------------------------- Reveal animations ---------------------- */
 
 .reveal {
@@ -1788,19 +1712,14 @@ section[id], h3[id] { scroll-margin-top: 108px; }
     margin-top: 9vw;
   }
 
+  .hero-feats-strip { background: #B5E1FD; }  /* продовження кольору мобільного hero */
+
   .hero-mob-feats {
-    order: 4;
-    position: relative;
-    z-index: 2;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1vw;
+    gap: 0;
     width: 100%;
     margin-top: 1.1vw;
-    padding: 0;
-    list-style: none;
-    text-align: left;        /* те саме, що на десктопі: значок = текст по лівому краю */
   }
+  .hero-mob-feats li { padding-inline: .4rem; }
   .hero-mob-feats .hf-ic {
     display: grid;
     place-items: center;
@@ -1808,7 +1727,6 @@ section[id], h3[id] { scroll-margin-top: 108px; }
     height: 13.5vw;
     max-width: 64px;
     max-height: 64px;
-    margin-inline: 0;
     border-radius: 50%;
     background: linear-gradient(180deg, #E9F5FD, #CDE7F9);
     box-shadow: 0 2px 10px rgba(22, 104, 179, .14);
@@ -1905,15 +1823,6 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   .hero-mob-feats li:nth-child(3) { animation: heroRiseIn .7s ease-out .84s both; }
   .hero-mob-feats li:nth-child(4) { animation: heroRiseIn .7s ease-out .96s both; }
 
-  .features {
-    background:
-      radial-gradient(560px 300px at 4% 40%, rgba(25, 184, 216, .16), transparent 70%),
-      radial-gradient(520px 300px at 96% 108%, rgba(22, 104, 179, .14), transparent 70%),
-      linear-gradient(180deg,
-        #B5E1FD 0%, #BDE4FD 5%, #CCEBFD 11%, #DDF1FD 17%,
-        #EDF7FE 24%, #F8FCFF 32%, #FFFFFF 40%, #F4FAFE 100%);
-  }
-
   .car-btn { width: 38px; height: 38px; }
   .car-btn svg { width: 20px; height: 20px; }
   .car-prev { left: 6px; }
@@ -1929,54 +1838,6 @@ section[id], h3[id] { scroll-margin-top: 108px; }
   .footer-col-contacts .footer-messengers .chip { width: 100%; padding: .62em 1em; font-size: .82rem; white-space: nowrap; }
   /* соцкнопки — під чатами */
   .footer-socials { margin-top: .8rem; justify-content: flex-start; }
-
-  #featuresGrid {
-    display: flex;
-    gap: .9rem;
-    overflow-x: auto;
-
-    overflow-y: hidden;
-    touch-action: pan-y;          /* вертикальний жест — сторінці, горизонтальний — свайпу */
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: .35rem;
-    cursor: grab;                 /* перетягування як у каруселі партнерів */
-  }
-  #featuresGrid::-webkit-scrollbar { display: none; }
-  #featuresGrid.dragging {
-    cursor: grabbing;
-    scroll-snap-type: none;       /* snap не бореться з ручним перетягуванням */
-    user-select: none;
-    -webkit-user-select: none;
-  }
-  #featuresGrid .card-feature {
-    flex: 0 0 47%;              /* дві картки на екрані + краєчок третьої як підказка свайпу */
-    scroll-snap-align: start;
-    padding: 1.1rem 1rem;
-  }
-  /* У вузькій картці іконка стає над заголовком, щоб текст не обрізався */
-  #featuresGrid .card-feature .card-head {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: .6rem;
-  }
-
-  #featuresGrid .card-feature .card-head h3 { font-size: .92rem; }
-  #featuresGrid .card-feature .muted { font-size: .8rem; }
-  #featuresGrid .card-feature .icon { width: 46px; height: 46px; border-radius: 14px; }
-  #featuresGrid .card-feature .icon svg { width: 24px; height: 24px; }
-
-  /* Крапкові індикатори під свайп-каруселлю (видно лише на мобільному) */
-  .feat-dots { display: flex; justify-content: center; gap: .45rem; margin-top: 1rem; }
-  .feat-dot {
-    width: 8px; height: 8px;
-    border-radius: 999px;
-    background: #C9DDEA;
-    transition: width .25s ease, background .25s ease;
-  }
-  .feat-dot.active { width: 22px; background: var(--c-cyan-d); }
 }
 
 @media (max-width: 420px) {

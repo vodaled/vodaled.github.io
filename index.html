@@ -72,7 +72,7 @@
   </script>
 
   <!-- Критичні зображення — завантажуються негайно -->
-  <link rel="preload" as="image" href="assets/hero.png" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/hero.webp" fetchpriority="high">
   <link rel="preload" as="image" href="assets/botle-ice.png">
   <link rel="preload" as="image" href="assets/hero-mob.png" media="(max-width: 760px)">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -88,7 +88,7 @@
       .hero-title, .hero-subtitle, .hero-note, .hero-actions { opacity: 1; }
     }
   </style>
-  <link rel="stylesheet" href="css/style.css?v=59">
+  <link rel="stylesheet" href="css/style.css?v=63">
   <!-- Страховка: повертає opacity, якщо вхідні анімації так і не зіграли -->
   <script>
     (function () {
@@ -128,7 +128,7 @@
 
     <!-- ===== БЛОК 1: HERO — банер hero.png + шар бутля з льодом, текст ліворуч ===== -->
     <section class="hero" id="hero">
-      <img class="hero-img" src="assets/hero.png" alt="Чиста вода VodaLed та лід на тлі Києва" fetchpriority="high">
+      <img class="hero-img" src="assets/hero.webp" alt="Чиста вода VodaLed та лід на тлі Києва" fetchpriority="high">
       <div class="hero-overlay" aria-hidden="true"></div>
       <!-- Мобільний фон-постер (небо/Київ/водна гладь) — видно лише ≤760px -->
       <div class="hero-mob-bg" aria-hidden="true"></div>
@@ -141,6 +141,27 @@
 
         <p class="hero-subtitle"><span data-config="hero-subtitle">для дому та бізнесу</span></p>
 
+        <!-- Мобільна картка «Для доставки води» з іконкою гір (на десктопі прихована) -->
+        <div class="hero-mob-card">
+          <img class="hmc-mountains" src="assets/mountains.webp" alt="" aria-hidden="true">
+          <h2 class="hmc-title" data-config="hero-note-title">Для доставки води</h2>
+          <p class="hmc-text" data-config="hero-note">Необхідно надати на обмін порожні бутлі об'ємом 18,9 л, або їх можливо придбати (вартість 1 бутля становить 350 грн)</p>
+        </div>
+
+        <div class="hero-note">
+          <img class="hmc-mountains" src="assets/mountains.webp" alt="" aria-hidden="true">
+          <h2 class="hmc-title" data-config="hero-note-title">Для доставки води</h2>
+          <p class="hmc-text" data-config="hero-note">Необхідно надати на обмін порожні бутлі об'ємом 18,9 л, або їх можливо придбати <br>(вартість 1 бутля становить 350 грн)</p>
+        </div>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg js-order" type="button"><span class="cta-desk" data-config="hero-cta">Замовити доставку за справедливою ціною</span><span class="cta-mob">Замовити доставку за справедливою ціною</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero-feats-strip">
+      <div class="container">
         <ul class="hero-mob-feats" aria-label="Наші переваги">
           <li>
             <span class="hf-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="#1668B3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4c3.1 3.9 5.8 7.3 5.8 10.6a5.8 5.8 0 1 1-11.6 0C6.2 10.7 8.9 7.3 12 3.4z"/><path d="M9.3 14.6a2.7 2.7 0 0 0 1.9 2.5"/></g></svg></span>
@@ -163,23 +184,6 @@
             <small>маємо всі сертифікати</small>
           </li>
         </ul>
-
-        <!-- Мобільна картка «Для доставки води» з іконкою гір (на десктопі прихована) -->
-        <div class="hero-mob-card">
-          <img class="hmc-mountains" src="assets/mountains.webp" alt="" aria-hidden="true">
-          <h2 class="hmc-title" data-config="hero-note-title">Для доставки води</h2>
-          <p class="hmc-text" data-config="hero-note">Необхідно надати на обмін порожні бутлі об'ємом 18,9 л, або їх можливо придбати (вартість 1 бутля становить 350 грн)</p>
-        </div>
-
-        <div class="hero-note">
-          <img class="hmc-mountains" src="assets/mountains.webp" alt="" aria-hidden="true">
-          <h2 class="hmc-title" data-config="hero-note-title">Для доставки води</h2>
-          <p class="hmc-text" data-config="hero-note">Необхідно надати на обмін порожні бутлі об'ємом 18,9 л, або їх можливо придбати <br>(вартість 1 бутля становить 350 грн)</p>
-        </div>
-
-        <div class="hero-actions">
-          <button class="btn btn-primary btn-lg js-order" type="button"><span class="cta-desk" data-config="hero-cta">Замовити доставку за справедливою ціною</span><span class="cta-mob">Замовити доставку за справедливою ціною</span></button>
-        </div>
       </div>
     </section>
 
@@ -213,18 +217,6 @@
         <div class="grid-4" id="icePrices"><!-- рендериться з config.json --></div>
 
         <p class="prices-note reveal" data-config="delivery-note">Оплата за доставку розраховується індивідуально (залежить від району та обсягу замовлення).</p>
-      </div>
-    </section>
-
-    <!-- ===== БЛОК 3: ПЕРЕВАГИ ===== -->
-    <section class="section features" id="features">
-      <div class="container">
-        <div class="section-head reveal">
-          <h2>Чому обирають VodaLed</h2>
-          <p data-config="section-features">Ми поєднуємо власне виробництво льоду та перевірену воду з оперативною доставкою по Києву.</p>
-        </div>
-        <div class="grid-4" id="featuresGrid"><!-- рендериться з config.json --></div>
-        <div class="feat-dots" id="featDots" aria-hidden="true"><!-- крапкові індикатори (мобільний) --></div>
       </div>
     </section>
 
@@ -323,6 +315,6 @@
   <button class="to-top" id="toTop" aria-label="Нагору">↑</button>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="js/main.js?v=22"></script>
+  <script src="js/main.js?v=26"></script>
 </body>
 </html>

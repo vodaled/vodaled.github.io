@@ -43,15 +43,9 @@ const ICONS = {
   'pump-electric': '<svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>',
   cooler: '<svg viewBox="0 0 24 24"><path d="M9 2h6a1 1 0 0 1 1 1v4h1a3 3 0 0 1 3 3v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V10a3 3 0 0 1 3-3h1V3a1 1 0 0 1 1-1zm0 5h6V4H9zm3 5-2.5 4h2V18l2.5-4h-2z"/></svg>',
   freezer: '<svg viewBox="0 0 24 24"><path d="M6 2h12a2 2 0 0 1 2 2v7H4V4a2 2 0 0 1 2-2zM4 13h16v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm3-9v2h2V4H7zm0 11v2h2v-2H7z"/></svg>',
-  drop: '<svg viewBox="0 0 24 24"><path d="M12 2s6.5 7.2 6.5 12a6.5 6.5 0 0 1-13 0C5.5 9.2 12 2 12 2zm0 17.5a4.5 4.5 0 0 0 4.5-4.5h-1.6a2.9 2.9 0 0 1-2.9 2.9z"/></svg>',
-  truck: '<svg viewBox="0 0 24 24"><path d="M3 5h11a1 1 0 0 1 1 1v2h3.2c.4 0 .7.2.9.5l2 3c.1.2.2.4.2.6V17a1 1 0 0 1-1 1h-1.1a3 3 0 0 1-5.8 0H9.8a3 3 0 0 1-5.8 0H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm12 5v3h5.1l-1.3-2H15zM6.9 16.1a1.3 1.3 0 1 0 0-2.6 1.3 1.3 0 0 0 0 2.6zm10 0a1.3 1.3 0 1 0 0-2.6 1.3 1.3 0 0 0 0 2.6z"/></svg>',
-  tag: '<svg viewBox="0 0 24 24"><path d="M21.4 11.6 12.4 2.6A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7c0 .5.2 1 .6 1.4l9 9a2 2 0 0 0 2.8 0l7-7a2 2 0 0 0 0-2.8zM6.5 8A1.5 1.5 0 1 1 8 6.5 1.5 1.5 0 0 1 6.5 8z"/></svg>',
-  snow: '<svg viewBox="0 0 24 24"><path d="M22 11h-3.4l2.3-2.3-1.4-1.4L15.4 11H13V8.6l3.7-4.1-1.4-1.4L12 7 8.7 3.1 7.3 4.5 11 8.6V11H8.6L4.5 7.3 3.1 8.7 7 12l-3.9 3.3 1.4 1.4L8.6 13H11v2.4l-3.7 4.1 1.4 1.4L12 17l3.3 3.9 1.4-1.4-3.7-4.1V13h2.4l4.1 3.7 1.4-1.4L17 12l3.9-3.3-1.4-1.4L15.4 11z"/></svg>',
-  map: '<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 5.2-7 13-7 13S5 14.2 5 9a7 7 0 0 1 7-7zm0 9.5A2.5 2.5 0 1 0 12 6a2.5 2.5 0 0 0 0 5.5z"/></svg>',
   /* Соцмережі */
   instagram: '<svg viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.9 2 22 4.1 22 7.8v8.4c0 3.7-2.1 5.8-5.8 5.8H7.8C4.1 22 2 19.9 2 16.2V7.8C2 4.1 4.1 2 7.8 2zm-.2 2C5.7 4 4 5.7 4 7.6v8.8C4 18.3 5.7 20 7.6 20h8.8c1.9 0 3.6-1.7 3.6-3.6V7.6C20 5.7 18.3 4 16.4 4H7.6zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm5.3-3.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z"/></svg>',
   telegram: '<svg viewBox="0 0 24 24"><path d="M21.9 4.6 19 19.3c-.2 1-.8 1.2-1.6.8l-4.5-3.3-2.2 2.1c-.2.2-.4.4-.9.4l.3-4.6L18.6 7c.4-.3-.1-.5-.6-.2L8 13.2l-4.4-1.4c-1-.3-1-1 .2-1.4l17.2-6.6c.8-.3 1.5.2 1 1.4z"/></svg>',
-  viber: '<svg viewBox="0 0 24 24"><path d="M12 1C7.2 1 3 4.7 3 10.1c0 3.5 1.6 6 4 7.6V22l2.8-1.7c.7.2 1.4.3 2.2.3 4.8 0 9-3.7 9-9.1S16.8 1 12 1zm.9 13.4c-1.9-.4-3.9-2.5-4.3-4.4-.2-1 .3-1.9 1.2-2l.6 1.9-.8.7c.4 1.1 1.3 2 2.4 2.4l.7-.8 1.9.6c-.2.9-1 1.5-1.7 1.6z"/></svg>',
   facebook: '<svg viewBox="0 0 24 24"><path d="M13.5 21v-7h2.4l.4-2.8h-2.8V9.4c0-.8.2-1.4 1.4-1.4h1.5V5.5c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2H8v2.8h2.5v7z"/></svg>',
   tiktok: '<svg viewBox="0 0 24 24"><path d="M16.6 3c.3 1.7 1.4 3 3.4 3.2v2.9c-1.3 0-2.5-.4-3.4-1v6.4c0 3.2-2.1 5.3-5 5.3-2.8 0-4.9-2-4.9-4.7 0-2.9 2.5-4.9 5.4-4.6v3c-.3-.1-.6-.2-1-.2-1.1 0-1.9.8-1.9 1.8 0 1.1.8 1.8 1.8 1.8 1.2 0 2-.9 2-2.3V3z"/></svg>',
   youtube: '<svg viewBox="0 0 24 24"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8c1.6.4 7.8.4 7.8.4s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15.2V8.8l5.2 3.2z"/></svg>',
@@ -142,18 +136,6 @@ function accessoryCardHTML(item) {
     </article>`;
 }
 
-function featureCardHTML(item, i) {
-  const icon = ICONS[item.icon] || ICONS.drop;
-  return `
-    <article class="card card-feature reveal delay-${(i % 4) + 1}">
-      <div class="card-head">
-        <div class="icon">${icon}</div>
-        <h3>${esc(item.title)}</h3>
-      </div>
-      <p class="muted">${esc(item.text)}</p>
-    </article>`;
-}
-
 function socialBtnHTML(s) {
   if (!s || !s.url) return '';           /* порожній url — не показуємо */
   const icon = ICONS[s.id] || ICONS.link;
@@ -196,7 +178,6 @@ function renderConfig(cfg) {
     'hero-title': cfg.hero.title,
     /* Заголовок плашки — один ключ на дві версії (.hero-note і .hero-mob-card) */
     'hero-note-title': cfg.hero.note_title,
-    'section-features': secText('features'),
     'section-prices': secText('prices'),
     'section-accessories': secText('accessories'),
     'section-partners': secText('partners'),
@@ -216,7 +197,6 @@ function renderConfig(cfg) {
   });
 
   /* --- Картки --- */
-  document.getElementById('featuresGrid').innerHTML = cfg.features.map(featureCardHTML).join('');
   document.getElementById('waterPrices').innerHTML = cfg.prices.water.map(w => priceCardHTML(w, true)).join('');
   document.getElementById('icePrices').innerHTML = cfg.prices.ice.map(w => priceCardHTML(w, false)).join('');
   document.getElementById('accessoriesGrid').innerHTML = cfg.prices.accessories.map(accessoryCardHTML).join('');
@@ -759,69 +739,6 @@ function initModal() {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 }
 
-/* ------------------- Крапки свайп-каруселі переваг ----------------------- */
-
-function initFeatureDots() {
-  const grid = document.getElementById('featuresGrid');
-  const dotsBox = document.getElementById('featDots');
-  if (!grid || !dotsBox || grid.dataset.dotsInit) return;
-  grid.dataset.dotsInit = '1';
-
-  const cards = grid.querySelectorAll('.card-feature');
-  if (cards.length < 3) return;
-
-  /* Пара карток = одна сторінка крапки */
-  const pages = [];
-  for (let i = 0; i < cards.length; i += 2) pages.push(cards[i]);
-
-  dotsBox.innerHTML = pages.map((_, i) =>
-    `<span class="feat-dot${i === 0 ? ' active' : ''}"></span>`
-  ).join('');
-  const dots = [...dotsBox.querySelectorAll('.feat-dot')];
-
-  let ticking = false;
-  const update = () => {
-    ticking = false;
-    const max = grid.scrollWidth - grid.clientWidth;
-    if (max <= 0) return;
-    const pos = Math.min(grid.scrollLeft / max, 1);
-    const idx = Math.min(Math.round(pos * (pages.length - 1)), pages.length - 1);
-    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-  };
-
-  grid.addEventListener('scroll', () => {
-    if (!ticking) { ticking = true; requestAnimationFrame(update); }
-  }, { passive: true });
-  window.addEventListener('resize', update);
-  update();
-
-  /* --- Перетягування мишкою/пальцем, як у каруселі партнерів --- */
-  let dragId = null;
-  let dragStartX = 0;
-  let dragStartScroll = 0;
-
-  grid.addEventListener('pointerdown', (e) => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
-    dragId = e.pointerId;
-    dragStartX = e.clientX;
-    dragStartScroll = grid.scrollLeft;
-    grid.classList.add('dragging');
-  });
-
-  grid.addEventListener('pointermove', (e) => {
-    if (dragId !== e.pointerId) return;
-    grid.scrollLeft = dragStartScroll - (e.clientX - dragStartX);
-  });
-
-  const endDrag = () => {
-    dragId = null;
-    grid.classList.remove('dragging');
-  };
-  grid.addEventListener('pointerup', endDrag);
-  grid.addEventListener('pointercancel', endDrag);
-  grid.addEventListener('pointerleave', endDrag);
-}
-
 /* ------------------------------ Кнопка вгору ----------------------------- */
 
 function initBottleMotion() {
@@ -906,21 +823,14 @@ function initToTop() {
   btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
-/* ------------------ Ширина блоку переваг = «Чиста питна» ----------------- */
+/* -------- Ширина плашки «Для доставки води» = ширина CTA-кнопки --------- */
 
-function syncHeroFeatsWidth() {
-  const feats = document.querySelector('.hero-mob-feats');
-  const title = document.querySelector('.hero-title-1');
-  if (!feats || !title) return;
-  if (window.innerWidth <= 760) { feats.style.width = ''; return; }
-  let w = 0;
-  try {
-    const range = document.createRange();
-    range.selectNodeContents(title);
-    const first = range.getClientRects()[0];
-    if (first) w = first.width;
-  } catch (e) { /* Range недоступний — лишаємо ширину як є */ }
-  feats.style.width = w > 0 ? Math.ceil(w) + 'px' : '';
+function syncNoteWidth() {
+  const note = document.querySelector('.hero-note');
+  const cta = document.querySelector('.hero-actions .btn');
+  if (!note || !cta) return;
+  if (window.innerWidth <= 760) { note.style.width = ''; return; }
+  note.style.width = Math.ceil(cta.getBoundingClientRect().width) + 'px';
 }
 
 /* -------------------------------- Ініціалізація -------------------------- */
@@ -946,14 +856,13 @@ function syncHeroFeatsWidth() {
     observeReveals(); /* усе одно показати статичний контент */
   }
 
-  syncHeroFeatsWidth();
-  window.addEventListener('resize', syncHeroFeatsWidth);
+  syncNoteWidth();
+  window.addEventListener('resize', syncNoteWidth);
   if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(syncHeroFeatsWidth);
+    document.fonts.ready.then(syncNoteWidth);
   }
 
   initHeroFeatTaps();
   initCarousel();
-  initFeatureDots();
   initKyivMap();
 })();
